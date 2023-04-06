@@ -1,7 +1,14 @@
 import Head from "next/head";
 import Header from "@d20/Components/Header";
+import { GetServerSideProps } from "next";
 
-export default function Home() {
+import { Session, getServerSession } from "next-auth";
+import { authOptions } from "@d20/pages/api/auth/[...nextauth]";
+interface Props {
+  session: Session;
+}
+
+export default function Home({ session }: Props) {
   return (
     <div className="2">
       <Head>
@@ -14,3 +21,15 @@ export default function Home() {
     </div>
   );
 }
+
+// export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+//   const session = await getServerSession(req, res, authOptions);
+
+//   console.log("session", session);
+
+//   return {
+//     props: {
+//       session,
+//     },
+//   };
+// };

@@ -17,8 +17,11 @@ import {
   HomeIcon,
   MagnifyingGlassIcon,
 } from "@heroicons/react/24/solid";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 function Header() {
+  const { data: session } = useSession();
+
   return (
     <div className="sticky top-0 z-50 flex bg-white px-4 py-2 shadow-sm ">
       <div className="relative h-10 w-20 flex-shrink-0 cursor-pointer">
@@ -57,12 +60,39 @@ function Header() {
       <div className="ml-5 flex items-center lg:hidden">
         <Bars3Icon className="icon" />
       </div>
-      <div className="hidden items-center space-x-2 border border-gray-100 p-2 lg:flex">
-        <div className="relative h-5 w-5 flex-shrink-0">
-          <Image src="https://links.papareact.com/23l" fill alt="Reddit Logo" />
+      {session ? (
+        <div
+          onClick={() => signOut()}
+          className="hidden cursor-pointer items-center space-x-2 border border-gray-100 p-2 lg:flex"
+        >
+          <div className="relative h-5 w-5 flex-shrink-0">
+            <Image
+              src="https://links.papareact.com/23l"
+              fill
+              alt="Reddit Logo"
+            />
+          </div>
+          <div className="flex-1 text-xs">
+            <p className="truncate">{session?.user?.name}</p>
+            <p className="text-gray-400">800 Karma</p>
+          </div>
+          <ChevronDownIcon className="h-5 flex-shrink-0 text-gray-400" />
         </div>
-        <p className="text-gray-400">Sign In</p>
-      </div>
+      ) : (
+        <div
+          onClick={() => signIn()}
+          className="hidden cursor-pointer items-center space-x-2 border border-gray-100 p-2 lg:flex"
+        >
+          <div className="relative h-5 w-5 flex-shrink-0">
+            <Image
+              src="https://links.papareact.com/23l"
+              fill
+              alt="Reddit Logo"
+            />
+          </div>
+          <p className="text-gray-400">Sign In</p>
+        </div>
+      )}
     </div>
   );
 }
