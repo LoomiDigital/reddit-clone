@@ -1,10 +1,14 @@
 import React, { useState } from "react";
+import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
-import { LinkIcon, PhotoIcon } from "@heroicons/react/24/outline";
+import { useMutation, useLazyQuery } from "@apollo/client";
 
+import { ADD_POST, ADD_SUBREDDIT } from "@d20/graphql/mutations";
+import { GET_SUBREDDIT_BY_TOPIC } from "@d20/graphql/queries";
+
+import { LinkIcon, PhotoIcon } from "@heroicons/react/24/outline";
 import Avatar from "./Avatar";
-import { log } from "console";
 
 type FormData = {
   postTitle: string;
@@ -15,6 +19,10 @@ type FormData = {
 
 function Postbox() {
   const { data: session } = useSession();
+  const [addPost] = useMutation(ADD_POST);
+  const [addSubreddit] = useMutation(ADD_SUBREDDIT);
+  const [getSubReddit] = useLazyQuery(GET_SUBREDDIT_BY_TOPIC);
+
   const {
     register,
     handleSubmit,
@@ -22,11 +30,61 @@ function Postbox() {
     watch,
     formState: { errors },
   } = useForm<FormData>();
-
   const [imageBoxOpen, setImageBoxOpen] = useState<boolean>(false);
 
   const submitPost = handleSubmit(async (formData) => {
-    console.log("formData", formData);
+    const notification = toast.loading("Creating post...");
+
+    try {
+      const {
+        data: { getSubredditByTopic },
+      } = await getSubReddit({
+        variables: {
+          topic: formData.subreddit,
+        },
+        fetchPolicy: "no-cache",
+      });
+
+      const subredditExists = getSubredditByTopic.length > 0;
+      const postFields = {
+        title: formData.postTitle,
+        body: formData.postBody,
+        image: formData.postImage || "",
+        username: session?.user.name,
+      };
+
+      if (!subredditExists) {
+        const {
+          data: { insertSubreddit: newSubreddit },
+        } = await addSubreddit({
+          variables: {
+            topic: formData.subreddit,
+          },
+        });
+
+        await addPost({
+          variables: {
+            ...postFields,
+            subreddit_id: newSubreddit.id,
+          },
+        });
+      } else {
+        await addPost({
+          variables: {
+            ...postFields,
+            subreddit_id: getSubredditByTopic[0].id,
+          },
+        });
+      }
+      setValue("postTitle", "");
+      setValue("postBody", "");
+      setValue("postImage", "");
+      setValue("subreddit", "");
+
+      toast.success("Post created!", { id: notification });
+    } catch (error) {
+      toast.error("Error creating post!", { id: notification });
+    }
   });
 
   return (

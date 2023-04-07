@@ -22,6 +22,14 @@ type subreddit {
   created_at: DateTime
 }
 
+type user {
+  username: String
+  surname: String
+  id: ID!
+  firstname: String
+  created_at: DateTime
+}
+
 type vote {
   username: String
   upvote: Boolean
@@ -53,20 +61,6 @@ type Query {
       configuration: "postgresql_config"
     )
   " Queries for type 'post' "
-  postBySubreddit_id(subreddit_id: ID!): [post]
-    @dbquery(
-      type: "postgresql"
-      schema: "public"
-      table: "post"
-      configuration: "postgresql_config"
-    )
-  postBySubreddit_idAndBody(subreddit_id: ID!, body: String!): [post]
-    @dbquery(
-      type: "postgresql"
-      schema: "public"
-      table: "post"
-      configuration: "postgresql_config"
-    )
   postList: [post]
     @dbquery(
       type: "postgresql"
@@ -84,13 +78,25 @@ type Query {
       configuration: "postgresql_config"
     )
   " Queries for type 'subreddit' "
-  subredditList: [subreddit]
+  getSubredditList: [subreddit]
     @dbquery(
       type: "postgresql"
       schema: "public"
       table: "subreddit"
       configuration: "postgresql_config"
     )
+
+  getSubredditByTopic(topic: String!): [subreddit]
+    @dbquery(
+      type: "postgresql"
+      query: """
+      SELECT * FROM "subreddit" WHERE "topic" = $1
+      """
+      schema: "public"
+      table: "subreddit"
+      configuration: "postgresql_config"
+    )
+
   subredditPaginatedList(first: Int, after: Int): [subreddit]
     @dbquery(
       type: "postgresql"
@@ -100,7 +106,38 @@ type Query {
       """
       configuration: "postgresql_config"
     )
+  " Queries for type 'user' "
+  userList: [user]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "user"
+      configuration: "postgresql_config"
+    )
+  userPaginatedList(first: Int, after: Int): [user]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "created_at", "firstname", "id", "surname", "username" FROM "user" LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
   " Queries for type 'vote' "
+  voteByPost_id(post_id: ID!): [vote]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "vote"
+      configuration: "postgresql_config"
+    )
+  voteByPost_idAndUsername(post_id: ID!, username: String!): [vote]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "vote"
+      configuration: "postgresql_config"
+    )
   voteList: [vote]
     @dbquery(
       type: "postgresql"
@@ -170,12 +207,11 @@ type Mutation {
       configuration: "postgresql_config"
     )
   insertPost(
-    body: String
-    subreddit_id: ID
-    created_at: DateTime
-    title: String
-    username: String
-    image: String
+    body: String!
+    subreddit_id: ID!
+    title: String!
+    username: String!
+    image: String!
   ): post
     @dbquery(
       type: "postgresql"
@@ -193,11 +229,39 @@ type Mutation {
       dml: DELETE
       configuration: "postgresql_config"
     )
-  insertSubreddit(topic: String, created_at: DateTime): subreddit
+  insertSubreddit(topic: String!): subreddit
     @dbquery(
       type: "postgresql"
       schema: "public"
       table: "subreddit"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'user' "
+  deleteUser(
+    username: String!
+    firstname: String!
+    surname: String!
+    id: ID!
+    created_at: DateTime!
+  ): user
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "user"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  insertUser(
+    username: String
+    firstname: String
+    surname: String
+    created_at: DateTime
+  ): user
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "user"
       dml: INSERT
       configuration: "postgresql_config"
     )
