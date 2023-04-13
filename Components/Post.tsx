@@ -5,7 +5,7 @@ interface Props {
 }
 
 function Post({ post }: Props) {
-  return <div>Post</div>;
+  return <div>{post.body}</div>;
 }
 
 export default Post;

@@ -3,6 +3,7 @@ import { toast } from "react-hot-toast";
 
 import { useQuery } from "@apollo/client";
 import { GET_POSTS } from "@d20/graphql/queries";
+import Post from "./Post";
 
 function Feed() {
   const { data, error } = useQuery(GET_POSTS);
@@ -11,7 +12,9 @@ function Feed() {
   return (
     <div>
       {posts?.map((post) => (
-        <div key={post.id}>{post.title}</div>
+        <div key={post.id}>
+          <Post post={post} />
+        </div>
       ))}
     </div>
   );
