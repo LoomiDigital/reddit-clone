@@ -10,6 +10,10 @@ import { GET_POSTS, GET_SUBREDDIT_BY_TOPIC } from "@d20/graphql/queries";
 import { LinkIcon, PhotoIcon } from "@heroicons/react/24/outline";
 import Avatar from "./Avatar";
 
+type Props = {
+  subreddit?: string;
+};
+
 type FormData = {
   postTitle: string;
   postBody: string;
@@ -17,7 +21,7 @@ type FormData = {
   subreddit: string;
 };
 
-function Postbox() {
+function Postbox({ subreddit }: Props) {
   const { data: session } = useSession();
   const [addPost] = useMutation(ADD_POST, {
     refetchQueries: [GET_POSTS, "getPostList"],
@@ -42,7 +46,7 @@ function Postbox() {
         data: { getSubredditByTopic },
       } = await getSubReddit({
         variables: {
-          topic: formData.subreddit,
+          topic: subreddit || formData.subreddit,
         },
         fetchPolicy: "no-cache",
       });
@@ -104,7 +108,9 @@ function Postbox() {
           type="text"
           placeholder={
             session
-              ? "Create a post by entering a title!"
+              ? subreddit
+                ? `Create a post in r/${subreddit}`
+                : "Create a post by entering a title!"
               : "Sign in to create a post"
           }
         />
@@ -129,17 +135,19 @@ function Postbox() {
               placeholder="Text (optional)"
             />
           </div>
-          <div className="flex flex-col py-2">
-            <div className="flex items-center px-2">
-              <p className="min-w-[90px]">Subreddit:</p>
-              <input
-                className="m-2 flex-1 bg-blue-50 p-2 outline-none"
-                {...register("subreddit", { required: true })}
-                type="text"
-                placeholder="i.e. r/nextjs"
-              />
+          {!subreddit && (
+            <div className="flex flex-col py-2">
+              <div className="flex items-center px-2">
+                <p className="min-w-[90px]">Subreddit:</p>
+                <input
+                  className="m-2 flex-1 bg-blue-50 p-2 outline-none"
+                  {...register("subreddit", { required: true })}
+                  type="text"
+                  placeholder="i.e. r/nextjs"
+                />
+              </div>
             </div>
-          </div>
+          )}
           {imageBoxOpen && (
             <div className="flex flex-col py-2">
               <div className="flex items-center px-2">

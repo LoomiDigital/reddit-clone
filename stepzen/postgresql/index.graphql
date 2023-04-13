@@ -88,12 +88,24 @@ type Query {
       configuration: "postgresql_config"
     )
   " Queries for type 'post' "
+  getPostsByTopic(topic: String!): [post]
+    @dbquery(
+      type: "postgresql"
+      query: """
+      select *, "post"."id" as "id" from "post"
+      join "subreddit" on "subreddit"."id" = "post"."subreddit_id"
+      where "subreddit"."topic" = $1
+      """
+      schema: "public"
+      configuration: "postgresql_config"
+    )
+
   getPostList: [post]
     @dbquery(
       type: "postgresql"
       query: """
       SELECT * FROM "post"
-      order by "post"."created_at" desc
+      order by "created_at" desc
       """
       schema: "public"
       configuration: "postgresql_config"
