@@ -11,6 +11,7 @@ import {
   ShareIcon,
 } from "@heroicons/react/24/outline";
 import Avatar from "./Avatar";
+import Link from "next/link";
 
 interface Props {
   post: Post;
@@ -28,9 +29,11 @@ function Post({ post }: Props) {
         <div className="flex items-center space-x-2">
           <Avatar seed={post.subreddit[0]?.topic} />
           <p className="text-xs text-gray-400">
-            <span className="font-bold text-black hover:text-blue-400 hover:underline">
-              r/{post.subreddit[0].topic}
-            </span>
+            <Link href={`/subreddit/${post.subreddit[0]?.topic}`}>
+              <span className="font-bold text-black hover:text-blue-400 hover:underline">
+                r/{post.subreddit[0].topic}
+              </span>
+            </Link>
             <span>
               • Posted by u/{post.username}{" "}
               <TimeAgo date={post.created_at} autoPlay={false} />
