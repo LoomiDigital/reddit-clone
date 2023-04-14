@@ -1,5 +1,8 @@
 import React from "react";
+import Router from "next/router";
 import TimeAgo from "react-timeago";
+
+import { Jelly } from "@uiball/loaders";
 
 import {
   ArrowDownIcon,
@@ -18,8 +21,23 @@ interface Props {
 }
 
 function Post({ post }: Props) {
+  const loadPostPage = () => {
+    const href = `/post/${post.id}`;
+    Router.push(href);
+  };
+
+  if (!post) {
+    return (
+      <div className="flex w-full items-center justify-center p-10 text-xl">
+        <Jelly size={50} color="#FF4501" />
+      </div>
+    );
+  }
   return (
-    <div className="flex cursor-pointer rounded-md border border-gray-300 bg-white shadow-sm hover:border hover:border-gray-600">
+    <div
+      onClick={loadPostPage}
+      className="flex cursor-pointer rounded-md border border-gray-300 bg-white shadow-sm hover:border hover:border-gray-600"
+    >
       <div className="flex flex-col items-center justify-start space-y-1 rounded-l-md bg-gray-50 p-4 text-gray-400">
         <ArrowUpIcon className="voteButtons cursor-pointer hover:text-red-400" />
         <p className="text-xs font-bold text-black">0</p>

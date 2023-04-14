@@ -100,6 +100,18 @@ type Query {
       configuration: "postgresql_config"
     )
 
+  getPostById(id: ID!): post
+    @dbquery(
+      type: "postgresql"
+      query: """
+      SELECT * FROM "post"
+      where "id" = $1
+      order by "created_at" desc
+      """
+      schema: "public"
+      configuration: "postgresql_config"
+    )
+
   getPostList: [post]
     @dbquery(
       type: "postgresql"
