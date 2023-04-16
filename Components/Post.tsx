@@ -1,8 +1,6 @@
-import React, { SyntheticEvent } from "react";
+import React, { SyntheticEvent, useState, useEffect } from "react";
 import Router from "next/router";
 import TimeAgo from "react-timeago";
-
-import { Jelly } from "@uiball/loaders";
 
 import {
   ArrowDownIcon,
@@ -21,11 +19,17 @@ interface Props {
 }
 
 function Post({ post }: Props) {
+  const [hasMounted, setHasMounted] = useState(false);
+
   const loadSubredditPage = (e: SyntheticEvent) => {
     e.preventDefault();
     const href = `/subreddit/${post.subreddit[0]?.topic}`;
     Router.push(href);
   };
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   return (
     <Link passHref href={`/post/${post.id}`}>
@@ -48,7 +52,11 @@ function Post({ post }: Props) {
 
               <span>
                 • Posted by u/{post.username}{" "}
-                {/* <TimeAgo date={post.created_at} autoPlay={false} /> */}
+                {hasMounted ? (
+                  <TimeAgo date={post.created_at} autoPlay={false} />
+                ) : (
+                  "Loading..."
+                )}
               </span>
             </p>
           </div>
