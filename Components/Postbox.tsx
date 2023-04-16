@@ -5,7 +5,11 @@ import { useForm } from "react-hook-form";
 import { useMutation, useLazyQuery } from "@apollo/client";
 
 import { ADD_POST, ADD_SUBREDDIT } from "@d20/graphql/mutations";
-import { GET_POSTS, GET_SUBREDDIT_BY_TOPIC } from "@d20/graphql/queries";
+import {
+  GET_POSTS,
+  GET_POSTS_BY_TOPIC,
+  GET_SUBREDDIT_BY_TOPIC,
+} from "@d20/graphql/queries";
 
 import { LinkIcon, PhotoIcon } from "@heroicons/react/24/outline";
 import Avatar from "./Avatar";
@@ -23,8 +27,10 @@ type FormData = {
 
 function Postbox({ subreddit }: Props) {
   const { data: session } = useSession();
+  const query = subreddit ? GET_POSTS : GET_POSTS_BY_TOPIC;
+
   const [addPost] = useMutation(ADD_POST, {
-    refetchQueries: [GET_POSTS, "getPostList"],
+    refetchQueries: "all",
   });
   const [addSubreddit] = useMutation(ADD_SUBREDDIT);
   const [getSubReddit] = useLazyQuery(GET_SUBREDDIT_BY_TOPIC);
