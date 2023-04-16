@@ -46,7 +46,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     query: GET_SUBREDDITS,
   });
 
-  const paths = getSubredditList.map((subreddit: Subreddit) => ({
+  const paths = getSubredditList?.map((subreddit: Subreddit) => ({
     params: {
       topic: subreddit.topic,
     },

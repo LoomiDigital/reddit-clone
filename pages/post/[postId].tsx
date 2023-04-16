@@ -27,7 +27,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     query: GET_POSTS,
   });
 
-  const paths = getPostList.posts.map((post: Post) => ({
+  const paths = getPostList?.map((post: Post) => ({
     params: {
       postId: post.id,
     },
