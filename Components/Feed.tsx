@@ -1,30 +1,41 @@
 import React from "react";
-import { toast } from "react-hot-toast";
-
 import { useQuery } from "@apollo/client";
 import { GET_POSTS, GET_POSTS_BY_TOPIC } from "@d20/graphql/queries";
 import Post from "./Post";
 
 type Props = {
+  posts?: Post[];
   topic?: string;
 };
 
-function Feed({ topic }: Props) {
-  const { data } = !topic
-    ? useQuery(GET_POSTS)
-    : useQuery(GET_POSTS_BY_TOPIC, {
-        variables: { topic: topic },
-      });
+function Feed({ posts, topic }: Props) {
+  const query = !topic ? GET_POSTS : GET_POSTS_BY_TOPIC;
+  const options = !topic
+    ? {}
+    : {
+        variables: {
+          topic,
+        },
+      };
+  const { data } = useQuery(query, options);
 
-  const posts: Post[] = !topic ? data?.getPostList : data?.getPostsByTopic;
+  const realTimePosts: Post[] = !topic
+    ? data?.getPostList
+    : data?.getPostsByTopic;
 
   return (
     <div className="mt-5 space-y-4">
-      {posts?.map((post) => (
-        <div key={post.id}>
-          <Post post={post} />
-        </div>
-      ))}
+      {realTimePosts
+        ? realTimePosts?.map((post) => (
+            <div key={post.id}>
+              <Post post={post} />
+            </div>
+          ))
+        : posts?.map((post) => (
+            <div key={post.id}>
+              <Post post={post} />
+            </div>
+          ))}
     </div>
   );
 }

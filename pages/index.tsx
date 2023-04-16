@@ -1,10 +1,16 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import client from "@d20/apollo-client";
 
 import PostBox from "@d20/Components/Postbox";
 import Feed from "@d20/Components/Feed";
+import { GET_POSTS } from "@d20/graphql/queries";
 
-const Home: NextPage = () => {
+type Props = {
+  posts: Post[];
+};
+
+const Home: NextPage<Props> = ({ posts }) => {
   return (
     <div className="mx-auto my-7 max-w-5xl">
       <Head>
@@ -14,9 +20,24 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <PostBox />
-      <Feed />
+      <Feed posts={posts} />
     </div>
   );
+};
+
+export const getStaticProps = async () => {
+  const {
+    data: { getPostList },
+  } = await client.query({
+    query: GET_POSTS,
+  });
+
+  const posts: Post[] = getPostList;
+
+  return {
+    props: { posts: posts },
+    revalidate: 10,
+  };
 };
 
 export default Home;

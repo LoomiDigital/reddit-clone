@@ -5,14 +5,25 @@ import { ParsedUrlQuery } from "querystring";
 import Avatar from "@d20/Components/Avatar";
 import Postbox from "@d20/Components/Postbox";
 import Feed from "@d20/Components/Feed";
+import client from "@d20/apollo-client";
+import { GET_POSTS_BY_TOPIC, GET_SUBREDDITS } from "@d20/graphql/queries";
 
-interface ParsedTopic extends ParsedUrlQuery {
+// interface ParsedTopic extends ParsedUrlQuery {
+//   topic: string;
+// }
+
+type Props = {
+  posts: Post[];
   topic: string;
-}
+};
 
-function Subreddit() {
-  const { topic } = useRouter().query as ParsedTopic;
+type Params = {
+  params: {
+    topic: string;
+  };
+};
 
+function Subreddit({ posts, topic }: Props) {
   return (
     <div className="h-24 bg-red-400 p-8">
       <div className="-mx-8 mt-10 bg-white">
@@ -30,10 +41,47 @@ function Subreddit() {
       </div>
       <div className="mx-auto mt-5 max-w-5xl pb-10">
         <Postbox subreddit={topic} />
-        <Feed topic={topic} />
+        <Feed topic={topic} posts={posts} />
       </div>
     </div>
   );
 }
+
+export const getStaticPaths = async () => {
+  const {
+    data: { getSubredditList },
+  } = await client.query({
+    query: GET_SUBREDDITS,
+  });
+
+  const paths = getSubredditList.map((subreddit: Subreddit) => ({
+    params: {
+      topic: subreddit.topic,
+    },
+  }));
+
+  return {
+    paths,
+    fallback: false,
+  };
+};
+
+export const getStaticProps = async ({ params }: Params) => {
+  const { data } = await client.query({
+    query: GET_POSTS_BY_TOPIC,
+    variables: {
+      topic: params.topic,
+    },
+  });
+
+  const posts: Post[] = data.getPostsByTopic;
+
+  return {
+    props: {
+      posts,
+      topic: params.topic,
+    },
+  };
+};
 
 export default Subreddit;
