@@ -1,6 +1,7 @@
 import React from "react";
 import { useQuery } from "@apollo/client";
 import { GET_POSTS, GET_POSTS_BY_TOPIC } from "@d20/graphql/queries";
+
 import Post from "./Post";
 
 type Props = {

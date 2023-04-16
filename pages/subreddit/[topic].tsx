@@ -1,26 +1,18 @@
-import React from "react";
-import { useRouter } from "next/router";
-import { ParsedUrlQuery } from "querystring";
+import { GetStaticPaths, GetStaticProps } from "next";
+import client from "@d20/apollo-client";
+import { GET_POSTS_BY_TOPIC, GET_SUBREDDITS } from "@d20/graphql/queries";
 
 import Avatar from "@d20/Components/Avatar";
 import Postbox from "@d20/Components/Postbox";
 import Feed from "@d20/Components/Feed";
-import client from "@d20/apollo-client";
-import { GET_POSTS_BY_TOPIC, GET_SUBREDDITS } from "@d20/graphql/queries";
 
-// interface ParsedTopic extends ParsedUrlQuery {
-//   topic: string;
-// }
+type Params = {
+  topic: string;
+};
 
 type Props = {
   posts: Post[];
   topic: string;
-};
-
-type Params = {
-  params: {
-    topic: string;
-  };
 };
 
 function Subreddit({ posts, topic }: Props) {
@@ -47,7 +39,7 @@ function Subreddit({ posts, topic }: Props) {
   );
 }
 
-export const getStaticPaths = async () => {
+export const getStaticPaths: GetStaticPaths = async () => {
   const {
     data: { getSubredditList },
   } = await client.query({
@@ -62,15 +54,17 @@ export const getStaticPaths = async () => {
 
   return {
     paths,
-    fallback: false,
+    fallback: "blocking",
   };
 };
 
-export const getStaticProps = async ({ params }: Params) => {
+export const getStaticProps: GetStaticProps<Props, Params> = async ({
+  params,
+}) => {
   const { data } = await client.query({
     query: GET_POSTS_BY_TOPIC,
     variables: {
-      topic: params.topic,
+      topic: params!.topic,
     },
   });
 
@@ -79,9 +73,8 @@ export const getStaticProps = async ({ params }: Params) => {
   return {
     props: {
       posts,
-      topic: params.topic,
+      topic: params!.topic,
     },
-    revalidate: 60,
   };
 };
 

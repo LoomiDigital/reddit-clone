@@ -1,7 +1,8 @@
 import React, { SyntheticEvent, useState, useEffect } from "react";
 import Router from "next/router";
-import TimeAgo from "react-timeago";
+import Link from "next/link";
 
+import TimeAgo from "react-timeago";
 import {
   ArrowDownIcon,
   ArrowUpIcon,
@@ -12,14 +13,13 @@ import {
   ShareIcon,
 } from "@heroicons/react/24/outline";
 import Avatar from "./Avatar";
-import Link from "next/link";
 
 interface Props {
   post: Post;
 }
 
 function Post({ post }: Props) {
-  const [hasMounted, setHasMounted] = useState(false);
+  const [hasMounted, setHasMounted] = useState<boolean>(false);
 
   const loadSubredditPage = (e: SyntheticEvent) => {
     e.preventDefault();

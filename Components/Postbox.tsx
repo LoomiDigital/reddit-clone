@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { useMutation, useLazyQuery } from "@apollo/client";
-
 import { ADD_POST, ADD_SUBREDDIT } from "@d20/graphql/mutations";
+
+import { toast } from "react-hot-toast";
 import {
   GET_POSTS,
   GET_POSTS_BY_TOPIC,
@@ -27,8 +27,6 @@ type FormData = {
 
 function Postbox({ subreddit }: Props) {
   const { data: session } = useSession();
-  const query = subreddit ? GET_POSTS : GET_POSTS_BY_TOPIC;
-
   const [addPost] = useMutation(ADD_POST, {
     refetchQueries: "active",
   });

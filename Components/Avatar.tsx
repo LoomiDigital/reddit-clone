@@ -1,7 +1,6 @@
 import React from "react";
-import { useSession } from "next-auth/react";
-
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 
 type Props = {
   seed?: string;

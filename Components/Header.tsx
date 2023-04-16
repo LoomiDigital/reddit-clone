@@ -1,5 +1,7 @@
 import React from "react";
+import Link from "next/link";
 import Image from "next/image";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 import {
   BellIcon,
@@ -17,8 +19,6 @@ import {
   HomeIcon,
   MagnifyingGlassIcon,
 } from "@heroicons/react/24/solid";
-import { signIn, signOut, useSession } from "next-auth/react";
-import Link from "next/link";
 
 function Header() {
   const { data: session } = useSession();

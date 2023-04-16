@@ -1,10 +1,10 @@
-import type { NextPage } from "next";
+import type { GetStaticProps, NextPage } from "next";
 import Head from "next/head";
 import client from "@d20/apollo-client";
+import { GET_POSTS } from "@d20/graphql/queries";
 
 import PostBox from "@d20/Components/Postbox";
 import Feed from "@d20/Components/Feed";
-import { GET_POSTS } from "@d20/graphql/queries";
 
 type Props = {
   posts: Post[];
@@ -25,7 +25,7 @@ const Home: NextPage<Props> = ({ posts }) => {
   );
 };
 
-export const getStaticProps = async () => {
+export const getStaticProps: GetStaticProps<Props> = async () => {
   const {
     data: { getPostList },
   } = await client.query({
