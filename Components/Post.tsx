@@ -48,7 +48,7 @@ function Post({ post }: Props) {
 
               <span>
                 • Posted by u/{post.username}{" "}
-                <TimeAgo date={post.created_at} autoPlay={false} />
+                {/* <TimeAgo date={post.created_at} autoPlay={false} /> */}
               </span>
             </p>
           </div>

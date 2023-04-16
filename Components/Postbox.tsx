@@ -30,7 +30,7 @@ function Postbox({ subreddit }: Props) {
   const query = subreddit ? GET_POSTS : GET_POSTS_BY_TOPIC;
 
   const [addPost] = useMutation(ADD_POST, {
-    refetchQueries: "all",
+    refetchQueries: "active",
   });
   const [addSubreddit] = useMutation(ADD_SUBREDDIT);
   const [getSubReddit] = useLazyQuery(GET_SUBREDDIT_BY_TOPIC);
