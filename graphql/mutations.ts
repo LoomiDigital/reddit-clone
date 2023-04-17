@@ -7,6 +7,7 @@ export const ADD_POST = gql`
     $image: String!
     $username: String!
     $subreddit_id: ID!
+    $subreddit_topic: String!
   ) {
     insertPost(
       title: $title
@@ -14,6 +15,7 @@ export const ADD_POST = gql`
       image: $image
       username: $username
       subreddit_id: $subreddit_id
+      subreddit_topic: $subreddit_topic
     ) {
       id
       title

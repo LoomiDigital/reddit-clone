@@ -11,6 +11,7 @@ type Post = {
   username: string;
   title: string;
   subreddit_id: number;
+  subreddit_topic: string;
   image: string;
   created_at: string;
   body: string;
