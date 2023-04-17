@@ -76,6 +76,7 @@ function Postbox({ subreddit }: Props) {
           variables: {
             ...postFields,
             subreddit_id: newSubreddit.id,
+            subreddit_topic: newSubreddit.topic,
           },
         });
       } else {
@@ -83,6 +84,7 @@ function Postbox({ subreddit }: Props) {
           variables: {
             ...postFields,
             subreddit_id: getSubredditByTopic[0].id,
+            subreddit_topic: getSubredditByTopic[0].topic,
           },
         });
       }
