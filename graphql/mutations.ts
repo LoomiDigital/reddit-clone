@@ -23,6 +23,7 @@ export const ADD_POST = gql`
       image
       username
       subreddit_id
+      subreddit_topic
       created_at
     }
   }
@@ -34,6 +35,27 @@ export const ADD_SUBREDDIT = gql`
       id
       topic
       created_at
+    }
+  }
+`;
+
+export const ADD_VOTE = gql`
+  mutation AddVote($post_id: ID!, $upvote: Boolean!, $username: String!) {
+    addVote(post_id: $post_id, upvote: $upvote, username: $username) {
+      id
+      post_id
+      username
+      upvote
+    }
+  }
+`;
+
+export const DELETE_VOTE = gql`
+  mutation DeleteVote($id: ID!) {
+    deleteVote(id: $id) {
+      id
+      post_id
+      username
     }
   }
 `;

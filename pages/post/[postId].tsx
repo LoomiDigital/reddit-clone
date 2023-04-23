@@ -1,6 +1,6 @@
-import { GetStaticPaths, GetStaticProps } from "next";
-import client from "@d20/apollo-client";
-import { GET_POSTS, GET_POST_BY_ID } from "@d20/graphql/queries";
+import { GetServerSideProps } from "next";
+import { GET_POST_BY_ID } from "@d20/graphql/queries";
+import { addApolloState, initializeApollo } from "@d20/client";
 
 import Post from "@d20/Components/Post";
 
@@ -20,28 +20,10 @@ function PostPage({ post }: Props) {
   );
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const {
-    data: { getPostList },
-  } = await client.query({
-    query: GET_POSTS,
-  });
-
-  const paths = getPostList?.map((post: Post) => ({
-    params: {
-      postId: post.id,
-    },
-  }));
-
-  return {
-    paths,
-    fallback: "blocking",
-  };
-};
-
-export const getStaticProps: GetStaticProps<Props, Params> = async ({
+export const getServerSideProps: GetServerSideProps<Props, Params> = async ({
   params,
 }) => {
+  const client = initializeApollo({} as unknown as null);
   const {
     data: { getPostById },
   } = await client.query({
@@ -52,12 +34,13 @@ export const getStaticProps: GetStaticProps<Props, Params> = async ({
   });
 
   const post: Post = getPostById;
-
-  return {
+  const documentProps = addApolloState(client, {
     props: {
-      post: post,
+      post,
     },
-  };
+  });
+
+  return { props: documentProps.props };
 };
 
 export default PostPage;

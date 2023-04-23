@@ -1,7 +1,9 @@
-import type { GetStaticProps, NextPage } from "next";
+import { useEffect } from "react";
+import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
-import client from "@d20/apollo-client";
+import { initializeApollo, addApolloState } from "@d20/client";
 import { GET_POSTS } from "@d20/graphql/queries";
+import { allPostsVar } from "@d20/reactivities/allPosts";
 
 import PostBox from "@d20/Components/Postbox";
 import Feed from "@d20/Components/Feed";
@@ -11,6 +13,10 @@ type Props = {
 };
 
 const Home: NextPage<Props> = ({ posts }) => {
+  useEffect(() => {
+    allPostsVar(posts);
+  }, [posts]);
+
   return (
     <div className="mx-auto my-7 max-w-5xl">
       <Head>
@@ -20,12 +26,14 @@ const Home: NextPage<Props> = ({ posts }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <PostBox />
-      <Feed posts={posts} />
+      <Feed />
     </div>
   );
 };
 
-export const getStaticProps: GetStaticProps<Props> = async () => {
+export const getServerSideProps: GetServerSideProps<Props> = async () => {
+  const client = initializeApollo({} as unknown as null);
+
   const {
     data: { getPostList },
   } = await client.query({
@@ -34,9 +42,13 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
 
   const posts: Post[] = getPostList;
 
-  return {
-    props: { posts: posts },
-  };
+  const documentProps = addApolloState(client, {
+    props: {
+      posts,
+    },
+  });
+
+  return { props: documentProps.props };
 };
 
 export default Home;

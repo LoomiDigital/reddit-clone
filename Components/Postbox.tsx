@@ -1,15 +1,11 @@
 import React, { useState } from "react";
 import { useSession } from "next-auth/react";
-import { useForm } from "react-hook-form";
 import { useMutation, useLazyQuery } from "@apollo/client";
 import { ADD_POST, ADD_SUBREDDIT } from "@d20/graphql/mutations";
-
+import { GET_SUBREDDIT_BY_TOPIC } from "@d20/graphql/queries";
+import { allPostsVar } from "@d20/reactivities/allPosts";
+import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import {
-  GET_POSTS,
-  GET_POSTS_BY_TOPIC,
-  GET_SUBREDDIT_BY_TOPIC,
-} from "@d20/graphql/queries";
 
 import { LinkIcon, PhotoIcon } from "@heroicons/react/24/outline";
 import Avatar from "./Avatar";
@@ -27,9 +23,7 @@ type FormData = {
 
 function Postbox({ subreddit }: Props) {
   const { data: session } = useSession();
-  const [addPost] = useMutation(ADD_POST, {
-    refetchQueries: "active",
-  });
+  const [addPost] = useMutation(ADD_POST);
   const [addSubreddit] = useMutation(ADD_SUBREDDIT);
   const [getSubReddit] = useLazyQuery(GET_SUBREDDIT_BY_TOPIC);
 
@@ -68,26 +62,33 @@ function Postbox({ subreddit }: Props) {
           data: { insertSubreddit: newSubreddit },
         } = await addSubreddit({
           variables: {
-            topic: formData.subreddit,
+            topic: formData.subreddit.toLowerCase(),
           },
         });
 
-        await addPost({
+        const {
+          data: { insertPost },
+        } = await addPost({
           variables: {
             ...postFields,
             subreddit_id: newSubreddit.id,
             subreddit_topic: newSubreddit.topic,
           },
         });
+        allPostsVar([insertPost, ...allPostsVar()]);
       } else {
-        await addPost({
+        const {
+          data: { insertPost },
+        } = await addPost({
           variables: {
             ...postFields,
             subreddit_id: getSubredditByTopic[0].id,
             subreddit_topic: getSubredditByTopic[0].topic,
           },
         });
+        allPostsVar([insertPost, ...allPostsVar()]);
       }
+
       setValue("postTitle", "");
       setValue("postBody", "");
       setValue("postImage", "");
