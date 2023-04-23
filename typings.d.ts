@@ -37,7 +37,7 @@ type User = {
 type Vote = {
   id: number;
   username: string;
-  upvote: Boolean;
+  upvote: boolean;
   post_id: number;
   created_at: DateTime;
 };
