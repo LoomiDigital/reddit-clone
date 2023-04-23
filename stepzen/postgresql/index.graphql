@@ -2,46 +2,29 @@ type comment {
   username: String
   text: String
   post_id: ID
-  id: ID!
+  id: ID
   created_at: DateTime
 }
 
 type post {
-  username: String
+  id: ID
   title: String
-  subreddit_id: ID
-  image: String
-  id: ID!
-  created_at: DateTime
   body: String
-  subreddit: [subreddit]
-    @materializer(
-      query: "getSubredditListById"
-      arguments: [{ name: "id", field: "subreddit_id" }]
-    )
   votes: [vote]
     @materializer(
-      query: "getVoteByPostId"
+      query: "getVotesByPostId"
       arguments: [{ name: "post_id", field: "id" }]
     )
-  comments: [comment]
-    @materializer(
-      query: "getCommentByPostId"
-      arguments: [{ name: "post_id", field: "id" }]
-    )
+  subreddit_topic: String
+  subreddit_id: ID
+  image: String
+  created_at: DateTime
+  username: String
 }
 
 type subreddit {
   topic: String
-  id: ID!
-  created_at: DateTime
-}
-
-type user {
-  username: String
-  surname: String
-  id: ID!
-  firstname: String
+  id: ID
   created_at: DateTime
 }
 
@@ -49,7 +32,7 @@ type vote {
   username: String
   upvote: Boolean
   post_id: ID
-  id: ID!
+  id: ID
   created_at: DateTime
 }
 
@@ -59,157 +42,129 @@ Feel free to modify them or aggregate more.
 """
 type Query {
   " Queries for type 'comment' "
-  getCommentList: [comment]
+  comment(id: ID!): comment
     @dbquery(
       type: "postgresql"
       schema: "public"
       table: "comment"
       configuration: "postgresql_config"
     )
-
-  getCommentByPostId(post_id: ID!): [comment]
+  commentList: [comment]
     @dbquery(
       type: "postgresql"
-      query: """
-      SELECT * FROM "comment" WHERE "post_id" = $1
-      """
       schema: "public"
       table: "comment"
       configuration: "postgresql_config"
     )
-
   commentPaginatedList(first: Int, after: Int): [comment]
     @dbquery(
       type: "postgresql"
       schema: "public"
       query: """
-      SELECT "created_at", "id", "post_id", "text", "username" FROM "comment" LIMIT $1 OFFSET $2
+      SELECT "created_at", "id", "post_id", "text", "username" FROM "comment" ORDER BY "id" LIMIT $1 OFFSET $2
       """
       configuration: "postgresql_config"
     )
   " Queries for type 'post' "
-  getPostList: [post]
+  getPost(id: ID!): [post]
     @dbquery(
       type: "postgresql"
-      query: """
-      SELECT * FROM "post"
-      order by "created_at" desc
-      """
       schema: "public"
+      query: """
+      SELECT "body", "created_at", "id", "image", "subreddit_id", "subreddit_topic", "title", "username" FROM "post" WHERE "subreddit_id" = $1
+      """
       configuration: "postgresql_config"
     )
-
   getPostsByTopic(topic: String!): [post]
     @dbquery(
       type: "postgresql"
-      query: """
-      select *, "post"."id", "post"."created_at" from "post"
-      join "subreddit" on "subreddit"."id" = "post"."subreddit_id"
-      where "subreddit"."topic" = $1
-      order by "post"."created_at" desc
-      """
       schema: "public"
+      query: """
+      SELECT "body", "created_at", "id", "image", "subreddit_id", "subreddit_topic", "title", "username" FROM "post" WHERE "subreddit_topic" = $1
+      ORDER BY "created_at" DESC
+      """
       configuration: "postgresql_config"
     )
-
   getPostById(id: ID!): post
     @dbquery(
       type: "postgresql"
-      query: """
-      SELECT * FROM "post"
-      where "id" = $1
-      order by "created_at" desc
-      """
       schema: "public"
+      table: "post"
       configuration: "postgresql_config"
     )
-
+  getPostList: [post]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "body", "created_at", "id", "image", "subreddit_id", "subreddit_topic", "title", "username" FROM "post"
+      ORDER BY "created_at" DESC
+      """
+      configuration: "postgresql_config"
+    )
   postPaginatedList(first: Int, after: Int): [post]
     @dbquery(
       type: "postgresql"
       schema: "public"
       query: """
-      SELECT "body", "created_at", "id", "image", "subreddit_id", "title", "username" FROM "post" LIMIT $1 OFFSET $2
+      SELECT "body", "created_at", "id", "image", "subreddit_id", "subreddit_topic", "title", "username" FROM "post" ORDER BY "id" LIMIT $1 OFFSET $2
       """
       configuration: "postgresql_config"
     )
   " Queries for type 'subreddit' "
-  getSubredditList: [subreddit]
+  getSubreddit(subreddit_id: ID!): subreddit
     @dbquery(
       type: "postgresql"
       schema: "public"
-      table: "subreddit"
-      configuration: "postgresql_config"
-    )
-
-  getSubredditListById(id: ID!): [subreddit]
-    @dbquery(
-      type: "postgresql"
       query: """
-      SELECT * FROM "subreddit" WHERE "id" = $1
+      SELECT "created_at", "id", "topic" FROM "subreddit" WHERE "id" = $1
       """
+      configuration: "postgresql_config"
+    )
+  subreddit(id: ID!): subreddit
+    @dbquery(
+      type: "postgresql"
       schema: "public"
       table: "subreddit"
       configuration: "postgresql_config"
     )
-
   getSubredditByTopic(topic: String!): [subreddit]
     @dbquery(
       type: "postgresql"
+      schema: "public"
       query: """
-      SELECT * FROM "subreddit" WHERE "topic" = $1
+      SELECT "id", "topic" FROM "subreddit" WHERE "topic" = $1
       """
+      configuration: "postgresql_config"
+    )
+  subredditList: [subreddit]
+    @dbquery(
+      type: "postgresql"
       schema: "public"
       table: "subreddit"
       configuration: "postgresql_config"
     )
-
   subredditPaginatedList(first: Int, after: Int): [subreddit]
     @dbquery(
       type: "postgresql"
       schema: "public"
       query: """
-      SELECT "created_at", "id", "topic" FROM "subreddit" LIMIT $1 OFFSET $2
-      """
-      configuration: "postgresql_config"
-    )
-  " Queries for type 'user' "
-  userList: [user]
-    @dbquery(
-      type: "postgresql"
-      schema: "public"
-      table: "user"
-      configuration: "postgresql_config"
-    )
-  userPaginatedList(first: Int, after: Int): [user]
-    @dbquery(
-      type: "postgresql"
-      schema: "public"
-      query: """
-      SELECT "created_at", "firstname", "id", "surname", "username" FROM "user" LIMIT $1 OFFSET $2
+      SELECT "created_at", "id", "topic" FROM "subreddit" ORDER BY "id" LIMIT $1 OFFSET $2
       """
       configuration: "postgresql_config"
     )
   " Queries for type 'vote' "
-  getVoteByPostId(post_id: ID!): [vote]
+  getVotesByPostId(post_id: ID!): [vote]
     @dbquery(
       type: "postgresql"
       query: """
-      SELECT * FROM "vote" WHERE "id" = $1
+      SELECT "upvote", "username" FROM "vote" WHERE "post_id" = $1
       order by "created_at" desc
       """
       schema: "public"
-      table: "vote"
       configuration: "postgresql_config"
     )
 
-  voteByPost_idAndUsername(post_id: ID!, username: String!): [vote]
-    @dbquery(
-      type: "postgresql"
-      schema: "public"
-      table: "vote"
-      configuration: "postgresql_config"
-    )
   voteList: [vote]
     @dbquery(
       type: "postgresql"
@@ -222,7 +177,7 @@ type Query {
       type: "postgresql"
       schema: "public"
       query: """
-      SELECT "created_at", "id", "post_id", "upvote", "username" FROM "vote" LIMIT $1 OFFSET $2
+      SELECT "created_at", "id", "post_id", "upvote", "username" FROM "vote" ORDER BY "id" LIMIT $1 OFFSET $2
       """
       configuration: "postgresql_config"
     )
@@ -234,13 +189,7 @@ Feel free to modify them or aggregate more.
 """
 type Mutation {
   " Mutations for type 'comment' "
-  deleteComment(
-    username: String!
-    post_id: ID!
-    text: String!
-    id: ID!
-    created_at: DateTime!
-  ): comment
+  deleteComment(id: ID!): comment
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -252,6 +201,7 @@ type Mutation {
     username: String
     post_id: ID
     text: String
+    id: ID!
     created_at: DateTime
   ): comment
     @dbquery(
@@ -261,16 +211,30 @@ type Mutation {
       dml: INSERT
       configuration: "postgresql_config"
     )
-  " Mutations for type 'post' "
-  deletePost(
-    body: String!
-    subreddit_id: ID!
+  updateComment(
     id: ID!
-    created_at: DateTime!
-    title: String!
-    username: String!
-    image: String!
-  ): post
+    created_at: DateTime
+    post_id: ID
+    text: String
+    username: String
+  ): comment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "comment" SET
+        "created_at" = COALESCE($2, "created_at"),
+        "post_id" = COALESCE($3, "post_id"),
+        "text" = COALESCE($4, "text"),
+        "username" = COALESCE($5, "username")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'post' "
+  deletePost(id: ID!): post
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -279,12 +243,12 @@ type Mutation {
       configuration: "postgresql_config"
     )
   insertPost(
-    body: String!
-    subreddit_id: ID!
+    body: String
     subreddit_topic: String!
+    subreddit_id: ID
     title: String!
     username: String!
-    image: String!
+    image: String
   ): post
     @dbquery(
       type: "postgresql"
@@ -293,59 +257,67 @@ type Mutation {
       dml: INSERT
       configuration: "postgresql_config"
     )
-  " Mutations for type 'subreddit' "
-  deleteSubreddit(topic: String!, created_at: DateTime!, id: ID!): subreddit
-    @dbquery(
-      type: "postgresql"
-      schema: "public"
-      table: "subreddit"
-      dml: DELETE
-      configuration: "postgresql_config"
-    )
-  insertSubreddit(topic: String!): subreddit
-    @dbquery(
-      type: "postgresql"
-      schema: "public"
-      table: "subreddit"
-      dml: INSERT
-      configuration: "postgresql_config"
-    )
-  " Mutations for type 'user' "
-  deleteUser(
-    username: String!
-    firstname: String!
-    surname: String!
+  updatePost(
     id: ID!
-    created_at: DateTime!
-  ): user
+    body: String
+    created_at: DateTime
+    image: String
+    subreddit_id: ID
+    subreddit_topic: String
+    title: String
+    username: String
+  ): post
     @dbquery(
       type: "postgresql"
       schema: "public"
-      table: "user"
+      query: """
+      UPDATE "post" SET
+        "body" = COALESCE($2, "body"),
+        "created_at" = COALESCE($3, "created_at"),
+        "image" = COALESCE($4, "image"),
+        "subreddit_id" = COALESCE($5, "subreddit_id"),
+        "subreddit_topic" = COALESCE($6, "subreddit_topic"),
+        "title" = COALESCE($7, "title"),
+        "username" = COALESCE($8, "username")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
+      configuration: "postgresql_config"
+    )
+  " Mutations for type 'subreddit' "
+  deleteSubreddit(id: ID!): subreddit
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "subreddit"
       dml: DELETE
       configuration: "postgresql_config"
     )
-  insertUser(
-    username: String
-    firstname: String
-    surname: String
-    created_at: DateTime
-  ): user
+  insertSubreddit(topic: String): subreddit
     @dbquery(
       type: "postgresql"
       schema: "public"
-      table: "user"
+      table: "subreddit"
       dml: INSERT
+      configuration: "postgresql_config"
+    )
+  updateSubreddit(id: ID!, created_at: DateTime, topic: String): subreddit
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      UPDATE "subreddit" SET
+        "created_at" = COALESCE($2, "created_at"),
+        "topic" = COALESCE($3, "topic")
+      WHERE
+        "id" = $1
+      RETURNING *
+      """
       configuration: "postgresql_config"
     )
   " Mutations for type 'vote' "
-  deleteVote(
-    username: String!
-    post_id: ID!
-    id: ID!
-    created_at: DateTime!
-    upvote: Boolean!
-  ): vote
+  deleteVote(id: ID!): vote
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -356,9 +328,18 @@ type Mutation {
   insertVote(
     username: String
     post_id: ID
+    id: ID!
     created_at: DateTime
     upvote: Boolean
   ): vote
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "vote"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  addVote(username: String, post_id: ID, upvote: Boolean): vote
     @dbquery(
       type: "postgresql"
       schema: "public"
