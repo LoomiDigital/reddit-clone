@@ -5,10 +5,7 @@ import merge from "deepmerge";
 // import { isSSR } from "../constants/util";
 import isEqual from "lodash/isEqual";
 import { allPostsVar } from "./reactivities/allPosts";
-import {
-  offsetLimitPagination,
-  relayStylePagination,
-} from "@apollo/client/utilities";
+import { relayStylePagination } from "@apollo/client/utilities";
 
 export const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__";
 
