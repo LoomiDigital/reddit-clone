@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { GetServerSideProps, NextPage } from "next";
 import { useQuery } from "@apollo/client";
+import { addApolloState, initializeApollo } from "@d20/client";
 import { GET_POSTS_BY_TOPIC } from "@d20/graphql/queries";
 import { allPostsVar } from "@d20/reactivities/allPosts";
 import useInfiniteScroll from "react-infinite-scroll-hook";
@@ -89,9 +90,21 @@ const Subreddit: NextPage<Props> = ({ topic }) => {
 export const getServerSideProps: GetServerSideProps<Props, Params> = async ({
   params,
 }) => {
-  return {
-    props: params!,
-  };
+  const client = initializeApollo();
+
+  await client.query({
+    query: GET_POSTS_BY_TOPIC,
+    variables: {
+      first: 10,
+      topic: params?.topic,
+    },
+  });
+
+  return addApolloState(client, {
+    props: {
+      topic: params?.topic,
+    },
+  });
 };
 
 export default Subreddit;

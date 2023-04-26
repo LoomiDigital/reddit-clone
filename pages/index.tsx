@@ -66,4 +66,19 @@ const Home: NextPage = () => {
   );
 };
 
+export const getServerSideProps: GetServerSideProps = async () => {
+  const client = initializeApollo();
+
+  await client.query({
+    query: GET_POSTS,
+    variables: {
+      first: 10,
+    },
+  });
+
+  return addApolloState(client, {
+    props: {},
+  });
+};
+
 export default Home;
