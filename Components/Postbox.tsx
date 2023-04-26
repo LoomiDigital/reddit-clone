@@ -75,7 +75,8 @@ function Postbox({ subreddit }: Props) {
             subreddit_topic: newSubreddit.topic,
           },
         });
-        allPostsVar([insertPost, ...allPostsVar()]);
+        /* @ts-ignore */
+        allPostsVar([{ node: insertPost }, ...allPostsVar()]);
       } else {
         const {
           data: { insertPost },
@@ -86,7 +87,9 @@ function Postbox({ subreddit }: Props) {
             subreddit_topic: getSubredditByTopic[0].topic,
           },
         });
-        allPostsVar([insertPost, ...allPostsVar()]);
+        /* @ts-ignore */
+        allPostsVar([{ node: insertPost }, ...allPostsVar()]);
+        console.log("insertPost", allPostsVar());
       }
 
       setValue("postTitle", "");

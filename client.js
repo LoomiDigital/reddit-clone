@@ -5,6 +5,10 @@ import merge from "deepmerge";
 // import { isSSR } from "../constants/util";
 import isEqual from "lodash/isEqual";
 import { allPostsVar } from "./reactivities/allPosts";
+import {
+  offsetLimitPagination,
+  relayStylePagination,
+} from "@apollo/client/utilities";
 
 export const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__";
 
@@ -35,7 +39,7 @@ function createApolloClient() {
     //We immediately show results, but check in the background if any changes occured, and eventually update the view
     defaultOptions = {
       query: {
-        fetchPolicy: "no-cache",
+        fetchPolicy: "cache-and-network",
         // errorPolicy: "all",
       },
     };
@@ -47,6 +51,7 @@ function createApolloClient() {
       typePolicies: {
         Query: {
           fields: {
+            postCollection: relayStylePagination(),
             allPostsVar: {
               read() {
                 return allPostsVar();

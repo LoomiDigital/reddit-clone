@@ -1,8 +1,9 @@
 import { useEffect } from "react";
 import { GetServerSideProps, NextPage } from "next";
-import { addApolloState, initializeApollo } from "@d20/client";
+import { useQuery } from "@apollo/client";
 import { GET_POSTS_BY_TOPIC } from "@d20/graphql/queries";
 import { allPostsVar } from "@d20/reactivities/allPosts";
+import useInfiniteScroll from "react-infinite-scroll-hook";
 
 import Avatar from "@d20/Components/Avatar";
 import Postbox from "@d20/Components/Postbox";
@@ -13,14 +14,54 @@ type Params = {
 };
 
 type Props = {
-  posts: Post[];
   topic: string;
 };
 
-const Subreddit: NextPage<Props> = ({ posts, topic }) => {
+const Subreddit: NextPage<Props> = ({ topic }) => {
+  const { data, fetchMore, loading } = useQuery(GET_POSTS_BY_TOPIC, {
+    variables: {
+      first: 10,
+      topic,
+    },
+  });
+
+  const posts: Post[] = data?.postByTopicCollection.edges;
+  const hasNextPage: boolean = data?.postByTopicCollection.pageInfo.hasNextPage;
+
   useEffect(() => {
     allPostsVar(posts);
   }, [posts]);
+
+  const handleLoadMore = () => {
+    hasNextPage &&
+      fetchMore({
+        variables: {
+          after: data?.postByTopicCollection.pageInfo.endCursor,
+        },
+        updateQuery(prevResult, { fetchMoreResult }) {
+          const newEdges = fetchMoreResult.postByTopicCollection.edges;
+          const pageInfo = fetchMoreResult.postByTopicCollection.pageInfo;
+          return newEdges.length
+            ? {
+                postByTopicCollection: {
+                  __typename: prevResult.postByTopicCollection.__typename,
+                  edges: [
+                    ...prevResult.postByTopicCollection.edges,
+                    ...newEdges,
+                  ],
+                  pageInfo,
+                },
+              }
+            : prevResult;
+        },
+      });
+  };
+
+  const [sentryRef] = useInfiniteScroll({
+    hasNextPage,
+    loading,
+    onLoadMore: handleLoadMore,
+  });
 
   return (
     <div className="h-24 bg-red-400 p-8">
@@ -39,7 +80,7 @@ const Subreddit: NextPage<Props> = ({ posts, topic }) => {
       </div>
       <div className="mx-auto mt-5 max-w-5xl pb-10">
         <Postbox subreddit={topic} />
-        <Feed />
+        <Feed loading={loading || hasNextPage} loadingRef={sentryRef} />
       </div>
     </div>
   );
@@ -48,25 +89,9 @@ const Subreddit: NextPage<Props> = ({ posts, topic }) => {
 export const getServerSideProps: GetServerSideProps<Props, Params> = async ({
   params,
 }) => {
-  const client = initializeApollo({} as unknown as null);
-
-  const { data } = await client.query({
-    query: GET_POSTS_BY_TOPIC,
-    variables: {
-      topic: params!.topic,
-    },
-  });
-
-  const posts: Post[] = data.getPostsByTopic;
-
-  const documentProps = addApolloState(client, {
-    props: {
-      posts,
-      topic: params!.topic,
-    },
-  });
-
-  return { props: documentProps.props };
+  return {
+    props: params!,
+  };
 };
 
 export default Subreddit;

@@ -42,41 +42,59 @@ export const GET_POSTS_BY_TOPIC_REACTIVE = gql`
 `;
 
 export const GET_POSTS = gql`
-  query GetPosts {
-    getPostList {
-      id
-      title
-      body
-      image
-      username
-      votes {
-        id
-        upvote
-        username
+  query GetPosts($first: Int, $after: String) {
+    postCollection(first: $first, after: $after) {
+      edges {
+        node {
+          id
+          title
+          body
+          image
+          username
+          votes {
+            id
+            upvote
+            username
+          }
+          subreddit_id
+          subreddit_topic
+          created_at
+        }
+        cursor
       }
-      subreddit_id
-      subreddit_topic
-      created_at
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
     }
   }
 `;
 
 export const GET_POSTS_BY_TOPIC = gql`
-  query GetPostsByTopic($topic: String!) {
-    getPostsByTopic(topic: $topic) {
-      id
-      title
-      body
-      image
-      username
-      votes {
-        id
-        upvote
-        username
+  query GetPostsByTopic($first: Int, $after: String, $topic: String!) {
+    postByTopicCollection(first: $first, after: $after, topic: $topic) {
+      edges {
+        node {
+          id
+          title
+          body
+          image
+          username
+          votes {
+            id
+            upvote
+            username
+          }
+          subreddit_id
+          subreddit_topic
+          created_at
+        }
+        cursor
       }
-      subreddit_id
-      subreddit_topic
-      created_at
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
     }
   }
 `;

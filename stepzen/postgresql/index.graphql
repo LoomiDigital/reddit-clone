@@ -6,7 +6,21 @@ type comment {
   created_at: DateTime
 }
 
-type post {
+type subreddit {
+  topic: String
+  id: ID
+  created_at: DateTime
+}
+
+type vote {
+  username: String
+  upvote: Boolean
+  post_id: ID
+  id: ID
+  created_at: DateTime
+}
+
+type Post {
   id: ID
   title: String
   body: String
@@ -22,18 +36,14 @@ type post {
   username: String
 }
 
-type subreddit {
-  topic: String
-  id: ID
-  created_at: DateTime
+type PostEdge {
+  cursor: String
+  node: Post
 }
 
-type vote {
-  username: String
-  upvote: Boolean
-  post_id: ID
-  id: ID
-  created_at: DateTime
+type PostConnection {
+  edges: [PostEdge]
+  pageInfo: PageInfo!
 }
 
 """
@@ -42,6 +52,31 @@ Feel free to modify them or aggregate more.
 """
 type Query {
   " Queries for type 'comment' "
+  postCollection(first: Int, after: String = ""): PostConnection
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "body", "created_at", "id", "image", "subreddit_id", "subreddit_topic", "title", "username" FROM "post"
+      ORDER BY "created_at" DESC LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  postByTopicCollection(
+    first: Int
+    after: String = ""
+    topic: String
+  ): PostConnection
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "body", "created_at", "id", "image", "subreddit_id", "subreddit_topic", "title", "username" FROM "post"
+      WHERE "subreddit_topic" = $3
+      ORDER BY "created_at" DESC LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
   comment(id: ID!): comment
     @dbquery(
       type: "postgresql"
@@ -66,7 +101,7 @@ type Query {
       configuration: "postgresql_config"
     )
   " Queries for type 'post' "
-  getPost(id: ID!): [post]
+  getPost(id: ID!): [Post]
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -75,7 +110,7 @@ type Query {
       """
       configuration: "postgresql_config"
     )
-  getPostsByTopic(topic: String!): [post]
+  getPostsByTopic(topic: String!): [Post]
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -85,14 +120,14 @@ type Query {
       """
       configuration: "postgresql_config"
     )
-  getPostById(id: ID!): post
+  getPostById(id: ID!): Post
     @dbquery(
       type: "postgresql"
       schema: "public"
       table: "post"
       configuration: "postgresql_config"
     )
-  getPostList: [post]
+  getPostList: [Post]
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -102,15 +137,15 @@ type Query {
       """
       configuration: "postgresql_config"
     )
-  postPaginatedList(first: Int, after: Int): [post]
-    @dbquery(
-      type: "postgresql"
-      schema: "public"
-      query: """
-      SELECT "body", "created_at", "id", "image", "subreddit_id", "subreddit_topic", "title", "username" FROM "post" ORDER BY "id" LIMIT $1 OFFSET $2
-      """
-      configuration: "postgresql_config"
-    )
+  # postPaginatedList(first: Int, after: Int): posts
+  #   @dbquery(
+  #     type: "postgresql"
+  #     schema: "public"
+  #     query: """
+  #     SELECT "body", "created_at", "id", "image", "subreddit_id", "subreddit_topic", "title", "username" FROM "post" ORDER BY "created_at" DESC LIMIT $1 OFFSET $2
+  #     """
+  #     configuration: "postgresql_config"
+  #   )
   " Queries for type 'subreddit' "
   getSubreddit(subreddit_id: ID!): subreddit
     @dbquery(
@@ -234,7 +269,7 @@ type Mutation {
       configuration: "postgresql_config"
     )
   " Mutations for type 'post' "
-  deletePost(id: ID!): post
+  deletePost(id: ID!): Post
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -249,7 +284,7 @@ type Mutation {
     title: String!
     username: String!
     image: String
-  ): post
+  ): Post
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -266,7 +301,7 @@ type Mutation {
     subreddit_topic: String
     title: String
     username: String
-  ): post
+  ): Post
     @dbquery(
       type: "postgresql"
       schema: "public"
