@@ -52,7 +52,7 @@ Feel free to modify them or aggregate more.
 """
 type Query {
   " Queries for type 'comment' "
-  postCollection(first: Int, after: String = ""): PostConnection
+  posts(first: Int, after: String = ""): PostConnection
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -62,11 +62,7 @@ type Query {
       """
       configuration: "postgresql_config"
     )
-  postByTopicCollection(
-    first: Int
-    after: String = ""
-    topic: String
-  ): PostConnection
+  postsByTopic(first: Int, after: String = "", topic: String): PostConnection
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -163,7 +159,7 @@ type Query {
       table: "subreddit"
       configuration: "postgresql_config"
     )
-  getSubredditByTopic(topic: String!): [subreddit]
+  getSubredditByTopic(topic: String!): subreddit
     @dbquery(
       type: "postgresql"
       schema: "public"

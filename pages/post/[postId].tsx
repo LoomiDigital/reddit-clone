@@ -1,21 +1,24 @@
 import { GetServerSideProps } from "next";
-import { GET_POST_BY_ID } from "@d20/graphql/queries";
 import { addApolloState, initializeApollo } from "@d20/client";
+import {
+  GetPostByIdDocument,
+  PostAttributesFragment,
+} from "@d20/generated/graphql";
 
-import Post from "@d20/Components/Post";
+import PostCard from "@d20/Components/PostCard";
 
 type Params = {
   postId: string;
 };
 
 type Props = {
-  post: Post;
+  post: PostAttributesFragment;
 };
 
 function PostPage({ post }: Props) {
   return (
     <div className="mx-auto my-7 mt-5 max-w-5xl space-y-4">
-      <Post post={post} />
+      <PostCard post={post} />
     </div>
   );
 }
@@ -27,13 +30,13 @@ export const getServerSideProps: GetServerSideProps<Props, Params> = async ({
   const {
     data: { getPostById },
   } = await client.query({
-    query: GET_POST_BY_ID,
+    query: GetPostByIdDocument,
     variables: {
       id: params!.postId,
     },
   });
 
-  const post: Post = getPostById;
+  const post: PostAttributesFragment = getPostById;
   const documentProps = addApolloState(client, {
     props: {
       post,

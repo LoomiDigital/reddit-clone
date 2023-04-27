@@ -1,14 +1,18 @@
 import React, { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useMutation, useLazyQuery } from "@apollo/client";
-import { ADD_POST, ADD_SUBREDDIT } from "@d20/graphql/mutations";
-import { GET_SUBREDDIT_BY_TOPIC } from "@d20/graphql/queries";
+import { ADD_SUBREDDIT } from "@d20/graphql/mutations";
 import { allPostsVar } from "@d20/reactivities/allPosts";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 
 import { LinkIcon, PhotoIcon } from "@heroicons/react/24/outline";
 import Avatar from "./Avatar";
+import {
+  useAddPostMutation,
+  useGetSubredditByTopicLazyQuery,
+} from "@d20/generated/graphql";
+import { useGetSubredditByTopicQuery } from "@d20/generated/graphql";
 
 type Props = {
   subreddit?: string;
@@ -23,9 +27,9 @@ type FormData = {
 
 function Postbox({ subreddit }: Props) {
   const { data: session } = useSession();
-  const [addPost] = useMutation(ADD_POST);
+  const [addPost] = useAddPostMutation();
   const [addSubreddit] = useMutation(ADD_SUBREDDIT);
-  const [getSubReddit] = useLazyQuery(GET_SUBREDDIT_BY_TOPIC);
+  const [getSubReddit] = useGetSubredditByTopicLazyQuery();
 
   const {
     register,
@@ -40,21 +44,20 @@ function Postbox({ subreddit }: Props) {
     const notification = toast.loading("Creating post...");
 
     try {
-      const {
-        data: { getSubredditByTopic },
-      } = await getSubReddit({
+      const { data } = await getSubReddit({
         variables: {
           topic: subreddit || formData.subreddit,
         },
         fetchPolicy: "no-cache",
       });
+      console.log("data", data?.getSubredditByTopic);
 
-      const subredditExists = getSubredditByTopic.length > 0;
+      const subredditExists = data?.getSubredditByTopic;
       const postFields = {
-        title: formData.postTitle,
-        body: formData.postBody,
+        title: formData.postTitle!,
+        body: formData.postBody || "",
         image: formData.postImage || "",
-        username: session?.user.name,
+        username: session?.user.name!,
       };
 
       if (!subredditExists) {
@@ -66,30 +69,24 @@ function Postbox({ subreddit }: Props) {
           },
         });
 
-        const {
-          data: { insertPost },
-        } = await addPost({
+        const { data } = await addPost({
           variables: {
             ...postFields,
             subreddit_id: newSubreddit.id,
             subreddit_topic: newSubreddit.topic,
           },
         });
-        /* @ts-ignore */
-        allPostsVar([{ node: insertPost }, ...allPostsVar()]);
+
+        allPostsVar([{ node: data?.insertPost }, ...allPostsVar()]);
       } else {
-        const {
-          data: { insertPost },
-        } = await addPost({
+        const { data } = await addPost({
           variables: {
             ...postFields,
-            subreddit_id: getSubredditByTopic[0].id,
-            subreddit_topic: getSubredditByTopic[0].topic,
+            subreddit_id: subredditExists?.id!,
+            subreddit_topic: subredditExists?.topic!,
           },
         });
-        /* @ts-ignore */
-        allPostsVar([{ node: insertPost }, ...allPostsVar()]);
-        console.log("insertPost", allPostsVar());
+        allPostsVar([{ node: data?.insertPost }, ...allPostsVar()]);
       }
 
       setValue("postTitle", "");
@@ -99,6 +96,7 @@ function Postbox({ subreddit }: Props) {
 
       toast.success("Post created!", { id: notification });
     } catch (error) {
+      console.log("error", error);
       toast.error("Error creating post!", { id: notification });
     }
   });

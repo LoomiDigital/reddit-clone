@@ -1,14 +1,5 @@
 import { gql } from "@apollo/client";
 
-export const GET_SUBREDDIT_BY_TOPIC = gql`
-  query GetSubredditByTopic($topic: String!) {
-    getSubredditByTopic(topic: $topic) {
-      id
-      topic
-    }
-  }
-`;
-
 export const GET_SUBREDDIT_BY_ID = gql`
   query GetSubredditById($id: ID!) {
     getSubredditById(id: $id) {
@@ -38,84 +29,6 @@ export const GET_POSTS_REACTIVE = gql`
 export const GET_POSTS_BY_TOPIC_REACTIVE = gql`
   query GetPostsByTopic {
     postsByTopicVar @client
-  }
-`;
-
-export const GET_POSTS = gql`
-  query GetPosts($first: Int, $after: String) {
-    postCollection(first: $first, after: $after) {
-      edges {
-        node {
-          id
-          title
-          body
-          image
-          username
-          votes {
-            id
-            upvote
-            username
-          }
-          subreddit_id
-          subreddit_topic
-          created_at
-        }
-        cursor
-      }
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
-    }
-  }
-`;
-
-export const GET_POSTS_BY_TOPIC = gql`
-  query GetPostsByTopic($first: Int, $after: String, $topic: String!) {
-    postByTopicCollection(first: $first, after: $after, topic: $topic) {
-      edges {
-        node {
-          id
-          title
-          body
-          image
-          username
-          votes {
-            id
-            upvote
-            username
-          }
-          subreddit_id
-          subreddit_topic
-          created_at
-        }
-        cursor
-      }
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
-    }
-  }
-`;
-
-export const GET_POST_BY_ID = gql`
-  query GetPostById($id: ID!) {
-    getPostById(id: $id) {
-      id
-      title
-      body
-      image
-      username
-      votes {
-        id
-        upvote
-        username
-      }
-      subreddit_id
-      subreddit_topic
-      created_at
-    }
   }
 `;
 

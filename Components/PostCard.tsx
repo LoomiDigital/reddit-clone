@@ -3,6 +3,7 @@ import Router from "next/router";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useMutation } from "@apollo/client";
+import { PostAttributesFragment } from "@d20/generated/graphql";
 import { ADD_VOTE } from "@d20/graphql/mutations";
 import { GET_VOTES_BY_POST_ID } from "@d20/graphql/queries";
 import TimeAgo from "react-timeago";
@@ -19,18 +20,18 @@ import {
 import Avatar from "./Avatar";
 
 interface Props {
-  post: Post;
+  post: PostAttributesFragment;
 }
 
-function Post({ post }: Props) {
+function PostCard({ post }: Props) {
   const { data: session } = useSession();
   const [hasMounted, setHasMounted] = useState<boolean>(false);
-  const [vote, setVote] = useState<boolean | undefined>();
-  const [votes, setVotes] = useState<Vote[]>(post.votes);
+  const [vote, setVote] = useState<boolean | null>();
+  const [votes, setVotes] = useState(post.votes);
 
   useEffect(() => {
     const isUpvote = votes?.find(
-      (vote) => vote.username === session?.user?.name
+      (vote) => vote === session?.user?.name
     )?.upvote;
 
     setVote(isUpvote);
@@ -62,7 +63,7 @@ function Post({ post }: Props) {
     if (!votes || !votes.length) return 1;
 
     const totalVotes = votes.reduce(
-      (total, vote) => (vote.upvote ? (total += 1) : (total -= 1)),
+      (total, vote) => (vote?.upvote ? (total += 1) : (total -= 1)),
       0
     );
 
@@ -168,7 +169,7 @@ function Post({ post }: Props) {
         </div>
         <div className="p-3 pb-1">
           <div className="flex items-center space-x-2">
-            <Avatar seed={post.subreddit_topic} />
+            <Avatar seed={post?.subreddit_topic!} />
             <p className="text-xs text-gray-400">
               <span
                 onClick={(e) => loadSubredditPage(e)}
@@ -221,4 +222,4 @@ function Post({ post }: Props) {
   );
 }
 
-export default Post;
+export default PostCard;

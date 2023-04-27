@@ -1,9 +1,8 @@
 import { useEffect } from "react";
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
-import { useQuery } from "@apollo/client";
 import { initializeApollo, addApolloState } from "@d20/client";
-import { GET_POSTS } from "@d20/graphql/queries";
+import { GetPostsDocument, useGetPostsQuery } from "@d20/generated/graphql";
 import { allPostsVar } from "@d20/reactivities/allPosts";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
@@ -11,14 +10,14 @@ import PostBox from "@d20/Components/Postbox";
 import Feed from "@d20/Components/Feed";
 
 const Home: NextPage = () => {
-  const { data, fetchMore, loading } = useQuery(GET_POSTS, {
+  const { data, fetchMore, loading } = useGetPostsQuery({
     variables: {
       first: 10,
     },
   });
 
-  const posts: Post[] = data?.postCollection.edges;
-  const hasNextPage: boolean = data?.postCollection.pageInfo.hasNextPage;
+  const posts = data?.posts?.edges!;
+  const hasNextPage: boolean = data?.posts?.pageInfo?.hasNextPage!;
 
   useEffect(() => {
     allPostsVar(posts);
@@ -28,16 +27,20 @@ const Home: NextPage = () => {
     hasNextPage &&
       fetchMore({
         variables: {
-          after: data?.postCollection.pageInfo.endCursor,
+          after: data?.posts?.pageInfo.endCursor,
         },
-        updateQuery(prevResult, { fetchMoreResult }) {
-          const newEdges = fetchMoreResult.postCollection.edges;
-          const pageInfo = fetchMoreResult.postCollection.pageInfo;
-          return newEdges.length
+        updateQuery(
+          prevResult,
+          { fetchMoreResult }
+        ): ReturnType<typeof Object> {
+          const newEdges = fetchMoreResult?.posts?.edges;
+          const pageInfo = fetchMoreResult?.posts?.pageInfo;
+          return newEdges?.length
             ? {
-                postCollection: {
-                  __typename: prevResult.postCollection.__typename,
-                  edges: [...prevResult.postCollection.edges, ...newEdges],
+                __typename: prevResult?.__typename,
+                posts: {
+                  __typename: prevResult?.posts?.__typename,
+                  edges: [...prevResult?.posts?.edges!, ...newEdges],
                   pageInfo,
                 },
               }
@@ -70,7 +73,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
   const client = initializeApollo();
 
   await client.query({
-    query: GET_POSTS,
+    query: GetPostsDocument,
     variables: {
       first: 10,
     },

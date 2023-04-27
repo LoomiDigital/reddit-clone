@@ -6,20 +6,6 @@ type Comment = {
   created_at: DateTime;
 };
 
-type Post = {
-  id: number;
-  username: string;
-  title: string;
-  subreddit_id: number;
-  subreddit_topic: string;
-  image: string;
-  created_at: string;
-  body: string;
-  subreddit: Subreddit[];
-  votes: Vote[];
-  comments: Comment[];
-};
-
 type Subreddit = {
   topic: string;
   id: number;

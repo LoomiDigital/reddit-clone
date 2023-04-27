@@ -1,14 +1,16 @@
 import { useEffect } from "react";
 import { GetServerSideProps, NextPage } from "next";
-import { useQuery } from "@apollo/client";
 import { addApolloState, initializeApollo } from "@d20/client";
-import { GET_POSTS_BY_TOPIC } from "@d20/graphql/queries";
 import { allPostsVar } from "@d20/reactivities/allPosts";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
 import Avatar from "@d20/Components/Avatar";
 import Postbox from "@d20/Components/Postbox";
 import Feed from "@d20/Components/Feed";
+import {
+  GetPostsByTopicDocument,
+  useGetPostsByTopicQuery,
+} from "@d20/generated/graphql";
 
 type Params = {
   topic: string;
@@ -19,15 +21,15 @@ type Props = {
 };
 
 const Subreddit: NextPage<Props> = ({ topic }) => {
-  const { data, fetchMore, loading } = useQuery(GET_POSTS_BY_TOPIC, {
+  const { data, fetchMore, loading } = useGetPostsByTopicQuery({
     variables: {
       first: 10,
       topic,
     },
   });
 
-  const posts: Post[] = data?.postByTopicCollection.edges;
-  const hasNextPage: boolean = data?.postByTopicCollection.pageInfo.hasNextPage;
+  const posts = data?.postsByTopic?.edges!;
+  const hasNextPage: boolean = data?.postsByTopic?.pageInfo?.hasNextPage!;
 
   useEffect(() => {
     allPostsVar(posts);
@@ -37,19 +39,19 @@ const Subreddit: NextPage<Props> = ({ topic }) => {
     hasNextPage &&
       fetchMore({
         variables: {
-          after: data?.postByTopicCollection.pageInfo.endCursor,
+          after: data?.postsByTopic?.pageInfo.endCursor,
         },
-        updateQuery(prevResult, { fetchMoreResult }) {
-          const newEdges = fetchMoreResult.postByTopicCollection.edges;
-          const pageInfo = fetchMoreResult.postByTopicCollection.pageInfo;
-          return newEdges.length
+        updateQuery(
+          prevResult,
+          { fetchMoreResult }
+        ): ReturnType<typeof Object> {
+          const newEdges = fetchMoreResult?.postsByTopic?.edges;
+          const pageInfo = fetchMoreResult?.postsByTopic?.pageInfo;
+          return newEdges?.length
             ? {
-                postByTopicCollection: {
-                  __typename: prevResult.postByTopicCollection.__typename,
-                  edges: [
-                    ...prevResult.postByTopicCollection.edges,
-                    ...newEdges,
-                  ],
+                postsByTopic: {
+                  __typename: prevResult?.postsByTopic?.__typename,
+                  edges: [...prevResult?.postsByTopic?.edges!, ...newEdges],
                   pageInfo,
                 },
               }
@@ -93,7 +95,7 @@ export const getServerSideProps: GetServerSideProps<Props, Params> = async ({
   const client = initializeApollo();
 
   await client.query({
-    query: GET_POSTS_BY_TOPIC,
+    query: GetPostsByTopicDocument,
     variables: {
       first: 10,
       topic: params?.topic,

@@ -3,7 +3,8 @@ import { useReactiveVar } from "@apollo/client";
 import { allPostsVar } from "@d20/reactivities/allPosts";
 import { ClipLoader } from "react-spinners";
 
-import Post from "./Post";
+import PostCard from "./PostCard";
+import { PostEdge } from "@d20/generated/graphql";
 
 type Props = {
   loading: boolean;
@@ -11,15 +12,14 @@ type Props = {
 };
 
 function Feed({ loading, loadingRef }: Props) {
-  const posts: Post[] = useReactiveVar(allPostsVar);
+  const posts: PostEdge[] = useReactiveVar(allPostsVar);
 
   return (
     <div className="mt-5 space-y-4">
-      {/* @ts-ignore */}
       {posts?.map(({ node }) => {
         return (
-          <div key={node.id}>
-            <Post post={node} />
+          <div key={node!.id}>
+            <PostCard post={node!} />
           </div>
         );
       })}
