@@ -48,7 +48,7 @@ function createApolloClient() {
       typePolicies: {
         Query: {
           fields: {
-            postCollection: relayStylePagination(),
+            posts: relayStylePagination(),
             allPostsVar: {
               read() {
                 return allPostsVar();

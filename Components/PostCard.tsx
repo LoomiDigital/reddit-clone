@@ -1,12 +1,13 @@
 import React, { SyntheticEvent, useState, useEffect } from "react";
 import Router from "next/router";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
-import { useMutation } from "@apollo/client";
-import { PostAttributesFragment } from "@d20/generated/graphql";
-import { ADD_VOTE } from "@d20/graphql/mutations";
-import { GET_VOTES_BY_POST_ID } from "@d20/graphql/queries";
 import TimeAgo from "react-timeago";
+import { useSession } from "next-auth/react";
+import {
+  GetVotesByPostIdDocument,
+  PostAttributesFragment,
+  useAddVoteMutation,
+} from "@d20/generated/graphql";
 
 import {
   ArrowDownIcon,
@@ -31,7 +32,7 @@ function PostCard({ post }: Props) {
 
   useEffect(() => {
     const isUpvote = votes?.find(
-      (vote) => vote === session?.user?.name
+      (vote) => vote?.username === session?.user?.name
     )?.upvote;
 
     setVote(isUpvote);
@@ -41,10 +42,10 @@ function PostCard({ post }: Props) {
     setHasMounted(true);
   }, []);
 
-  const [addVote] = useMutation(ADD_VOTE, {
+  const [addVote] = useAddVoteMutation({
     refetchQueries: [
       {
-        query: GET_VOTES_BY_POST_ID,
+        query: GetVotesByPostIdDocument,
         variables: {
           post_id: post.id,
         },

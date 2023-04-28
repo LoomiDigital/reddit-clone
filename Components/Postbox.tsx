@@ -1,18 +1,16 @@
 import React, { useState } from "react";
 import { useSession } from "next-auth/react";
-import { useMutation, useLazyQuery } from "@apollo/client";
-import { ADD_SUBREDDIT } from "@d20/graphql/mutations";
-import { allPostsVar } from "@d20/reactivities/allPosts";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
+import { allPostsVar } from "@d20/reactivities/allPosts";
 
 import { LinkIcon, PhotoIcon } from "@heroicons/react/24/outline";
-import Avatar from "./Avatar";
 import {
   useAddPostMutation,
+  useAddSubredditMutation,
   useGetSubredditByTopicLazyQuery,
 } from "@d20/generated/graphql";
-import { useGetSubredditByTopicQuery } from "@d20/generated/graphql";
+import Avatar from "./Avatar";
 
 type Props = {
   subreddit?: string;
@@ -28,7 +26,7 @@ type FormData = {
 function Postbox({ subreddit }: Props) {
   const { data: session } = useSession();
   const [addPost] = useAddPostMutation();
-  const [addSubreddit] = useMutation(ADD_SUBREDDIT);
+  const [addSubreddit] = useAddSubredditMutation();
   const [getSubReddit] = useGetSubredditByTopicLazyQuery();
 
   const {
@@ -50,7 +48,6 @@ function Postbox({ subreddit }: Props) {
         },
         fetchPolicy: "no-cache",
       });
-      console.log("data", data?.getSubredditByTopic);
 
       const subredditExists = data?.getSubredditByTopic;
       const postFields = {
@@ -61,13 +58,13 @@ function Postbox({ subreddit }: Props) {
       };
 
       if (!subredditExists) {
-        const {
-          data: { insertSubreddit: newSubreddit },
-        } = await addSubreddit({
+        const { data: addSubredditData } = await addSubreddit({
           variables: {
             topic: formData.subreddit.toLowerCase(),
           },
         });
+
+        const newSubreddit = addSubredditData?.insertSubreddit!;
 
         const { data } = await addPost({
           variables: {
@@ -83,7 +80,7 @@ function Postbox({ subreddit }: Props) {
           variables: {
             ...postFields,
             subreddit_id: subredditExists?.id!,
-            subreddit_topic: subredditExists?.topic!,
+            subreddit_topic: subredditExists?.topic,
           },
         });
         allPostsVar([{ node: data?.insertPost }, ...allPostsVar()]);

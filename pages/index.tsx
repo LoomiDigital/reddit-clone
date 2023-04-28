@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
-import { initializeApollo, addApolloState } from "@d20/client";
-import { GetPostsDocument, useGetPostsQuery } from "@d20/generated/graphql";
+
+import { useGetPostsQuery } from "@d20/generated/graphql";
 import { allPostsVar } from "@d20/reactivities/allPosts";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
@@ -16,7 +16,7 @@ const Home: NextPage = () => {
     },
   });
 
-  const posts = data?.posts?.edges!;
+  const posts = data?.posts?.edges;
   const hasNextPage: boolean = data?.posts?.pageInfo?.hasNextPage!;
 
   useEffect(() => {
@@ -69,19 +69,19 @@ const Home: NextPage = () => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const client = initializeApollo();
+// export const getServerSideProps: GetServerSideProps = async () => {
+//   const client = initializeApollo();
 
-  await client.query({
-    query: GetPostsDocument,
-    variables: {
-      first: 10,
-    },
-  });
+//   await client.query({
+//     query: GetPostsDocument,
+//     variables: {
+//       first: 10,
+//     },
+//   });
 
-  return addApolloState(client, {
-    props: {},
-  });
-};
+//   return addApolloState(client, {
+//     props: {},
+//   });
+// };
 
 export default Home;

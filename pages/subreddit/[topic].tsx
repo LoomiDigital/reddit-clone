@@ -1,16 +1,17 @@
 import { useEffect } from "react";
 import { GetServerSideProps, NextPage } from "next";
-import { addApolloState, initializeApollo } from "@d20/client";
-import { allPostsVar } from "@d20/reactivities/allPosts";
 import useInfiniteScroll from "react-infinite-scroll-hook";
+import { addApolloState, initializeApollo } from "@d20/client";
+import {
+  GetPostsByTopicDocument,
+  PostEdge,
+  useGetPostsByTopicQuery,
+} from "@d20/generated/graphql";
+import { allPostsVar } from "@d20/reactivities/allPosts";
 
 import Avatar from "@d20/Components/Avatar";
 import Postbox from "@d20/Components/Postbox";
 import Feed from "@d20/Components/Feed";
-import {
-  GetPostsByTopicDocument,
-  useGetPostsByTopicQuery,
-} from "@d20/generated/graphql";
 
 type Params = {
   topic: string;
@@ -28,7 +29,7 @@ const Subreddit: NextPage<Props> = ({ topic }) => {
     },
   });
 
-  const posts = data?.postsByTopic?.edges!;
+  const posts = data?.postsByTopic?.edges! as PostEdge[];
   const hasNextPage: boolean = data?.postsByTopic?.pageInfo?.hasNextPage!;
 
   useEffect(() => {
@@ -92,21 +93,26 @@ const Subreddit: NextPage<Props> = ({ topic }) => {
 export const getServerSideProps: GetServerSideProps<Props, Params> = async ({
   params,
 }) => {
-  const client = initializeApollo();
+  // const client = initializeApollo();
 
-  await client.query({
-    query: GetPostsByTopicDocument,
-    variables: {
-      first: 10,
-      topic: params?.topic,
-    },
-  });
+  // await client.query({
+  //   query: GetPostsByTopicDocument,
+  //   variables: {
+  //     first: 10,
+  //     topic: params?.topic,
+  //   },
+  // });
 
-  return addApolloState(client, {
+  // return addApolloState(client, {
+  //   props: {
+  //     topic: params?.topic,
+  //   },
+  // });
+  return {
     props: {
-      topic: params?.topic,
+      topic: params?.topic!,
     },
-  });
+  };
 };
 
 export default Subreddit;

@@ -16,6 +16,15 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type Comment = {
+  __typename?: 'Comment';
+  created_at?: Maybe<Scalars['DateTime']>;
+  id?: Maybe<Scalars['ID']>;
+  post_id?: Maybe<Scalars['ID']>;
+  text?: Maybe<Scalars['String']>;
+  username?: Maybe<Scalars['String']>;
+};
+
 /**
  * Mutation root object type.
  *
@@ -287,18 +296,18 @@ export type Post = {
   __typename?: 'Post';
   body?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['DateTime']>;
-  id?: Maybe<Scalars['ID']>;
+  id: Scalars['ID'];
   image?: Maybe<Scalars['String']>;
-  subreddit_id?: Maybe<Scalars['ID']>;
-  subreddit_topic?: Maybe<Scalars['String']>;
-  title?: Maybe<Scalars['String']>;
-  username?: Maybe<Scalars['String']>;
+  subreddit_id: Scalars['ID'];
+  subreddit_topic: Scalars['String'];
+  title: Scalars['String'];
+  username: Scalars['String'];
   votes?: Maybe<Array<Maybe<Vote>>>;
 };
 
 export type PostConnection = {
   __typename?: 'PostConnection';
-  edges?: Maybe<Array<Maybe<PostEdge>>>;
+  edges: Array<PostEdge>;
   pageInfo: PageInfo;
 };
 
@@ -516,32 +525,21 @@ export type QueryVotePaginatedListArgs = {
   first?: InputMaybe<Scalars['Int']>;
 };
 
-export type Comment = {
-  __typename?: 'comment';
-  created_at?: Maybe<Scalars['DateTime']>;
-  id?: Maybe<Scalars['ID']>;
-  post_id?: Maybe<Scalars['ID']>;
-  text?: Maybe<Scalars['String']>;
-  username?: Maybe<Scalars['String']>;
-};
-
 export type Subreddit = {
-  __typename?: 'subreddit';
+  __typename?: 'Subreddit';
   created_at?: Maybe<Scalars['DateTime']>;
-  id?: Maybe<Scalars['ID']>;
-  topic?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  topic: Scalars['String'];
 };
 
 export type Vote = {
-  __typename?: 'vote';
+  __typename?: 'Vote';
   created_at?: Maybe<Scalars['DateTime']>;
-  id?: Maybe<Scalars['ID']>;
-  post_id?: Maybe<Scalars['ID']>;
-  upvote?: Maybe<Scalars['Boolean']>;
-  username?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  post_id: Scalars['ID'];
+  upvote: Scalars['Boolean'];
+  username: Scalars['String'];
 };
-
-export type PostAttributesFragment = { __typename?: 'Post', id?: string | null, title?: string | null, body?: string | null, image?: string | null, username?: string | null, subreddit_id?: string | null, subreddit_topic?: string | null, created_at?: any | null, votes?: Array<{ __typename?: 'vote', id?: string | null, upvote?: boolean | null, username?: string | null } | null> | null };
 
 export type AddPostMutationVariables = Exact<{
   title: Scalars['String'];
@@ -553,14 +551,16 @@ export type AddPostMutationVariables = Exact<{
 }>;
 
 
-export type AddPostMutation = { __typename?: 'Mutation', insertPost?: { __typename?: 'Post', id?: string | null, title?: string | null, body?: string | null, image?: string | null, username?: string | null, subreddit_id?: string | null, subreddit_topic?: string | null, created_at?: any | null, votes?: Array<{ __typename?: 'vote', id?: string | null, upvote?: boolean | null, username?: string | null } | null> | null } | null };
+export type AddPostMutation = { __typename?: 'Mutation', insertPost?: { __typename?: 'Post', id: string, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: string, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', id: string, upvote: boolean, username: string } | null> | null } | null };
+
+export type PostAttributesFragment = { __typename?: 'Post', id: string, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: string, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', id: string, upvote: boolean, username: string } | null> | null };
 
 export type GetPostByIdQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type GetPostByIdQuery = { __typename?: 'Query', getPostById?: { __typename?: 'Post', id?: string | null, title?: string | null, body?: string | null, image?: string | null, username?: string | null, subreddit_id?: string | null, subreddit_topic?: string | null, created_at?: any | null, votes?: Array<{ __typename?: 'vote', id?: string | null, upvote?: boolean | null, username?: string | null } | null> | null } | null };
+export type GetPostByIdQuery = { __typename?: 'Query', getPostById?: { __typename?: 'Post', id: string, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: string, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', id: string, upvote: boolean, username: string } | null> | null } | null };
 
 export type GetPostsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']>;
@@ -568,7 +568,7 @@ export type GetPostsQueryVariables = Exact<{
 }>;
 
 
-export type GetPostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', edges?: Array<{ __typename?: 'PostEdge', cursor?: string | null, node?: { __typename?: 'Post', id?: string | null, title?: string | null, body?: string | null, image?: string | null, username?: string | null, subreddit_id?: string | null, subreddit_topic?: string | null, created_at?: any | null, votes?: Array<{ __typename?: 'vote', id?: string | null, upvote?: boolean | null, username?: string | null } | null> | null } | null } | null> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor: string } } | null };
+export type GetPostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', edges: Array<{ __typename?: 'PostEdge', cursor?: string | null, node?: { __typename?: 'Post', id: string, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: string, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', id: string, upvote: boolean, username: string } | null> | null } | null }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor: string } } | null };
 
 export type GetPostsByTopicQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']>;
@@ -577,14 +577,46 @@ export type GetPostsByTopicQueryVariables = Exact<{
 }>;
 
 
-export type GetPostsByTopicQuery = { __typename?: 'Query', postsByTopic?: { __typename?: 'PostConnection', edges?: Array<{ __typename?: 'PostEdge', cursor?: string | null, node?: { __typename?: 'Post', id?: string | null, title?: string | null, body?: string | null, image?: string | null, username?: string | null, subreddit_id?: string | null, subreddit_topic?: string | null, created_at?: any | null, votes?: Array<{ __typename?: 'vote', id?: string | null, upvote?: boolean | null, username?: string | null } | null> | null } | null } | null> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor: string } } | null };
+export type GetPostsByTopicQuery = { __typename?: 'Query', postsByTopic?: { __typename?: 'PostConnection', edges: Array<{ __typename?: 'PostEdge', cursor?: string | null, node?: { __typename?: 'Post', id: string, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: string, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', id: string, upvote: boolean, username: string } | null> | null } | null }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor: string } } | null };
+
+export type AddSubredditMutationVariables = Exact<{
+  topic: Scalars['String'];
+}>;
+
+
+export type AddSubredditMutation = { __typename?: 'Mutation', insertSubreddit?: { __typename?: 'Subreddit', id: string, topic: string, created_at?: any | null } | null };
+
+export type SubredditAttributesFragment = { __typename?: 'Subreddit', id: string, topic: string, created_at?: any | null };
 
 export type GetSubredditByTopicQueryVariables = Exact<{
   topic: Scalars['String'];
 }>;
 
 
-export type GetSubredditByTopicQuery = { __typename?: 'Query', getSubredditByTopic?: { __typename?: 'subreddit', id?: string | null, topic?: string | null } | null };
+export type GetSubredditByTopicQuery = { __typename?: 'Query', getSubredditByTopic?: { __typename?: 'Subreddit', id: string, topic: string, created_at?: any | null } | null };
+
+export type AddVoteMutationVariables = Exact<{
+  post_id: Scalars['ID'];
+  upvote: Scalars['Boolean'];
+  username: Scalars['String'];
+}>;
+
+
+export type AddVoteMutation = { __typename?: 'Mutation', addVote?: { __typename?: 'Vote', id: string, post_id: string, username: string, upvote: boolean } | null };
+
+export type DeleteVoteMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type DeleteVoteMutation = { __typename?: 'Mutation', deleteVote?: { __typename?: 'Vote', id: string, post_id: string, username: string } | null };
+
+export type GetVotesByPostIdQueryVariables = Exact<{
+  post_id: Scalars['ID'];
+}>;
+
+
+export type GetVotesByPostIdQuery = { __typename?: 'Query', getVotesByPostId?: Array<{ __typename?: 'Vote', id: string, post_id: string, username: string, upvote: boolean } | null> | null };
 
 export const PostAttributesFragmentDoc = gql`
     fragment postAttributes on Post {
@@ -600,6 +632,13 @@ export const PostAttributesFragmentDoc = gql`
   }
   subreddit_id
   subreddit_topic
+  created_at
+}
+    `;
+export const SubredditAttributesFragmentDoc = gql`
+    fragment subredditAttributes on Subreddit {
+  id
+  topic
   created_at
 }
     `;
@@ -774,14 +813,46 @@ export function useGetPostsByTopicLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetPostsByTopicQueryHookResult = ReturnType<typeof useGetPostsByTopicQuery>;
 export type GetPostsByTopicLazyQueryHookResult = ReturnType<typeof useGetPostsByTopicLazyQuery>;
 export type GetPostsByTopicQueryResult = Apollo.QueryResult<GetPostsByTopicQuery, GetPostsByTopicQueryVariables>;
+export const AddSubredditDocument = gql`
+    mutation AddSubreddit($topic: String!) {
+  insertSubreddit(topic: $topic) {
+    ...subredditAttributes
+  }
+}
+    ${SubredditAttributesFragmentDoc}`;
+export type AddSubredditMutationFn = Apollo.MutationFunction<AddSubredditMutation, AddSubredditMutationVariables>;
+
+/**
+ * __useAddSubredditMutation__
+ *
+ * To run a mutation, you first call `useAddSubredditMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddSubredditMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addSubredditMutation, { data, loading, error }] = useAddSubredditMutation({
+ *   variables: {
+ *      topic: // value for 'topic'
+ *   },
+ * });
+ */
+export function useAddSubredditMutation(baseOptions?: Apollo.MutationHookOptions<AddSubredditMutation, AddSubredditMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddSubredditMutation, AddSubredditMutationVariables>(AddSubredditDocument, options);
+      }
+export type AddSubredditMutationHookResult = ReturnType<typeof useAddSubredditMutation>;
+export type AddSubredditMutationResult = Apollo.MutationResult<AddSubredditMutation>;
+export type AddSubredditMutationOptions = Apollo.BaseMutationOptions<AddSubredditMutation, AddSubredditMutationVariables>;
 export const GetSubredditByTopicDocument = gql`
     query GetSubredditByTopic($topic: String!) {
   getSubredditByTopic(topic: $topic) {
-    id
-    topic
+    ...subredditAttributes
   }
 }
-    `;
+    ${SubredditAttributesFragmentDoc}`;
 
 /**
  * __useGetSubredditByTopicQuery__
@@ -810,3 +881,114 @@ export function useGetSubredditByTopicLazyQuery(baseOptions?: Apollo.LazyQueryHo
 export type GetSubredditByTopicQueryHookResult = ReturnType<typeof useGetSubredditByTopicQuery>;
 export type GetSubredditByTopicLazyQueryHookResult = ReturnType<typeof useGetSubredditByTopicLazyQuery>;
 export type GetSubredditByTopicQueryResult = Apollo.QueryResult<GetSubredditByTopicQuery, GetSubredditByTopicQueryVariables>;
+export const AddVoteDocument = gql`
+    mutation AddVote($post_id: ID!, $upvote: Boolean!, $username: String!) {
+  addVote(post_id: $post_id, upvote: $upvote, username: $username) {
+    id
+    post_id
+    username
+    upvote
+  }
+}
+    `;
+export type AddVoteMutationFn = Apollo.MutationFunction<AddVoteMutation, AddVoteMutationVariables>;
+
+/**
+ * __useAddVoteMutation__
+ *
+ * To run a mutation, you first call `useAddVoteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddVoteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addVoteMutation, { data, loading, error }] = useAddVoteMutation({
+ *   variables: {
+ *      post_id: // value for 'post_id'
+ *      upvote: // value for 'upvote'
+ *      username: // value for 'username'
+ *   },
+ * });
+ */
+export function useAddVoteMutation(baseOptions?: Apollo.MutationHookOptions<AddVoteMutation, AddVoteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddVoteMutation, AddVoteMutationVariables>(AddVoteDocument, options);
+      }
+export type AddVoteMutationHookResult = ReturnType<typeof useAddVoteMutation>;
+export type AddVoteMutationResult = Apollo.MutationResult<AddVoteMutation>;
+export type AddVoteMutationOptions = Apollo.BaseMutationOptions<AddVoteMutation, AddVoteMutationVariables>;
+export const DeleteVoteDocument = gql`
+    mutation DeleteVote($id: ID!) {
+  deleteVote(id: $id) {
+    id
+    post_id
+    username
+  }
+}
+    `;
+export type DeleteVoteMutationFn = Apollo.MutationFunction<DeleteVoteMutation, DeleteVoteMutationVariables>;
+
+/**
+ * __useDeleteVoteMutation__
+ *
+ * To run a mutation, you first call `useDeleteVoteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteVoteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteVoteMutation, { data, loading, error }] = useDeleteVoteMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteVoteMutation(baseOptions?: Apollo.MutationHookOptions<DeleteVoteMutation, DeleteVoteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteVoteMutation, DeleteVoteMutationVariables>(DeleteVoteDocument, options);
+      }
+export type DeleteVoteMutationHookResult = ReturnType<typeof useDeleteVoteMutation>;
+export type DeleteVoteMutationResult = Apollo.MutationResult<DeleteVoteMutation>;
+export type DeleteVoteMutationOptions = Apollo.BaseMutationOptions<DeleteVoteMutation, DeleteVoteMutationVariables>;
+export const GetVotesByPostIdDocument = gql`
+    query GetVotesByPostId($post_id: ID!) {
+  getVotesByPostId(post_id: $post_id) {
+    id
+    post_id
+    username
+    upvote
+  }
+}
+    `;
+
+/**
+ * __useGetVotesByPostIdQuery__
+ *
+ * To run a query within a React component, call `useGetVotesByPostIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetVotesByPostIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetVotesByPostIdQuery({
+ *   variables: {
+ *      post_id: // value for 'post_id'
+ *   },
+ * });
+ */
+export function useGetVotesByPostIdQuery(baseOptions: Apollo.QueryHookOptions<GetVotesByPostIdQuery, GetVotesByPostIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetVotesByPostIdQuery, GetVotesByPostIdQueryVariables>(GetVotesByPostIdDocument, options);
+      }
+export function useGetVotesByPostIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetVotesByPostIdQuery, GetVotesByPostIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetVotesByPostIdQuery, GetVotesByPostIdQueryVariables>(GetVotesByPostIdDocument, options);
+        }
+export type GetVotesByPostIdQueryHookResult = ReturnType<typeof useGetVotesByPostIdQuery>;
+export type GetVotesByPostIdLazyQueryHookResult = ReturnType<typeof useGetVotesByPostIdLazyQuery>;
+export type GetVotesByPostIdQueryResult = Apollo.QueryResult<GetVotesByPostIdQuery, GetVotesByPostIdQueryVariables>;

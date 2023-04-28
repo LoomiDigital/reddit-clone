@@ -1,4 +1,4 @@
-type comment {
+type Comment {
   username: String
   text: String
   post_id: ID
@@ -6,34 +6,34 @@ type comment {
   created_at: DateTime
 }
 
-type subreddit {
-  topic: String
-  id: ID
+type Subreddit {
+  topic: String!
+  id: ID!
   created_at: DateTime
 }
 
-type vote {
-  username: String
-  upvote: Boolean
-  post_id: ID
-  id: ID
+type Vote {
+  username: String!
+  upvote: Boolean!
+  post_id: ID!
+  id: ID!
   created_at: DateTime
 }
 
 type Post {
-  id: ID
-  title: String
+  id: ID!
+  title: String!
   body: String
-  votes: [vote]
+  votes: [Vote]
     @materializer(
       query: "getVotesByPostId"
       arguments: [{ name: "post_id", field: "id" }]
     )
-  subreddit_topic: String
-  subreddit_id: ID
+  subreddit_topic: String!
+  subreddit_id: ID!
   image: String
   created_at: DateTime
-  username: String
+  username: String!
 }
 
 type PostEdge {
@@ -42,7 +42,7 @@ type PostEdge {
 }
 
 type PostConnection {
-  edges: [PostEdge]
+  edges: [PostEdge!]!
   pageInfo: PageInfo!
 }
 
@@ -73,21 +73,21 @@ type Query {
       """
       configuration: "postgresql_config"
     )
-  comment(id: ID!): comment
+  comment(id: ID!): Comment
     @dbquery(
       type: "postgresql"
       schema: "public"
       table: "comment"
       configuration: "postgresql_config"
     )
-  commentList: [comment]
+  commentList: [Comment]
     @dbquery(
       type: "postgresql"
       schema: "public"
       table: "comment"
       configuration: "postgresql_config"
     )
-  commentPaginatedList(first: Int, after: Int): [comment]
+  commentPaginatedList(first: Int, after: Int): [Comment]
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -143,7 +143,7 @@ type Query {
   #     configuration: "postgresql_config"
   #   )
   " Queries for type 'subreddit' "
-  getSubreddit(subreddit_id: ID!): subreddit
+  getSubreddit(subreddit_id: ID!): Subreddit
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -152,14 +152,14 @@ type Query {
       """
       configuration: "postgresql_config"
     )
-  subreddit(id: ID!): subreddit
+  subreddit(id: ID!): Subreddit
     @dbquery(
       type: "postgresql"
       schema: "public"
       table: "subreddit"
       configuration: "postgresql_config"
     )
-  getSubredditByTopic(topic: String!): subreddit
+  getSubredditByTopic(topic: String!): Subreddit
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -168,14 +168,14 @@ type Query {
       """
       configuration: "postgresql_config"
     )
-  subredditList: [subreddit]
+  subredditList: [Subreddit]
     @dbquery(
       type: "postgresql"
       schema: "public"
       table: "subreddit"
       configuration: "postgresql_config"
     )
-  subredditPaginatedList(first: Int, after: Int): [subreddit]
+  subredditPaginatedList(first: Int, after: Int): [Subreddit]
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -185,25 +185,25 @@ type Query {
       configuration: "postgresql_config"
     )
   " Queries for type 'vote' "
-  getVotesByPostId(post_id: ID!): [vote]
+  getVotesByPostId(post_id: ID!): [Vote]
     @dbquery(
       type: "postgresql"
       query: """
-      SELECT "upvote", "username" FROM "vote" WHERE "post_id" = $1
+      SELECT "upvote", "username", "id", "post_id" FROM "vote" WHERE "post_id" = $1
       order by "created_at" desc
       """
       schema: "public"
       configuration: "postgresql_config"
     )
 
-  voteList: [vote]
+  voteList: [Vote]
     @dbquery(
       type: "postgresql"
       schema: "public"
       table: "vote"
       configuration: "postgresql_config"
     )
-  votePaginatedList(first: Int, after: Int): [vote]
+  votePaginatedList(first: Int, after: Int): [Vote]
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -220,7 +220,7 @@ Feel free to modify them or aggregate more.
 """
 type Mutation {
   " Mutations for type 'comment' "
-  deleteComment(id: ID!): comment
+  deleteComment(id: ID!): Comment
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -234,7 +234,7 @@ type Mutation {
     text: String
     id: ID!
     created_at: DateTime
-  ): comment
+  ): Comment
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -248,7 +248,7 @@ type Mutation {
     post_id: ID
     text: String
     username: String
-  ): comment
+  ): Comment
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -317,7 +317,7 @@ type Mutation {
       configuration: "postgresql_config"
     )
   " Mutations for type 'subreddit' "
-  deleteSubreddit(id: ID!): subreddit
+  deleteSubreddit(id: ID!): Subreddit
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -325,7 +325,7 @@ type Mutation {
       dml: DELETE
       configuration: "postgresql_config"
     )
-  insertSubreddit(topic: String): subreddit
+  insertSubreddit(topic: String): Subreddit
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -333,7 +333,7 @@ type Mutation {
       dml: INSERT
       configuration: "postgresql_config"
     )
-  updateSubreddit(id: ID!, created_at: DateTime, topic: String): subreddit
+  updateSubreddit(id: ID!, created_at: DateTime, topic: String): Subreddit
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -348,7 +348,7 @@ type Mutation {
       configuration: "postgresql_config"
     )
   " Mutations for type 'vote' "
-  deleteVote(id: ID!): vote
+  deleteVote(id: ID!): Vote
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -362,7 +362,7 @@ type Mutation {
     id: ID!
     created_at: DateTime
     upvote: Boolean
-  ): vote
+  ): Vote
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -370,7 +370,7 @@ type Mutation {
       dml: INSERT
       configuration: "postgresql_config"
     )
-  addVote(username: String, post_id: ID, upvote: Boolean): vote
+  addVote(username: String, post_id: ID, upvote: Boolean): Vote
     @dbquery(
       type: "postgresql"
       schema: "public"
