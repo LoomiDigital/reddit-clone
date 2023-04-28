@@ -13,10 +13,10 @@ type Subreddit {
 }
 
 type Vote {
-  username: String!
-  upvote: Boolean!
-  post_id: ID!
-  id: ID!
+  username: String
+  upvote: Boolean
+  post_id: ID
+  id: ID
   created_at: DateTime
 }
 
@@ -189,7 +189,7 @@ type Query {
     @dbquery(
       type: "postgresql"
       query: """
-      SELECT "upvote", "username", "id", "post_id" FROM "vote" WHERE "post_id" = $1
+      SELECT "upvote", "username" FROM "vote" WHERE "post_id" = $1
       order by "created_at" desc
       """
       schema: "public"
