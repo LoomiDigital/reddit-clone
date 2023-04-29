@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import { allPostsVar } from "@d20/reactivities/allPosts";
+import { postsVar } from "@d20/reactivities/posts";
 
 import { LinkIcon, PhotoIcon } from "@heroicons/react/24/outline";
 import {
@@ -74,7 +74,7 @@ function Postbox({ subreddit }: Props) {
           },
         });
 
-        allPostsVar([{ node: data?.insertPost }, ...allPostsVar()]);
+        postsVar([{ node: data?.insertPost }, ...postsVar()]);
       } else {
         const { data } = await addPost({
           variables: {
@@ -83,7 +83,7 @@ function Postbox({ subreddit }: Props) {
             subreddit_topic: subredditExists?.topic,
           },
         });
-        allPostsVar([{ node: data?.insertPost }, ...allPostsVar()]);
+        postsVar([{ node: data?.insertPost }, ...postsVar()]);
       }
 
       setValue("postTitle", "");

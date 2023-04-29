@@ -1,10 +1,10 @@
 import { useEffect } from "react";
-import type { GetServerSideProps, NextPage } from "next";
+import type { NextPage } from "next";
 import Head from "next/head";
+import useInfiniteScroll from "react-infinite-scroll-hook";
 
 import { useGetPostsQuery } from "@d20/generated/graphql";
-import { allPostsVar } from "@d20/reactivities/allPosts";
-import useInfiniteScroll from "react-infinite-scroll-hook";
+import { postsVar } from "@d20/reactivities/posts";
 
 import PostBox from "@d20/Components/Postbox";
 import Feed from "@d20/Components/Feed";
@@ -14,13 +14,14 @@ const Home: NextPage = () => {
     variables: {
       first: 10,
     },
+    fetchPolicy: "cache-and-network",
   });
 
   const posts = data?.posts?.edges;
   const hasNextPage: boolean = data?.posts?.pageInfo?.hasNextPage!;
 
   useEffect(() => {
-    allPostsVar(posts);
+    postsVar(posts);
   }, [posts]);
 
   const handleLoadMore = () => {
@@ -64,24 +65,10 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <PostBox />
+
       <Feed loading={loading || hasNextPage} loadingRef={sentryRef} />
     </div>
   );
 };
-
-// export const getServerSideProps: GetServerSideProps = async () => {
-//   const client = initializeApollo();
-
-//   await client.query({
-//     query: GetPostsDocument,
-//     variables: {
-//       first: 10,
-//     },
-//   });
-
-//   return addApolloState(client, {
-//     props: {},
-//   });
-// };
 
 export default Home;

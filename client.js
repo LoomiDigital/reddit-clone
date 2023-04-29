@@ -4,7 +4,7 @@ import merge from "deepmerge";
 // import { cache } from "./cache";
 // import { isSSR } from "../constants/util";
 import isEqual from "lodash/isEqual";
-import { allPostsVar } from "./reactivities/allPosts";
+import { postsVar } from "./reactivities/posts";
 import { relayStylePagination } from "@apollo/client/utilities";
 
 export const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__";
@@ -49,9 +49,9 @@ function createApolloClient() {
         Query: {
           fields: {
             posts: relayStylePagination(),
-            allPostsVar: {
+            postsVar: {
               read() {
-                return allPostsVar();
+                return postsVar();
               },
             },
           },

@@ -7,7 +7,7 @@ import {
   PostEdge,
   useGetPostsByTopicQuery,
 } from "@d20/generated/graphql";
-import { allPostsVar } from "@d20/reactivities/allPosts";
+import { postsVar } from "@d20/reactivities/posts";
 
 import Avatar from "@d20/Components/Avatar";
 import Postbox from "@d20/Components/Postbox";
@@ -29,11 +29,11 @@ const Subreddit: NextPage<Props> = ({ topic }) => {
     },
   });
 
-  const posts = data?.postsByTopic?.edges! as PostEdge[];
+  const posts = data?.postsByTopic?.edges;
   const hasNextPage: boolean = data?.postsByTopic?.pageInfo?.hasNextPage!;
 
   useEffect(() => {
-    allPostsVar(posts);
+    postsVar(posts);
   }, [posts]);
 
   const handleLoadMore = () => {
