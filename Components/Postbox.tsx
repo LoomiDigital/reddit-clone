@@ -2,14 +2,15 @@ import React, { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import { postsVar } from "@d20/reactivities/posts";
-
 import { LinkIcon, PhotoIcon } from "@heroicons/react/24/outline";
 import {
+  GetPostsDocument,
+  GetPostsQuery,
   useAddPostMutation,
   useAddSubredditMutation,
   useGetSubredditByTopicLazyQuery,
 } from "@d20/generated/graphql";
+
 import Avatar from "./Avatar";
 
 type Props = {
@@ -63,27 +64,63 @@ function Postbox({ subreddit }: Props) {
             topic: formData.subreddit.toLowerCase(),
           },
         });
-
         const newSubreddit = addSubredditData?.insertSubreddit!;
 
-        const { data } = await addPost({
+        await addPost({
           variables: {
             ...postFields,
             subreddit_id: newSubreddit.id,
             subreddit_topic: newSubreddit.topic,
           },
-        });
-
-        postsVar([{ node: data?.insertPost }, ...postsVar()]);
-      } else {
-        const { data } = await addPost({
-          variables: {
-            ...postFields,
-            subreddit_id: subredditExists?.id!,
-            subreddit_topic: subredditExists?.topic,
+          update: (cache, { data }) => {
+            const postsData = cache.readQuery<GetPostsQuery>({
+              query: GetPostsDocument,
+            });
+            const newPostEdge = {
+              __typename: postsData?.posts?.edges[0].__typename,
+              node: data?.insertPost,
+              cursor: data?.insertPost?.id,
+            };
+            cache.writeQuery<GetPostsQuery>({
+              query: GetPostsDocument,
+              data: {
+                posts: {
+                  __typename: postsData?.posts?.__typename,
+                  edges: [newPostEdge, ...postsData?.posts?.edges!],
+                  pageInfo: postsData?.posts?.pageInfo!,
+                },
+              },
+            });
           },
         });
-        postsVar([{ node: data?.insertPost }, ...postsVar()]);
+      } else {
+        await addPost({
+          variables: {
+            ...postFields,
+            subreddit_id: subredditExists?.id,
+            subreddit_topic: subredditExists?.topic,
+          },
+          update: (cache, { data }) => {
+            const postsData = cache.readQuery<GetPostsQuery>({
+              query: GetPostsDocument,
+            });
+            const newPostEdge = {
+              __typename: postsData?.posts?.edges[0].__typename,
+              node: data?.insertPost,
+              cursor: data?.insertPost?.id,
+            };
+            cache.writeQuery<GetPostsQuery>({
+              query: GetPostsDocument,
+              data: {
+                posts: {
+                  __typename: postsData?.posts?.__typename,
+                  edges: [newPostEdge, ...postsData?.posts?.edges!],
+                  pageInfo: postsData?.posts?.pageInfo!,
+                },
+              },
+            });
+          },
+        });
       }
 
       setValue("postTitle", "");

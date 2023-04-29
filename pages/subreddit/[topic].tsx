@@ -1,27 +1,20 @@
-import { useEffect } from "react";
-import { GetServerSideProps, NextPage } from "next";
+import { NextPage } from "next";
+import { useRouter } from "next/router";
 import useInfiniteScroll from "react-infinite-scroll-hook";
-import { addApolloState, initializeApollo } from "@d20/client";
-import {
-  GetPostsByTopicDocument,
-  PostEdge,
-  useGetPostsByTopicQuery,
-} from "@d20/generated/graphql";
-import { postsVar } from "@d20/reactivities/posts";
+import { PostEdge, useGetPostsByTopicQuery } from "@d20/generated/graphql";
 
 import Avatar from "@d20/Components/Avatar";
 import Postbox from "@d20/Components/Postbox";
 import Feed from "@d20/Components/Feed";
 
-type Params = {
-  topic: string;
-};
-
 type Props = {
   topic: string;
+  posts: PostEdge[];
 };
 
-const Subreddit: NextPage<Props> = ({ topic }) => {
+const Subreddit: NextPage<Props> = () => {
+  const router = useRouter();
+  const topic = router.query.topic as string;
   const { data, fetchMore, loading } = useGetPostsByTopicQuery({
     variables: {
       first: 10,
@@ -31,10 +24,6 @@ const Subreddit: NextPage<Props> = ({ topic }) => {
 
   const posts = data?.postsByTopic?.edges;
   const hasNextPage: boolean = data?.postsByTopic?.pageInfo?.hasNextPage!;
-
-  useEffect(() => {
-    postsVar(posts);
-  }, [posts]);
 
   const handleLoadMore = () => {
     hasNextPage &&
@@ -84,35 +73,14 @@ const Subreddit: NextPage<Props> = ({ topic }) => {
       </div>
       <div className="mx-auto mt-5 max-w-5xl pb-10">
         <Postbox subreddit={topic} />
-        <Feed loading={loading || hasNextPage} loadingRef={sentryRef} />
+        <Feed
+          posts={posts}
+          loading={loading || hasNextPage}
+          loadingRef={sentryRef}
+        />
       </div>
     </div>
   );
-};
-
-export const getServerSideProps: GetServerSideProps<Props, Params> = async ({
-  params,
-}) => {
-  // const client = initializeApollo();
-
-  // await client.query({
-  //   query: GetPostsByTopicDocument,
-  //   variables: {
-  //     first: 10,
-  //     topic: params?.topic,
-  //   },
-  // });
-
-  // return addApolloState(client, {
-  //   props: {
-  //     topic: params?.topic,
-  //   },
-  // });
-  return {
-    props: {
-      topic: params?.topic!,
-    },
-  };
 };
 
 export default Subreddit;

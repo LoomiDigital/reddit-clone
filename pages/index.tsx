@@ -1,10 +1,7 @@
-import { useEffect } from "react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import useInfiniteScroll from "react-infinite-scroll-hook";
-
 import { useGetPostsQuery } from "@d20/generated/graphql";
-import { postsVar } from "@d20/reactivities/posts";
 
 import PostBox from "@d20/Components/Postbox";
 import Feed from "@d20/Components/Feed";
@@ -19,10 +16,6 @@ const Home: NextPage = () => {
 
   const posts = data?.posts?.edges;
   const hasNextPage: boolean = data?.posts?.pageInfo?.hasNextPage!;
-
-  useEffect(() => {
-    postsVar(posts);
-  }, [posts]);
 
   const handleLoadMore = () => {
     hasNextPage &&
@@ -65,8 +58,11 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <PostBox />
-
-      <Feed loading={loading || hasNextPage} loadingRef={sentryRef} />
+      <Feed
+        posts={posts}
+        loading={loading || hasNextPage}
+        loadingRef={sentryRef}
+      />
     </div>
   );
 };
