@@ -8,6 +8,7 @@ import {
   GetPostsQuery,
   useAddPostMutation,
   useAddSubredditMutation,
+  useAddVoteMutation,
   useGetSubredditByTopicLazyQuery,
 } from "@d20/generated/graphql";
 
@@ -27,6 +28,7 @@ type FormData = {
 function Postbox({ subreddit }: Props) {
   const { data: session } = useSession();
   const [addPost] = useAddPostMutation();
+  const [addVote] = useAddVoteMutation();
   const [addSubreddit] = useAddSubredditMutation();
   const [getSubReddit] = useGetSubredditByTopicLazyQuery();
 
@@ -59,7 +61,7 @@ function Postbox({ subreddit }: Props) {
         username: session?.user.name!,
       };
 
-      let newSubreddit;
+      let newSubreddit = null;
 
       if (!subredditExists) {
         const { data: addSubredditData } = await addSubreddit({
@@ -76,9 +78,20 @@ function Postbox({ subreddit }: Props) {
           subreddit_id: newSubreddit?.id || subredditExists?.id!,
           subreddit_topic: newSubreddit?.topic || subredditExists?.topic!,
         },
-        update: (cache, { data: addPostData }) => {
+        update: async (cache, { data: addPostData }) => {
+          const { data: addVoteData } = await addVote({
+            variables: {
+              post_id: addPostData?.insertPost?.id!,
+              username: session?.user.name!,
+              upvote: true,
+            },
+          });
+
           const newPostEdge = {
-            node: addPostData?.insertPost,
+            node: {
+              ...addPostData?.insertPost!,
+              votes: [addVoteData?.addVote!],
+            },
             cursor: addPostData?.insertPost?.id,
           };
 
