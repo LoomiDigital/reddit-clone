@@ -4,7 +4,8 @@ import Link from "next/link";
 import TimeAgo from "react-timeago";
 import { useSession } from "next-auth/react";
 import {
-  GetVotesByPostIdDocument,
+  GetPostByIdDocument,
+  GetPostByIdQuery,
   PostAttributesFragment,
   useAddVoteMutation,
 } from "@d20/generated/graphql";
@@ -29,6 +30,7 @@ function PostCard({ post }: Props) {
   const [hasMounted, setHasMounted] = useState<boolean>(false);
   const [vote, setVote] = useState<boolean | null>();
   const [votes, setVotes] = useState(post.votes);
+  const [addVote] = useAddVoteMutation();
 
   useEffect(() => {
     const isUpvote = votes?.find(
@@ -42,29 +44,11 @@ function PostCard({ post }: Props) {
     setHasMounted(true);
   }, []);
 
-  const [addVote] = useAddVoteMutation({
-    refetchQueries: [
-      {
-        query: GetVotesByPostIdDocument,
-        variables: {
-          post_id: post.id,
-        },
-      },
-    ],
-    fetchPolicy: "no-cache",
-    onQueryUpdated: async (obervableQuery) => {
-      const {
-        data: { getVotesByPostId },
-      } = await obervableQuery.refetch();
-      setVotes(getVotesByPostId);
-    },
-  });
-
   const displayVotes = () => {
     if (!votes || !votes.length) return 1;
 
     const totalVotes = votes.reduce(
-      (total, vote) => (vote?.upvote ? (total += 1) : (total -= 1)),
+      (total, vote) => (vote?.upvote ? total++ : total--),
       0
     );
 
@@ -97,55 +81,34 @@ function PostCard({ post }: Props) {
         upvote: isUpvote,
         username: session?.user.name,
       },
+      update: (cache, { data }) => {
+        const newVote = data?.addVote!;
+
+        cache.updateQuery<GetPostByIdQuery>(
+          {
+            query: GetPostByIdDocument,
+            variables: {
+              id: post.id,
+            },
+          },
+          (data) => ({
+            getPostById: {
+              ...post,
+              votes: [newVote, ...(data?.getPostById?.votes! || post.votes)],
+            },
+          })
+        );
+
+        const updatedQuery = cache.readQuery<GetPostByIdQuery>({
+          query: GetPostByIdDocument,
+          variables: {
+            id: post.id,
+          },
+        });
+
+        setVotes(updatedQuery?.getPostById?.votes);
+      },
     });
-
-    // const {
-    //   data: { getVotesByPostIdAndUsername },
-    // } = await getUserVotes({
-    //   variables: {
-    //     post_id: post.id,
-    //     username: session?.user.name!,
-    //   },
-    //   fetchPolicy: "no-cache",
-    // });
-
-    // const votes: Vote[] = getVotesByPostIdAndUsername;
-
-    // if (!votes.length) {
-    //   await addVote({
-    //     variables: {
-    //       post_id: post.id,
-    //       username: session?.user.name!,
-    //       upvote: isUpvote,
-    //     },
-    //   });
-    // } else if (isUpvote && votes[0]?.upvote) {
-    //   await deleteVote({
-    //     variables: {
-    //       id: votes[0].id,
-    //     },
-    //   });
-    // } else if (!isUpvote && !votes[0]?.upvote) {
-    //   await deleteVote({
-    //     variables: {
-    //       id: votes[0].id,
-    //     },
-    //   });
-    // } else if (votes.length) {
-    //   await deleteVote({
-    //     variables: {
-    //       id: votes[0].id,
-    //     },
-    //   });
-
-    //   await addVote({
-    //     variables: {
-    //       post_id: post.id,
-    //       username: session?.user.name!,
-    //       upvote: isUpvote,
-    //     },
-    //   });
-    // }
   };
 
   const loadSubredditPage = (e: SyntheticEvent) => {
