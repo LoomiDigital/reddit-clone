@@ -49,6 +49,11 @@ function createApolloClient() {
         Query: {
           fields: {
             posts: relayStylePagination(),
+            getPostById: {
+              merge(existing, incoming, { mergeObjects }) {
+                return mergeObjects(existing, incoming);
+              },
+            },
           },
         },
       },
