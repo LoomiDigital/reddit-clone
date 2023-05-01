@@ -51,6 +51,7 @@ function Postbox({ subreddit }: Props) {
       });
 
       const subredditExists = data?.getSubredditByTopic;
+
       const postFields = {
         title: formData.postTitle!,
         body: formData.postBody || "",
@@ -58,70 +59,43 @@ function Postbox({ subreddit }: Props) {
         username: session?.user.name!,
       };
 
+      let newSubreddit;
+
       if (!subredditExists) {
         const { data: addSubredditData } = await addSubreddit({
           variables: {
             topic: formData.subreddit.toLowerCase(),
           },
         });
-        const newSubreddit = addSubredditData?.insertSubreddit!;
-
-        await addPost({
-          variables: {
-            ...postFields,
-            subreddit_id: newSubreddit.id,
-            subreddit_topic: newSubreddit.topic,
-          },
-          update: (cache, { data }) => {
-            const postsData = cache.readQuery<GetPostsQuery>({
-              query: GetPostsDocument,
-            });
-            const newPostEdge = {
-              __typename: postsData?.posts?.edges[0].__typename,
-              node: data?.insertPost,
-              cursor: data?.insertPost?.id,
-            };
-            cache.writeQuery<GetPostsQuery>({
-              query: GetPostsDocument,
-              data: {
-                posts: {
-                  __typename: postsData?.posts?.__typename,
-                  edges: [newPostEdge, ...postsData?.posts?.edges!],
-                  pageInfo: postsData?.posts?.pageInfo!,
-                },
-              },
-            });
-          },
-        });
-      } else {
-        await addPost({
-          variables: {
-            ...postFields,
-            subreddit_id: subredditExists?.id,
-            subreddit_topic: subredditExists?.topic,
-          },
-          update: (cache, { data }) => {
-            const postsData = cache.readQuery<GetPostsQuery>({
-              query: GetPostsDocument,
-            });
-            const newPostEdge = {
-              __typename: postsData?.posts?.edges[0].__typename,
-              node: data?.insertPost,
-              cursor: data?.insertPost?.id,
-            };
-            cache.writeQuery<GetPostsQuery>({
-              query: GetPostsDocument,
-              data: {
-                posts: {
-                  __typename: postsData?.posts?.__typename,
-                  edges: [newPostEdge, ...postsData?.posts?.edges!],
-                  pageInfo: postsData?.posts?.pageInfo!,
-                },
-              },
-            });
-          },
-        });
+        newSubreddit = addSubredditData?.insertSubreddit!;
       }
+
+      await addPost({
+        variables: {
+          ...postFields,
+          subreddit_id: newSubreddit?.id || subredditExists?.id!,
+          subreddit_topic: newSubreddit?.topic || subredditExists?.topic!,
+        },
+        update: (cache, { data: addPostData }) => {
+          const newPostEdge = {
+            node: addPostData?.insertPost,
+            cursor: addPostData?.insertPost?.id,
+          };
+
+          cache.updateQuery<GetPostsQuery>(
+            {
+              query: GetPostsDocument,
+            },
+            (data) => ({
+              posts: {
+                __typename: data?.posts?.__typename,
+                edges: [newPostEdge, ...data?.posts?.edges!],
+                pageInfo: data?.posts?.pageInfo!,
+              },
+            })
+          );
+        },
+      });
 
       setValue("postTitle", "");
       setValue("postBody", "");
