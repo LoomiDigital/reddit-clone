@@ -1,7 +1,7 @@
 import { GetServerSideProps } from "next";
 import { addApolloState, initializeApollo } from "@d20/client";
 import {
-  GetPostByIdDocument,
+  GetPostDocument,
   PostAttributesFragment,
 } from "@d20/generated/graphql";
 
@@ -28,15 +28,16 @@ export const getServerSideProps: GetServerSideProps<Props, Params> = async ({
 }) => {
   const client = initializeApollo({} as unknown as null);
   const {
-    data: { getPostById },
+    data: { getPost },
   } = await client.query({
-    query: GetPostByIdDocument,
+    query: GetPostDocument,
     variables: {
       id: params!.postId,
     },
   });
 
-  const post: PostAttributesFragment = getPostById;
+  const post: PostAttributesFragment = getPost;
+
   const documentProps = addApolloState(client, {
     props: {
       post,

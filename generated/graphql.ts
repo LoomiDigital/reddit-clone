@@ -327,20 +327,17 @@ export type PostEdge = {
  */
 export type Query = {
   __typename?: 'Query';
+  /**  Queries for type 'comment'  */
   comment?: Maybe<Comment>;
   commentList?: Maybe<Array<Maybe<Comment>>>;
   commentPaginatedList?: Maybe<Array<Maybe<Comment>>>;
-  /**  Queries for type 'post'  */
-  getPost?: Maybe<Array<Maybe<Post>>>;
-  getPostById?: Maybe<Post>;
-  getPostList?: Maybe<Array<Maybe<Post>>>;
-  getPostsByTopic?: Maybe<Array<Maybe<Post>>>;
+  getPost?: Maybe<Post>;
   /**  Queries for type 'subreddit'  */
   getSubreddit?: Maybe<Subreddit>;
   getSubredditByTopic?: Maybe<Subreddit>;
   /**  Queries for type 'vote'  */
   getVotesByPostId?: Maybe<Array<Maybe<Vote>>>;
-  /**  Queries for type 'comment'  */
+  /**  Queries for type 'post'  */
   posts?: Maybe<PostConnection>;
   postsByTopic?: Maybe<PostConnection>;
   subreddit?: Maybe<Subreddit>;
@@ -388,32 +385,6 @@ export type QueryCommentPaginatedListArgs = {
  */
 export type QueryGetPostArgs = {
   id: Scalars['ID'];
-};
-
-
-/**
- * Query root object type.
- *
- * Contains fields that are available at the top level of a GraphQL `query`.
- *
- * If an operation is a `query`, the result of the operation is the result of
- * executing the query’s top level selection set with the `Query` root object type.
- */
-export type QueryGetPostByIdArgs = {
-  id: Scalars['ID'];
-};
-
-
-/**
- * Query root object type.
- *
- * Contains fields that are available at the top level of a GraphQL `query`.
- *
- * If an operation is a `query`, the result of the operation is the result of
- * executing the query’s top level selection set with the `Query` root object type.
- */
-export type QueryGetPostsByTopicArgs = {
-  topic: Scalars['String'];
 };
 
 
@@ -555,12 +526,12 @@ export type AddPostMutation = { __typename?: 'Mutation', insertPost?: { __typena
 
 export type PostAttributesFragment = { __typename?: 'Post', id: string, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: string, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', id?: string | null, upvote?: boolean | null, username?: string | null } | null> | null };
 
-export type GetPostByIdQueryVariables = Exact<{
+export type GetPostQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type GetPostByIdQuery = { __typename?: 'Query', getPostById?: { __typename?: 'Post', id: string, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: string, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', id?: string | null, upvote?: boolean | null, username?: string | null } | null> | null } | null };
+export type GetPostQuery = { __typename?: 'Query', getPost?: { __typename?: 'Post', id: string, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: string, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', id?: string | null, upvote?: boolean | null, username?: string | null } | null> | null } | null };
 
 export type GetPostsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']>;
@@ -687,41 +658,41 @@ export function useAddPostMutation(baseOptions?: Apollo.MutationHookOptions<AddP
 export type AddPostMutationHookResult = ReturnType<typeof useAddPostMutation>;
 export type AddPostMutationResult = Apollo.MutationResult<AddPostMutation>;
 export type AddPostMutationOptions = Apollo.BaseMutationOptions<AddPostMutation, AddPostMutationVariables>;
-export const GetPostByIdDocument = gql`
-    query GetPostById($id: ID!) {
-  getPostById(id: $id) {
+export const GetPostDocument = gql`
+    query GetPost($id: ID!) {
+  getPost(id: $id) {
     ...postAttributes
   }
 }
     ${PostAttributesFragmentDoc}`;
 
 /**
- * __useGetPostByIdQuery__
+ * __useGetPostQuery__
  *
- * To run a query within a React component, call `useGetPostByIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetPostByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetPostQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPostQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetPostByIdQuery({
+ * const { data, loading, error } = useGetPostQuery({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useGetPostByIdQuery(baseOptions: Apollo.QueryHookOptions<GetPostByIdQuery, GetPostByIdQueryVariables>) {
+export function useGetPostQuery(baseOptions: Apollo.QueryHookOptions<GetPostQuery, GetPostQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetPostByIdQuery, GetPostByIdQueryVariables>(GetPostByIdDocument, options);
+        return Apollo.useQuery<GetPostQuery, GetPostQueryVariables>(GetPostDocument, options);
       }
-export function useGetPostByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPostByIdQuery, GetPostByIdQueryVariables>) {
+export function useGetPostLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPostQuery, GetPostQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetPostByIdQuery, GetPostByIdQueryVariables>(GetPostByIdDocument, options);
+          return Apollo.useLazyQuery<GetPostQuery, GetPostQueryVariables>(GetPostDocument, options);
         }
-export type GetPostByIdQueryHookResult = ReturnType<typeof useGetPostByIdQuery>;
-export type GetPostByIdLazyQueryHookResult = ReturnType<typeof useGetPostByIdLazyQuery>;
-export type GetPostByIdQueryResult = Apollo.QueryResult<GetPostByIdQuery, GetPostByIdQueryVariables>;
+export type GetPostQueryHookResult = ReturnType<typeof useGetPostQuery>;
+export type GetPostLazyQueryHookResult = ReturnType<typeof useGetPostLazyQuery>;
+export type GetPostQueryResult = Apollo.QueryResult<GetPostQuery, GetPostQueryVariables>;
 export const GetPostsDocument = gql`
     query GetPosts($first: Int, $after: String) {
   posts(first: $first, after: $after) {

@@ -4,8 +4,8 @@ import Link from "next/link";
 import TimeAgo from "react-timeago";
 import { useSession } from "next-auth/react";
 import {
-  GetPostByIdDocument,
-  GetPostByIdQuery,
+  GetPostDocument,
+  GetPostQuery,
   PostAttributesFragment,
   useAddVoteMutation,
 } from "@d20/generated/graphql";
@@ -84,29 +84,29 @@ function PostCard({ post }: Props) {
       update: (cache, { data }) => {
         const newVote = data?.addVote!;
 
-        cache.updateQuery<GetPostByIdQuery>(
+        cache.updateQuery<GetPostQuery>(
           {
-            query: GetPostByIdDocument,
+            query: GetPostDocument,
             variables: {
               id: post.id,
             },
           },
           (data) => ({
-            getPostById: {
+            getPost: {
               ...post,
-              votes: [newVote, ...(data?.getPostById?.votes! || post.votes)],
+              votes: [newVote, ...(data?.getPost?.votes! || post.votes)],
             },
           })
         );
 
-        const updatedQuery = cache.readQuery<GetPostByIdQuery>({
-          query: GetPostByIdDocument,
+        const updatedQuery = cache.readQuery<GetPostQuery>({
+          query: GetPostDocument,
           variables: {
             id: post.id,
           },
         });
 
-        setVotes(updatedQuery?.getPostById?.votes);
+        setVotes(updatedQuery?.getPost?.votes);
       },
     });
   };

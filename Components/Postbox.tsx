@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { LinkIcon, PhotoIcon } from "@heroicons/react/24/outline";
 import {
+  GetPostsByTopicDocument,
+  GetPostsByTopicQuery,
   GetPostsDocument,
   GetPostsQuery,
   useAddPostMutation,
@@ -94,19 +96,44 @@ function Postbox({ subreddit }: Props) {
             },
             cursor: addPostData?.insertPost?.id,
           };
-
-          cache.updateQuery<GetPostsQuery>(
-            {
-              query: GetPostsDocument,
-            },
-            (data) => ({
-              posts: {
-                __typename: data?.posts?.__typename,
-                edges: [newPostEdge, ...data?.posts?.edges!],
-                pageInfo: data?.posts?.pageInfo!,
+          console.log("subreddit", subreddit);
+          if (!subreddit) {
+            cache.updateQuery<GetPostsQuery>(
+              {
+                query: GetPostsDocument,
               },
-            })
-          );
+              (data) => {
+                console.log("no sub data", data);
+                return {
+                  posts: {
+                    __typename: data?.posts?.__typename,
+                    edges: [newPostEdge, ...data?.posts?.edges!],
+                    pageInfo: data?.posts?.pageInfo!,
+                  },
+                };
+              }
+            );
+          } else {
+            cache.updateQuery<GetPostsByTopicQuery>(
+              {
+                query: GetPostsByTopicDocument,
+                variables: {
+                  first: 10,
+                  topic: subreddit,
+                },
+              },
+              (data) => {
+                console.log("data", data);
+                return {
+                  postsByTopic: {
+                    __typename: data?.postsByTopic?.__typename,
+                    edges: [newPostEdge, ...data?.postsByTopic?.edges!],
+                    pageInfo: data?.postsByTopic?.pageInfo!,
+                  },
+                };
+              }
+            );
+          }
         },
       });
 
