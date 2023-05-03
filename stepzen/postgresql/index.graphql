@@ -52,27 +52,6 @@ Feel free to modify them or aggregate more.
 """
 type Query {
   " Queries for type 'comment' "
-  posts(first: Int, after: String = ""): PostConnection
-    @dbquery(
-      type: "postgresql"
-      schema: "public"
-      query: """
-      SELECT "body", "created_at", "id", "image", "subreddit_id", "subreddit_topic", "title", "username" FROM "post"
-      ORDER BY "created_at" DESC LIMIT $1 OFFSET $2
-      """
-      configuration: "postgresql_config"
-    )
-  postsByTopic(first: Int, after: String = "", topic: String): PostConnection
-    @dbquery(
-      type: "postgresql"
-      schema: "public"
-      query: """
-      SELECT "body", "created_at", "id", "image", "subreddit_id", "subreddit_topic", "title", "username" FROM "post"
-      WHERE "subreddit_topic" = $3
-      ORDER BY "created_at" DESC LIMIT $1 OFFSET $2
-      """
-      configuration: "postgresql_config"
-    )
   comment(id: ID!): Comment
     @dbquery(
       type: "postgresql"
@@ -97,42 +76,37 @@ type Query {
       configuration: "postgresql_config"
     )
   " Queries for type 'post' "
-  getPost(id: ID!): [Post]
-    @dbquery(
-      type: "postgresql"
-      schema: "public"
-      query: """
-      SELECT "body", "created_at", "id", "image", "subreddit_id", "subreddit_topic", "title", "username" FROM "post" WHERE "subreddit_id" = $1
-      """
-      configuration: "postgresql_config"
-    )
-  getPostsByTopic(topic: String!): [Post]
-    @dbquery(
-      type: "postgresql"
-      schema: "public"
-      query: """
-      SELECT "body", "created_at", "id", "image", "subreddit_id", "subreddit_topic", "title", "username" FROM "post" WHERE "subreddit_topic" = $1
-      ORDER BY "created_at" DESC
-      """
-      configuration: "postgresql_config"
-    )
-  getPostById(id: ID!): Post
-    @dbquery(
-      type: "postgresql"
-      schema: "public"
-      table: "post"
-      configuration: "postgresql_config"
-    )
-  getPostList: [Post]
+  posts(first: Int, after: String = ""): PostConnection
     @dbquery(
       type: "postgresql"
       schema: "public"
       query: """
       SELECT "body", "created_at", "id", "image", "subreddit_id", "subreddit_topic", "title", "username" FROM "post"
-      ORDER BY "created_at" DESC
+      ORDER BY "created_at" DESC LIMIT $1 OFFSET $2
       """
       configuration: "postgresql_config"
     )
+  postsByTopic(first: Int, after: String = "", topic: String): PostConnection
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "body", "created_at", "id", "image", "subreddit_id", "subreddit_topic", "title", "username" FROM "post"
+      WHERE "subreddit_topic" = $3
+      ORDER BY "created_at" DESC LIMIT $1 OFFSET $2
+      """
+      configuration: "postgresql_config"
+    )
+  getPost(id: ID!): Post
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT "body", "created_at", "id", "image", "subreddit_id", "subreddit_topic", "title", "username" FROM "post" WHERE "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+
   # postPaginatedList(first: Int, after: Int): posts
   #   @dbquery(
   #     type: "postgresql"

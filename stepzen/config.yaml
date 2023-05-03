@@ -1,4 +1,4 @@
 configurationset:
   - configuration:
       name: postgresql_config
-      uri: postgresql://reddit-clone.ccv2vuyyny73.us-east-2.rds.amazonaws.com/postgres?user=postgres&password=Q66hUe54tq92AP4O
+      uri: postgresql://db.nocfaokcbbdisuanjjnj.supabase.co/postgres?user=postgres&password=Q66hUe54tq92AP4O
