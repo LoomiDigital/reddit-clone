@@ -32,9 +32,9 @@ const Home: NextPage = () => {
           const oldEdges = prevResult?.posts?.edges;
           const pageInfo = fetchMoreResult?.posts?.pageInfo;
 
-          const removeDupes = newEdges?.filter(
-            (edge) =>
-              !oldEdges?.some((oldEdge) => oldEdge?.node?.id === edge?.node?.id)
+          const oldIds = new Set(oldEdges?.map((edge) => edge?.node?.id));
+          const filteredEdges = newEdges?.filter(
+            (edge) => !oldIds.has(edge?.node?.id)
           );
 
           return newEdges?.length
@@ -42,7 +42,7 @@ const Home: NextPage = () => {
                 __typename: prevResult?.__typename,
                 posts: {
                   __typename: prevResult?.posts?.__typename,
-                  edges: [...oldEdges!, ...removeDupes!],
+                  edges: [...oldEdges!, ...filteredEdges!],
                   pageInfo,
                 },
               }

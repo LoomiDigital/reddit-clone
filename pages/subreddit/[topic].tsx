@@ -39,16 +39,19 @@ const Subreddit: NextPage<Props> = () => {
           const oldEdges = prevResult?.postsByTopic?.edges;
           const pageInfo = fetchMoreResult?.postsByTopic?.pageInfo;
 
-          const removeDupes = newEdges?.filter(
-            (edge) =>
-              !oldEdges?.some((oldEdge) => oldEdge?.node?.id === edge?.node?.id)
+          const oldIds = new Set(oldEdges?.map((edge) => edge?.node?.id));
+          const filteredEdges = newEdges?.filter(
+            (edge) => !oldIds.has(edge?.node?.id)
           );
 
           return newEdges?.length
             ? {
                 postsByTopic: {
                   __typename: prevResult?.postsByTopic?.__typename,
-                  edges: [...prevResult?.postsByTopic?.edges!, ...removeDupes!],
+                  edges: [
+                    ...prevResult?.postsByTopic?.edges!,
+                    ...filteredEdges!,
+                  ],
                   pageInfo,
                 },
               }
