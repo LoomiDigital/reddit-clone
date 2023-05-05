@@ -11,7 +11,7 @@ const Home: NextPage = () => {
     variables: {
       first: 10,
     },
-    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
   });
 
   const posts = data?.posts?.edges;
@@ -21,6 +21,7 @@ const Home: NextPage = () => {
     hasNextPage &&
       fetchMore({
         variables: {
+          first: 10,
           after: data?.posts?.pageInfo.endCursor,
         },
         updateQuery(
@@ -28,13 +29,20 @@ const Home: NextPage = () => {
           { fetchMoreResult }
         ): ReturnType<typeof Object> {
           const newEdges = fetchMoreResult?.posts?.edges;
+          const oldEdges = prevResult?.posts?.edges;
           const pageInfo = fetchMoreResult?.posts?.pageInfo;
+
+          const removeDupes = newEdges?.filter(
+            (edge) =>
+              !oldEdges?.some((oldEdge) => oldEdge?.node?.id === edge?.node?.id)
+          );
+
           return newEdges?.length
             ? {
                 __typename: prevResult?.__typename,
                 posts: {
                   __typename: prevResult?.posts?.__typename,
-                  edges: [...prevResult?.posts?.edges!, ...newEdges],
+                  edges: [...oldEdges!, ...removeDupes!],
                   pageInfo,
                 },
               }
