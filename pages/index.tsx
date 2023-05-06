@@ -11,7 +11,7 @@ const Home: NextPage = () => {
     variables: {
       first: 10,
     },
-    nextFetchPolicy: "cache-first",
+    fetchPolicy: "cache-and-network",
   });
 
   const posts = data?.posts?.edges;

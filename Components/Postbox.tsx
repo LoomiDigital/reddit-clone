@@ -4,10 +4,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { LinkIcon, PhotoIcon } from "@heroicons/react/24/outline";
 import {
-  GetPostsByTopicDocument,
-  GetPostsByTopicQuery,
-  GetPostsDocument,
-  GetPostsQuery,
+  PostAttributesFragmentDoc,
   useAddPostMutation,
   useAddSubredditMutation,
   useAddVoteMutation,
@@ -74,66 +71,73 @@ function Postbox({ subreddit }: Props) {
         newSubreddit = addSubredditData?.insertSubreddit!;
       }
 
-      await addPost({
+      addPost({
         variables: {
           ...postFields,
           subreddit_id: newSubreddit?.id || subredditExists?.id!,
           subreddit_topic: newSubreddit?.topic || subredditExists?.topic!,
         },
+        optimisticResponse(vars) {
+          return {
+            insertPost: {
+              __typename: "Post",
+              id: -1,
+              title: vars.title,
+              body: vars.body,
+              image: vars.image,
+              username: vars.username,
+              votes: [],
+              subreddit_id: -1,
+              subreddit_topic: vars.subreddit_topic,
+              created_at: new Date().toISOString(),
+            },
+          };
+        },
         update: async (cache, { data: addPostData }) => {
-          const { data: addVoteData } = await addVote({
+          const fieldName = subreddit ? "postsByTopic" : "posts";
+
+          cache.modify({
+            fields: {
+              [fieldName](existingPosts = {}) {
+                const newPostRef = cache.writeFragment({
+                  data: {
+                    ...addPostData?.insertPost!,
+                    votes: [
+                      {
+                        __typename: "Vote",
+                        id: 666,
+                        username: session?.user.name!,
+                        upvote: true,
+                      },
+                    ],
+                  },
+                  fragment: PostAttributesFragmentDoc,
+                  fragmentName: "postAttributes",
+                });
+
+                return {
+                  ...existingPosts,
+                  edges: [
+                    {
+                      __typename: "PostEdge",
+                      node: newPostRef,
+                      cursor: addPostData?.insertPost?.id!,
+                    },
+                    ...existingPosts.edges,
+                  ],
+                };
+              },
+            },
+          });
+        },
+        onCompleted: (data) => {
+          addVote({
             variables: {
-              post_id: addPostData?.insertPost?.id!,
+              post_id: data.insertPost?.id!,
               username: session?.user.name!,
               upvote: true,
             },
           });
-
-          const newPostEdge = {
-            node: {
-              ...addPostData?.insertPost!,
-              votes: [addVoteData?.addVote!],
-            },
-            cursor: addPostData?.insertPost?.id,
-          };
-          console.log("subreddit", subreddit);
-          if (!subreddit) {
-            cache.updateQuery<GetPostsQuery>(
-              {
-                query: GetPostsDocument,
-              },
-              (data) => {
-                console.log("no sub data", data);
-                return {
-                  posts: {
-                    __typename: data?.posts?.__typename,
-                    edges: [newPostEdge, ...data?.posts?.edges!],
-                    pageInfo: data?.posts?.pageInfo!,
-                  },
-                };
-              }
-            );
-          } else {
-            cache.updateQuery<GetPostsByTopicQuery>(
-              {
-                query: GetPostsByTopicDocument,
-                variables: {
-                  first: 10,
-                  topic: subreddit,
-                },
-              },
-              (data) => {
-                console.log("data", data);
-                return {
-                  postsByTopic: {
-                    __typename: data?.postsByTopic?.__typename,
-                    edges: [newPostEdge, ...data?.postsByTopic?.edges!],
-                    pageInfo: data?.postsByTopic?.pageInfo!,
-                  },
-                };
-              }
-            );
-          }
         },
       });
 
