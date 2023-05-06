@@ -5,7 +5,6 @@ fragment postAttributes on Post {
   image
   username
   votes {
-    id
     upvote
     username
   }

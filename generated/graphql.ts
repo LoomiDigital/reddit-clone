@@ -338,7 +338,6 @@ export type Query = {
   /**  Queries for type 'vote'  */
   getVotesByPostId?: Maybe<Array<Maybe<Vote>>>;
   /**  Queries for type 'post'  */
-  postList?: Maybe<Array<Maybe<Post>>>;
   posts?: Maybe<PostConnection>;
   postsByTopic?: Maybe<PostConnection>;
   subreddit?: Maybe<Subreddit>;
@@ -523,16 +522,16 @@ export type AddPostMutationVariables = Exact<{
 }>;
 
 
-export type AddPostMutation = { __typename?: 'Mutation', insertPost?: { __typename?: 'Post', id: number, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: number, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', id?: number | null, upvote?: boolean | null, username?: string | null } | null> | null } | null };
+export type AddPostMutation = { __typename?: 'Mutation', insertPost?: { __typename?: 'Post', id: number, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: number, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', upvote?: boolean | null, username?: string | null } | null> | null } | null };
 
-export type PostAttributesFragment = { __typename?: 'Post', id: number, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: number, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', id?: number | null, upvote?: boolean | null, username?: string | null } | null> | null };
+export type PostAttributesFragment = { __typename?: 'Post', id: number, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: number, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', upvote?: boolean | null, username?: string | null } | null> | null };
 
 export type GetPostQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type GetPostQuery = { __typename?: 'Query', getPost?: { __typename?: 'Post', id: number, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: number, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', id?: number | null, upvote?: boolean | null, username?: string | null } | null> | null } | null };
+export type GetPostQuery = { __typename?: 'Query', getPost?: { __typename?: 'Post', id: number, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: number, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', upvote?: boolean | null, username?: string | null } | null> | null } | null };
 
 export type GetPostsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']>;
@@ -540,7 +539,7 @@ export type GetPostsQueryVariables = Exact<{
 }>;
 
 
-export type GetPostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', edges: Array<{ __typename?: 'PostEdge', cursor?: string | null, node?: { __typename?: 'Post', id: number, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: number, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', id?: number | null, upvote?: boolean | null, username?: string | null } | null> | null } | null }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor: string } } | null };
+export type GetPostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', edges: Array<{ __typename?: 'PostEdge', cursor?: string | null, node?: { __typename?: 'Post', id: number, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: number, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', upvote?: boolean | null, username?: string | null } | null> | null } | null }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor: string } } | null };
 
 export type GetPostsByTopicQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']>;
@@ -549,7 +548,7 @@ export type GetPostsByTopicQueryVariables = Exact<{
 }>;
 
 
-export type GetPostsByTopicQuery = { __typename?: 'Query', postsByTopic?: { __typename?: 'PostConnection', edges: Array<{ __typename?: 'PostEdge', cursor?: string | null, node?: { __typename?: 'Post', id: number, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: number, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', id?: number | null, upvote?: boolean | null, username?: string | null } | null> | null } | null }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor: string } } | null };
+export type GetPostsByTopicQuery = { __typename?: 'Query', postsByTopic?: { __typename?: 'PostConnection', edges: Array<{ __typename?: 'PostEdge', cursor?: string | null, node?: { __typename?: 'Post', id: number, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: number, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', upvote?: boolean | null, username?: string | null } | null> | null } | null }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor: string } } | null };
 
 export type AddSubredditMutationVariables = Exact<{
   topic: Scalars['String'];
@@ -574,7 +573,7 @@ export type AddVoteMutationVariables = Exact<{
 }>;
 
 
-export type AddVoteMutation = { __typename?: 'Mutation', addVote?: { __typename?: 'Vote', id?: number | null, post_id?: number | null, username?: string | null, upvote?: boolean | null } | null };
+export type AddVoteMutation = { __typename?: 'Mutation', addVote?: { __typename?: 'Vote', post_id?: number | null, username?: string | null, upvote?: boolean | null } | null };
 
 export type DeleteVoteMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -588,7 +587,7 @@ export type GetVotesByPostIdQueryVariables = Exact<{
 }>;
 
 
-export type GetVotesByPostIdQuery = { __typename?: 'Query', getVotesByPostId?: Array<{ __typename?: 'Vote', id?: number | null, post_id?: number | null, username?: string | null, upvote?: boolean | null } | null> | null };
+export type GetVotesByPostIdQuery = { __typename?: 'Query', getVotesByPostId?: Array<{ __typename?: 'Vote', post_id?: number | null, username?: string | null, upvote?: boolean | null } | null> | null };
 
 export const PostAttributesFragmentDoc = gql`
     fragment postAttributes on Post {
@@ -598,7 +597,6 @@ export const PostAttributesFragmentDoc = gql`
   image
   username
   votes {
-    id
     upvote
     username
   }
@@ -856,7 +854,6 @@ export type GetSubredditByTopicQueryResult = Apollo.QueryResult<GetSubredditByTo
 export const AddVoteDocument = gql`
     mutation AddVote($post_id: ID!, $upvote: Boolean!, $username: String!) {
   addVote(post_id: $post_id, upvote: $upvote, username: $username) {
-    id
     post_id
     username
     upvote
@@ -929,7 +926,6 @@ export type DeleteVoteMutationOptions = Apollo.BaseMutationOptions<DeleteVoteMut
 export const GetVotesByPostIdDocument = gql`
     query GetVotesByPostId($post_id: ID!) {
   getVotesByPostId(post_id: $post_id) {
-    id
     post_id
     username
     upvote
