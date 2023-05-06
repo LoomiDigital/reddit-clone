@@ -123,12 +123,16 @@ function PostCard({ post }: Props) {
         <div className="flex flex-col items-center justify-start space-y-1 rounded-l-md bg-gray-50 p-4 text-gray-400">
           <ArrowUpIcon
             onClick={(e) => upVote(e, true)}
-            className="voteButtons cursor-pointer hover:text-red-400"
+            className={`voteButtons cursor-pointer hover:text-red-400 ${
+              vote && "text-red-400"
+            }`}
           />
           <p className="text-xs font-bold text-black">{displayVotes()}</p>
           <ArrowDownIcon
             onClick={(e) => upVote(e, false)}
-            className="voteButtons cursor-pointer hover:text-blue-400"
+            className={`voteButtons cursor-pointer hover:text-blue-400 ${
+              !vote && "text-blue-400"
+            }`}
           />
         </div>
         <div className="p-3 pb-1">
