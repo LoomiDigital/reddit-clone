@@ -50,10 +50,10 @@ export type Mutation = {
   insertComment?: Maybe<Comment>;
   insertPost?: Maybe<Post>;
   insertSubreddit?: Maybe<Subreddit>;
-  insertVote?: Maybe<Vote>;
   updateComment?: Maybe<Comment>;
   updatePost?: Maybe<Post>;
   updateSubreddit?: Maybe<Subreddit>;
+  updateVote?: Maybe<Vote>;
 };
 
 
@@ -207,26 +207,6 @@ export type MutationInsertSubredditArgs = {
  * It is expected that the top level fields in a `mutation` operation perform side‐effects on backend data systems.
  * Serial execution of the provided mutations ensures against race conditions during these side‐effects.
  */
-export type MutationInsertVoteArgs = {
-  created_at?: InputMaybe<Scalars['DateTime']>;
-  id: Scalars['ID'];
-  post_id?: InputMaybe<Scalars['ID']>;
-  upvote?: InputMaybe<Scalars['Boolean']>;
-  username?: InputMaybe<Scalars['String']>;
-};
-
-
-/**
- * Mutation root object type.
- *
- * Contains fields that are available at the top level of a GraphQL `mutation`.
- *
- * If an operation is a `mutation`, the result of the operation is the result of executing the mutation’s
- * top level selection set on the `Mutation` root object type. This selection set is executed serially.
- *
- * It is expected that the top level fields in a `mutation` operation perform side‐effects on backend data systems.
- * Serial execution of the provided mutations ensures against race conditions during these side‐effects.
- */
 export type MutationUpdateCommentArgs = {
   created_at?: InputMaybe<Scalars['DateTime']>;
   id: Scalars['ID'];
@@ -274,6 +254,24 @@ export type MutationUpdateSubredditArgs = {
   created_at?: InputMaybe<Scalars['DateTime']>;
   id: Scalars['ID'];
   topic?: InputMaybe<Scalars['String']>;
+};
+
+
+/**
+ * Mutation root object type.
+ *
+ * Contains fields that are available at the top level of a GraphQL `mutation`.
+ *
+ * If an operation is a `mutation`, the result of the operation is the result of executing the mutation’s
+ * top level selection set on the `Mutation` root object type. This selection set is executed serially.
+ *
+ * It is expected that the top level fields in a `mutation` operation perform side‐effects on backend data systems.
+ * Serial execution of the provided mutations ensures against race conditions during these side‐effects.
+ */
+export type MutationUpdateVoteArgs = {
+  post_id: Scalars['ID'];
+  upvote?: InputMaybe<Scalars['Boolean']>;
+  username: Scalars['String'];
 };
 
 /**
@@ -581,6 +579,15 @@ export type DeleteVoteMutationVariables = Exact<{
 
 
 export type DeleteVoteMutation = { __typename?: 'Mutation', deleteVote?: { __typename?: 'Vote', id?: number | null, post_id?: number | null, username?: string | null } | null };
+
+export type UpdateVoteMutationVariables = Exact<{
+  post_id: Scalars['ID'];
+  username: Scalars['String'];
+  upvote: Scalars['Boolean'];
+}>;
+
+
+export type UpdateVoteMutation = { __typename?: 'Mutation', updateVote?: { __typename?: 'Vote', id?: number | null, upvote?: boolean | null, username?: string | null } | null };
 
 export type GetVotesByPostIdQueryVariables = Exact<{
   post_id: Scalars['ID'];
@@ -923,6 +930,43 @@ export function useDeleteVoteMutation(baseOptions?: Apollo.MutationHookOptions<D
 export type DeleteVoteMutationHookResult = ReturnType<typeof useDeleteVoteMutation>;
 export type DeleteVoteMutationResult = Apollo.MutationResult<DeleteVoteMutation>;
 export type DeleteVoteMutationOptions = Apollo.BaseMutationOptions<DeleteVoteMutation, DeleteVoteMutationVariables>;
+export const UpdateVoteDocument = gql`
+    mutation UpdateVote($post_id: ID!, $username: String!, $upvote: Boolean!) {
+  updateVote(post_id: $post_id, username: $username, upvote: $upvote) {
+    id
+    upvote
+    username
+  }
+}
+    `;
+export type UpdateVoteMutationFn = Apollo.MutationFunction<UpdateVoteMutation, UpdateVoteMutationVariables>;
+
+/**
+ * __useUpdateVoteMutation__
+ *
+ * To run a mutation, you first call `useUpdateVoteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateVoteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateVoteMutation, { data, loading, error }] = useUpdateVoteMutation({
+ *   variables: {
+ *      post_id: // value for 'post_id'
+ *      username: // value for 'username'
+ *      upvote: // value for 'upvote'
+ *   },
+ * });
+ */
+export function useUpdateVoteMutation(baseOptions?: Apollo.MutationHookOptions<UpdateVoteMutation, UpdateVoteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateVoteMutation, UpdateVoteMutationVariables>(UpdateVoteDocument, options);
+      }
+export type UpdateVoteMutationHookResult = ReturnType<typeof useUpdateVoteMutation>;
+export type UpdateVoteMutationResult = Apollo.MutationResult<UpdateVoteMutation>;
+export type UpdateVoteMutationOptions = Apollo.BaseMutationOptions<UpdateVoteMutation, UpdateVoteMutationVariables>;
 export const GetVotesByPostIdDocument = gql`
     query GetVotesByPostId($post_id: ID!) {
   getVotesByPostId(post_id: $post_id) {

@@ -322,18 +322,17 @@ type Mutation {
       """
       configuration: "postgresql_config"
     )
-  insertVote(
-    username: String
-    post_id: ID
-    id: ID!
-    created_at: DateTime
-    upvote: Boolean
-  ): Vote
+  updateVote(post_id: ID!, username: String!, upvote: Boolean): Vote
     @dbquery(
       type: "postgresql"
       schema: "public"
-      table: "vote"
-      dml: INSERT
+      query: """
+      UPDATE "vote" SET
+        "upvote" = COALESCE($3, "upvote")
+      WHERE
+        "post_id" = $1 AND "username" = $2
+      RETURNING *
+      """
       configuration: "postgresql_config"
     )
   addVote(username: String, post_id: ID, upvote: Boolean): Vote

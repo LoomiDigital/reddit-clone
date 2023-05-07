@@ -5,9 +5,9 @@ import TimeAgo from "react-timeago";
 import { useSession } from "next-auth/react";
 import {
   GetPostDocument,
-  GetPostQuery,
   PostAttributesFragment,
-  useAddVoteMutation,
+  Vote,
+  useUpdateVoteMutation,
 } from "@d20/generated/graphql";
 
 import {
@@ -30,14 +30,14 @@ function PostCard({ post }: Props) {
   const [hasMounted, setHasMounted] = useState<boolean>(false);
   const [vote, setVote] = useState<boolean | null>();
   const [votes, setVotes] = useState(post.votes);
-  const [addVote] = useAddVoteMutation();
+  const [updateVote] = useUpdateVoteMutation();
 
   useEffect(() => {
-    const isUpvote = votes?.find(
+    const userVote = votes?.find(
       (vote) => vote?.username === session?.user?.name
     )?.upvote;
 
-    setVote(isUpvote);
+    setVote(userVote);
   }, [votes, session]);
 
   useEffect(() => {
@@ -48,11 +48,9 @@ function PostCard({ post }: Props) {
     if (!votes || !votes.length) return 1;
 
     const totalVotes = votes.reduce(
-      (total, vote) => (vote?.upvote ? total++ : total--),
+      (total, vote) => (vote?.upvote ? ++total : --total),
       0
     );
-
-    if (totalVotes === 0) return votes[0]?.upvote ? 1 : -1;
 
     return totalVotes;
   };
@@ -75,38 +73,23 @@ function PostCard({ post }: Props) {
       return;
     }
 
-    await addVote({
+    updateVote({
       variables: {
         post_id: post.id,
         upvote: isUpvote,
         username: session?.user.name,
       },
-      update: (cache, { data }) => {
-        const newVote = data?.addVote!;
-
-        cache.updateQuery<GetPostQuery>(
-          {
-            query: GetPostDocument,
-            variables: {
-              id: post.id,
-            },
-          },
-          (data) => ({
-            getPost: {
-              ...post,
-              votes: [newVote, ...(data?.getPost?.votes! || post.votes)],
-            },
-          })
-        );
-
-        const updatedQuery = cache.readQuery<GetPostQuery>({
+      refetchQueries: [
+        {
           query: GetPostDocument,
           variables: {
             id: post.id,
           },
-        });
-
-        setVotes(updatedQuery?.getPost?.votes);
+        },
+      ],
+      onQueryUpdated: async (data) => {
+        const result = await data.result();
+        setVotes(result.data.getPost.votes);
       },
     });
   };
