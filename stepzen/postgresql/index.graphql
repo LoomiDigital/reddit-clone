@@ -1,7 +1,7 @@
 type Comment {
-  username: String
-  text: String
-  post_id: ID
+  username: String!
+  text: String!
+  post_id: ID!
   id: ID
   created_at: DateTime
 }
@@ -27,6 +27,11 @@ type Post {
   votes: [Vote]
     @materializer(
       query: "getVotesByPostId"
+      arguments: [{ name: "post_id", field: "id" }]
+    )
+  comments: [Comment]
+    @materializer(
+      query: "commentList"
       arguments: [{ name: "post_id", field: "id" }]
     )
   subreddit_topic: String!
@@ -59,7 +64,7 @@ type Query {
       table: "comment"
       configuration: "postgresql_config"
     )
-  commentList: [Comment]
+  commentList(post_id: String!): [Comment]
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -193,13 +198,7 @@ type Mutation {
       dml: DELETE
       configuration: "postgresql_config"
     )
-  insertComment(
-    username: String
-    post_id: ID
-    text: String
-    id: ID!
-    created_at: DateTime
-  ): Comment
+  addComment(text: String, username: String, post_id: ID): Comment
     @dbquery(
       type: "postgresql"
       schema: "public"

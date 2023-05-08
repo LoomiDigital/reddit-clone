@@ -20,9 +20,9 @@ export type Comment = {
   __typename?: 'Comment';
   created_at?: Maybe<Scalars['DateTime']>;
   id?: Maybe<Scalars['ID']>;
-  post_id?: Maybe<Scalars['ID']>;
-  text?: Maybe<Scalars['String']>;
-  username?: Maybe<Scalars['String']>;
+  post_id: Scalars['ID'];
+  text: Scalars['String'];
+  username: Scalars['String'];
 };
 
 /**
@@ -38,6 +38,7 @@ export type Comment = {
  */
 export type Mutation = {
   __typename?: 'Mutation';
+  addComment?: Maybe<Comment>;
   addVote?: Maybe<Vote>;
   /**  Mutations for type 'comment'  */
   deleteComment?: Maybe<Comment>;
@@ -47,13 +48,30 @@ export type Mutation = {
   deleteSubreddit?: Maybe<Subreddit>;
   /**  Mutations for type 'vote'  */
   deleteVote?: Maybe<Vote>;
-  insertComment?: Maybe<Comment>;
   insertPost?: Maybe<Post>;
   insertSubreddit?: Maybe<Subreddit>;
   updateComment?: Maybe<Comment>;
   updatePost?: Maybe<Post>;
   updateSubreddit?: Maybe<Subreddit>;
   updateVote?: Maybe<Vote>;
+};
+
+
+/**
+ * Mutation root object type.
+ *
+ * Contains fields that are available at the top level of a GraphQL `mutation`.
+ *
+ * If an operation is a `mutation`, the result of the operation is the result of executing the mutation’s
+ * top level selection set on the `Mutation` root object type. This selection set is executed serially.
+ *
+ * It is expected that the top level fields in a `mutation` operation perform side‐effects on backend data systems.
+ * Serial execution of the provided mutations ensures against race conditions during these side‐effects.
+ */
+export type MutationAddCommentArgs = {
+  post_id?: InputMaybe<Scalars['ID']>;
+  text?: InputMaybe<Scalars['String']>;
+  username?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -136,26 +154,6 @@ export type MutationDeleteSubredditArgs = {
  */
 export type MutationDeleteVoteArgs = {
   id: Scalars['ID'];
-};
-
-
-/**
- * Mutation root object type.
- *
- * Contains fields that are available at the top level of a GraphQL `mutation`.
- *
- * If an operation is a `mutation`, the result of the operation is the result of executing the mutation’s
- * top level selection set on the `Mutation` root object type. This selection set is executed serially.
- *
- * It is expected that the top level fields in a `mutation` operation perform side‐effects on backend data systems.
- * Serial execution of the provided mutations ensures against race conditions during these side‐effects.
- */
-export type MutationInsertCommentArgs = {
-  created_at?: InputMaybe<Scalars['DateTime']>;
-  id: Scalars['ID'];
-  post_id?: InputMaybe<Scalars['ID']>;
-  text?: InputMaybe<Scalars['String']>;
-  username?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -293,6 +291,7 @@ export type PageInfo = {
 export type Post = {
   __typename?: 'Post';
   body?: Maybe<Scalars['String']>;
+  comments?: Maybe<Array<Maybe<Comment>>>;
   created_at?: Maybe<Scalars['DateTime']>;
   id: Scalars['ID'];
   image?: Maybe<Scalars['String']>;
@@ -356,6 +355,19 @@ export type Query = {
  */
 export type QueryCommentArgs = {
   id: Scalars['ID'];
+};
+
+
+/**
+ * Query root object type.
+ *
+ * Contains fields that are available at the top level of a GraphQL `query`.
+ *
+ * If an operation is a `query`, the result of the operation is the result of
+ * executing the query’s top level selection set with the `Query` root object type.
+ */
+export type QueryCommentListArgs = {
+  post_id: Scalars['String'];
 };
 
 
@@ -510,6 +522,15 @@ export type Vote = {
   username?: Maybe<Scalars['String']>;
 };
 
+export type AddCommentMutationVariables = Exact<{
+  text: Scalars['String'];
+  post_id: Scalars['ID'];
+  username: Scalars['String'];
+}>;
+
+
+export type AddCommentMutation = { __typename?: 'Mutation', addComment?: { __typename?: 'Comment', text: string, post_id: number, created_at?: any | null, username: string } | null };
+
 export type AddPostMutationVariables = Exact<{
   title: Scalars['String'];
   body: Scalars['String'];
@@ -520,16 +541,16 @@ export type AddPostMutationVariables = Exact<{
 }>;
 
 
-export type AddPostMutation = { __typename?: 'Mutation', insertPost?: { __typename?: 'Post', id: number, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: number, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', upvote?: boolean | null, username?: string | null } | null> | null } | null };
+export type AddPostMutation = { __typename?: 'Mutation', insertPost?: { __typename?: 'Post', id: number, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: number, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', upvote?: boolean | null, username?: string | null } | null> | null, comments?: Array<{ __typename?: 'Comment', id?: number | null, text: string, username: string, created_at?: any | null } | null> | null } | null };
 
-export type PostAttributesFragment = { __typename?: 'Post', id: number, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: number, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', upvote?: boolean | null, username?: string | null } | null> | null };
+export type PostAttributesFragment = { __typename?: 'Post', id: number, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: number, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', upvote?: boolean | null, username?: string | null } | null> | null, comments?: Array<{ __typename?: 'Comment', id?: number | null, text: string, username: string, created_at?: any | null } | null> | null };
 
 export type GetPostQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type GetPostQuery = { __typename?: 'Query', getPost?: { __typename?: 'Post', id: number, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: number, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', upvote?: boolean | null, username?: string | null } | null> | null } | null };
+export type GetPostQuery = { __typename?: 'Query', getPost?: { __typename?: 'Post', id: number, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: number, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', upvote?: boolean | null, username?: string | null } | null> | null, comments?: Array<{ __typename?: 'Comment', id?: number | null, text: string, username: string, created_at?: any | null } | null> | null } | null };
 
 export type GetPostsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']>;
@@ -537,7 +558,7 @@ export type GetPostsQueryVariables = Exact<{
 }>;
 
 
-export type GetPostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', edges: Array<{ __typename?: 'PostEdge', cursor?: string | null, node?: { __typename?: 'Post', id: number, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: number, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', upvote?: boolean | null, username?: string | null } | null> | null } | null }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor: string } } | null };
+export type GetPostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', edges: Array<{ __typename?: 'PostEdge', cursor?: string | null, node?: { __typename?: 'Post', id: number, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: number, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', upvote?: boolean | null, username?: string | null } | null> | null, comments?: Array<{ __typename?: 'Comment', id?: number | null, text: string, username: string, created_at?: any | null } | null> | null } | null }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor: string } } | null };
 
 export type GetPostsByTopicQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']>;
@@ -546,7 +567,7 @@ export type GetPostsByTopicQueryVariables = Exact<{
 }>;
 
 
-export type GetPostsByTopicQuery = { __typename?: 'Query', postsByTopic?: { __typename?: 'PostConnection', edges: Array<{ __typename?: 'PostEdge', cursor?: string | null, node?: { __typename?: 'Post', id: number, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: number, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', upvote?: boolean | null, username?: string | null } | null> | null } | null }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor: string } } | null };
+export type GetPostsByTopicQuery = { __typename?: 'Query', postsByTopic?: { __typename?: 'PostConnection', edges: Array<{ __typename?: 'PostEdge', cursor?: string | null, node?: { __typename?: 'Post', id: number, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: number, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', upvote?: boolean | null, username?: string | null } | null> | null, comments?: Array<{ __typename?: 'Comment', id?: number | null, text: string, username: string, created_at?: any | null } | null> | null } | null }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor: string } } | null };
 
 export type AddSubredditMutationVariables = Exact<{
   topic: Scalars['String'];
@@ -607,6 +628,12 @@ export const PostAttributesFragmentDoc = gql`
     upvote
     username
   }
+  comments {
+    id
+    text
+    username
+    created_at
+  }
   subreddit_id
   subreddit_topic
   created_at
@@ -619,6 +646,44 @@ export const SubredditAttributesFragmentDoc = gql`
   created_at
 }
     `;
+export const AddCommentDocument = gql`
+    mutation AddComment($text: String!, $post_id: ID!, $username: String!) {
+  addComment(text: $text, post_id: $post_id, username: $username) {
+    text
+    post_id
+    created_at
+    username
+  }
+}
+    `;
+export type AddCommentMutationFn = Apollo.MutationFunction<AddCommentMutation, AddCommentMutationVariables>;
+
+/**
+ * __useAddCommentMutation__
+ *
+ * To run a mutation, you first call `useAddCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addCommentMutation, { data, loading, error }] = useAddCommentMutation({
+ *   variables: {
+ *      text: // value for 'text'
+ *      post_id: // value for 'post_id'
+ *      username: // value for 'username'
+ *   },
+ * });
+ */
+export function useAddCommentMutation(baseOptions?: Apollo.MutationHookOptions<AddCommentMutation, AddCommentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddCommentMutation, AddCommentMutationVariables>(AddCommentDocument, options);
+      }
+export type AddCommentMutationHookResult = ReturnType<typeof useAddCommentMutation>;
+export type AddCommentMutationResult = Apollo.MutationResult<AddCommentMutation>;
+export type AddCommentMutationOptions = Apollo.BaseMutationOptions<AddCommentMutation, AddCommentMutationVariables>;
 export const AddPostDocument = gql`
     mutation AddPost($title: String!, $body: String!, $image: String!, $username: String!, $subreddit_id: ID!, $subreddit_topic: String!) {
   insertPost(
