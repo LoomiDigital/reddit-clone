@@ -73,7 +73,6 @@ function PostPage({ post }: Props) {
               const newCommentRef = cache.writeFragment({
                 data: {
                   ...post,
-                  title: "hell",
                   comments: [...post?.comments!, comment!],
                 },
                 fragment: PostAttributesFragmentDoc,
