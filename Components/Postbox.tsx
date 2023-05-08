@@ -87,6 +87,7 @@ function Postbox({ subreddit }: Props) {
               image: vars.image,
               username: vars.username,
               votes: [],
+              comments: [],
               subreddit_id: -1,
               subreddit_topic: vars.subreddit_topic,
               created_at: new Date().toISOString(),
@@ -102,6 +103,7 @@ function Postbox({ subreddit }: Props) {
                 const newPostRef = cache.writeFragment({
                   data: {
                     ...addPostData?.insertPost!,
+                    comments: [],
                     votes: [
                       {
                         __typename: "Vote",

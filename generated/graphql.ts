@@ -20,7 +20,7 @@ export type Comment = {
   __typename?: 'Comment';
   created_at?: Maybe<Scalars['DateTime']>;
   id?: Maybe<Scalars['ID']>;
-  post_id: Scalars['ID'];
+  post_id?: Maybe<Scalars['ID']>;
   text: Scalars['String'];
   username: Scalars['String'];
 };
@@ -529,7 +529,7 @@ export type AddCommentMutationVariables = Exact<{
 }>;
 
 
-export type AddCommentMutation = { __typename?: 'Mutation', addComment?: { __typename?: 'Comment', text: string, post_id: number, created_at?: any | null, username: string } | null };
+export type AddCommentMutation = { __typename?: 'Mutation', addComment?: { __typename?: 'Comment', id?: number | null, text: string, post_id?: number | null, created_at?: any | null, username: string } | null };
 
 export type AddPostMutationVariables = Exact<{
   title: Scalars['String'];
@@ -649,6 +649,7 @@ export const SubredditAttributesFragmentDoc = gql`
 export const AddCommentDocument = gql`
     mutation AddComment($text: String!, $post_id: ID!, $username: String!) {
   addComment(text: $text, post_id: $post_id, username: $username) {
+    id
     text
     post_id
     created_at

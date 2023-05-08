@@ -1,7 +1,7 @@
 type Comment {
   username: String!
   text: String!
-  post_id: ID!
+  post_id: ID
   id: ID
   created_at: DateTime
 }

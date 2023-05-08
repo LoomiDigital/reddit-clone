@@ -6,6 +6,7 @@ import TimeAgo from "react-timeago";
 import {
   GetPostDocument,
   PostAttributesFragment,
+  Vote,
   useUpdateVoteMutation,
 } from "@d20/generated/graphql";
 
