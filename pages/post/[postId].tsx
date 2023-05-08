@@ -80,8 +80,6 @@ function PostPage({ post }: Props) {
                 fragmentName: "postAttributes",
               });
 
-              console.log("newCommentRef", newCommentRef);
-
               return newCommentRef;
             },
           },
