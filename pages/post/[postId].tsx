@@ -1,6 +1,6 @@
 import { GetServerSideProps } from "next";
 import { useSession } from "next-auth/react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { addApolloState, initializeApollo } from "@d20/client";
 import {
   GetPostDocument,
