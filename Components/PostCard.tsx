@@ -1,8 +1,8 @@
 import React, { SyntheticEvent, useState, useEffect } from "react";
 import Router from "next/router";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import TimeAgo from "react-timeago";
-import { useSession } from "next-auth/react";
 import {
   GetPostDocument,
   PostAttributesFragment,
@@ -45,9 +45,7 @@ function PostCard({ post }: Props) {
   }, []);
 
   const displayVotes = () => {
-    if (!votes || !votes.length) return 1;
-
-    const totalVotes = votes.reduce(
+    const totalVotes = votes?.reduce(
       (total, vote) => (vote?.upvote ? ++total : --total),
       0
     );
@@ -149,7 +147,7 @@ function PostCard({ post }: Props) {
           <div className="flex space-x-4 text-gray-400 ">
             <div className="postButtons">
               <ChatBubbleOvalLeftEllipsisIcon className="h-6 w-6" />
-              {/* <p>{post.comments.length} Comments</p> */}
+              <p>{post?.comments?.length} Comments</p>
             </div>
             <div className="postButtons">
               <GiftIcon className="h-6 w-6" />
