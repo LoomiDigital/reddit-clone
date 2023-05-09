@@ -12,6 +12,7 @@ import {
 import Timeago from "react-timeago";
 import { toast } from "react-hot-toast";
 
+import { CommentLoader } from "@d20/Components/Loaders";
 import PostCard from "@d20/Components/PostCard";
 import Avatar from "@d20/Components/Avatar";
 
@@ -29,7 +30,7 @@ type FormData = {
 
 function PostPage({ post }: Props) {
   const { data: session } = useSession();
-  const { data: commentsData } = useGetCommentsByPostIdQuery({
+  const { data: commentsData, loading } = useGetCommentsByPostIdQuery({
     variables: {
       post_id: post.id,
     },
@@ -115,26 +116,30 @@ function PostPage({ post }: Props) {
       </div>
       <div className="rounded-b-md border border-t-0 border-gray-300 bg-white px-10 py-5">
         <hr className="py-2" />
-        {comments?.map((comment) => (
-          <div
-            key={comment?.id}
-            className="relative flex items-center space-x-2 space-y-10"
-          >
-            <hr className="absolute left-7 top-16 z-0 h-16 border" />
-            <div className="z-50">
-              <Avatar seed={comment?.username} />
+        {loading ? (
+          <CommentLoader length={10} />
+        ) : (
+          comments?.map((comment) => (
+            <div
+              key={comment?.id}
+              className="relative flex items-center space-x-2 space-y-10"
+            >
+              <hr className="absolute left-7 top-16 z-0 h-16 border" />
+              <div className="z-50">
+                <Avatar seed={comment?.username} />
+              </div>
+              <div className="flex flex-col">
+                <p className="py-2 text-xs text-gray-400">
+                  <span className="font-semibold text-gray-600">
+                    {comment?.username}
+                  </span>{" "}
+                  • {hasMounted && <Timeago date={comment?.created_at} />}
+                </p>
+                <p className="text-sm">{comment?.text}</p>
+              </div>
             </div>
-            <div className="flex flex-col">
-              <p className="py-2 text-xs text-gray-400">
-                <span className="font-semibold text-gray-600">
-                  {comment?.username}
-                </span>{" "}
-                • {hasMounted && <Timeago date={comment?.created_at} />}
-              </p>
-              <p className="text-sm">{comment?.text}</p>
-            </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );

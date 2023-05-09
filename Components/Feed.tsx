@@ -1,7 +1,7 @@
 import React from "react";
-import { ClipLoader } from "react-spinners";
 import { PostEdge } from "@d20/generated/graphql";
 
+import { PostLoader } from "./Loaders";
 import PostCard from "./PostCard";
 
 type Props = {
@@ -21,8 +21,8 @@ function Feed({ loading, loadingRef, posts }: Props) {
         );
       })}
       {loading && (
-        <div ref={loadingRef} className="flex flex-col items-center">
-          <ClipLoader color="#ff4500" />
+        <div ref={loadingRef} className="flex flex-col">
+          <PostLoader length={10} />
         </div>
       )}
     </div>
