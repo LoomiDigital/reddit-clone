@@ -22,20 +22,23 @@ export const PostLoader = ({ length }: Props) => {
               <div className="flex h-full w-full animate-pulse flex-row items-center justify-center space-x-5">
                 <div className="w-full p-3 pb-1">
                   <div className="flex items-center space-x-2">
-                    <h4 className="card-title grow">
+                    <div>
+                      <div className="h-10 w-10 rounded-full bg-gray-300 "></div>
+                    </div>
+                    <h4 className="card-title w-3/12">
                       <div className="h-6 rounded-md bg-gray-300 "></div>
                     </h4>
                   </div>
 
                   <div className="py-4">
                     <div className="card-metrics">
-                      <div className="h-6 rounded-md bg-gray-300 "></div>
+                      <div className="h-20 rounded-md bg-gray-300 "></div>
                     </div>
                   </div>
 
                   <div className="space-x-4 pb-3 text-gray-400">
                     <div className="card-metrics">
-                      <div className="h-6 rounded-md bg-gray-300 "></div>
+                      <div className="h-6 w-6/12 rounded-md bg-gray-300"></div>
                     </div>
                   </div>
                 </div>
