@@ -2,9 +2,11 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 import { useGetPostsQuery } from "@d20/generated/graphql";
+import { newPostIncoming } from "@d20/reactivities/posts";
 
 import PostBox from "@d20/Components/Postbox";
 import Feed from "@d20/Components/Feed";
+import { PostLoader } from "@d20/Components/Loaders";
 
 const Home: NextPage = () => {
   const { data, fetchMore, loading } = useGetPostsQuery({
@@ -66,6 +68,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <PostBox />
+      {newPostIncoming() && <PostLoader length={1} />}
       <Feed
         posts={posts}
         loading={loading || hasNextPage}

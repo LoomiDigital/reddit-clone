@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
+import { newPostIncoming } from "@d20/reactivities/posts";
+
 import { LinkIcon, PhotoIcon } from "@heroicons/react/24/outline";
 import {
   PostAttributesFragmentDoc,
@@ -44,6 +46,8 @@ function Postbox({ subreddit }: Props) {
     const notification = toast.loading("Creating post...");
 
     try {
+      newPostIncoming(true);
+
       const { data } = await getSubReddit({
         variables: {
           topic: subreddit || formData.subreddit,
@@ -140,6 +144,8 @@ function Postbox({ subreddit }: Props) {
               upvote: true,
             },
           });
+
+          newPostIncoming(false);
         },
       });
 
