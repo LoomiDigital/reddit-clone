@@ -86,7 +86,7 @@ function PostPage({ post }: Props) {
         cache.modify({
           fields: {
             commentsByPostId() {
-              return [...comments!, comment!];
+              return [comment!, ...comments!];
             },
           },
         });

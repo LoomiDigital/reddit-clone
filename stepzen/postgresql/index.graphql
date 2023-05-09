@@ -63,7 +63,10 @@ type Query {
     @dbquery(
       type: "postgresql"
       schema: "public"
-      table: "comment"
+      query: """
+      SELECT "created_at", "id", "post_id", "text", "username" FROM "comment" WHERE "post_id" = $1
+      order by "created_at" desc
+      """
       configuration: "postgresql_config"
     )
   commentPaginatedList(first: Int, after: Int): [Comment]
