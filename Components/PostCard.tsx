@@ -27,7 +27,7 @@ interface Props {
 
 function PostCard({ post }: Props) {
   const { data: session } = useSession();
-  const { data: commentsData } = useGetCommentsByPostIdQuery({
+  const { data: commentsData, loading } = useGetCommentsByPostIdQuery({
     variables: {
       post_id: post.id,
     },
@@ -154,7 +154,7 @@ function PostCard({ post }: Props) {
           <div className="flex space-x-4 text-gray-400 ">
             <div className="postButtons">
               <ChatBubbleOvalLeftEllipsisIcon className="h-6 w-6" />
-              <p>{comments?.length} Comments</p>
+              <p>{loading ? 0 : comments?.length} Comments</p>
             </div>
             <div className="postButtons">
               <GiftIcon className="h-6 w-6" />
