@@ -1,5 +1,5 @@
 import { GetServerSideProps } from "next";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { addApolloState, initializeApollo } from "@d20/client";
@@ -36,13 +36,22 @@ function PostPage({ post }: Props) {
     },
   });
   const [hasMounted, setHasMounted] = useState<boolean>(false);
+  const [isSubmitSuccessful, setIsSubmitSuccessful] = useState<boolean>(false);
+
   const [addComment] = useAddCommentMutation();
   const {
     register,
     handleSubmit,
-    setValue,
+    reset,
     formState: { isValid },
   } = useForm<FormData>();
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset();
+      setIsSubmitSuccessful(false);
+    }
+  }, [isSubmitSuccessful]);
 
   useEffect(() => {
     setHasMounted(true);
@@ -82,7 +91,8 @@ function PostPage({ post }: Props) {
           },
         });
 
-        setValue("comment", "");
+        setIsSubmitSuccessful(true);
+
         toast.success("Comment added!", { id: notification });
       },
     });
