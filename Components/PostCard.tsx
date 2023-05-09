@@ -6,7 +6,7 @@ import TimeAgo from "react-timeago";
 import {
   GetPostDocument,
   PostAttributesFragment,
-  Vote,
+  useGetCommentsByPostIdQuery,
   useUpdateVoteMutation,
 } from "@d20/generated/graphql";
 
@@ -27,6 +27,11 @@ interface Props {
 
 function PostCard({ post }: Props) {
   const { data: session } = useSession();
+  const { data: commentsData } = useGetCommentsByPostIdQuery({
+    variables: {
+      post_id: post.id,
+    },
+  });
   const [hasMounted, setHasMounted] = useState<boolean>(false);
   const [vote, setVote] = useState<boolean | null>();
   const [votes, setVotes] = useState(post.votes);
@@ -98,6 +103,8 @@ function PostCard({ post }: Props) {
     Router.push(href);
   };
 
+  const comments = commentsData?.commentsByPostId;
+
   return (
     <Link passHref href={`/post/${post.id}`}>
       <div className="flex cursor-pointer rounded-md border border-gray-300 bg-white shadow-sm hover:border hover:border-gray-600">
@@ -143,11 +150,11 @@ function PostCard({ post }: Props) {
             <p className="mt-2 text-sm font-light">{post.body}</p>
           </div>
           {post.image && <img className="w-full" src={post.image} alt="" />}
-          {/* Footer */}
+
           <div className="flex space-x-4 text-gray-400 ">
             <div className="postButtons">
               <ChatBubbleOvalLeftEllipsisIcon className="h-6 w-6" />
-              <p>{post?.comments?.length} Comments</p>
+              <p>{comments?.length} Comments</p>
             </div>
             <div className="postButtons">
               <GiftIcon className="h-6 w-6" />

@@ -291,7 +291,6 @@ export type PageInfo = {
 export type Post = {
   __typename?: 'Post';
   body?: Maybe<Scalars['String']>;
-  comments?: Maybe<Array<Maybe<Comment>>>;
   created_at?: Maybe<Scalars['DateTime']>;
   id: Scalars['ID'];
   image?: Maybe<Scalars['String']>;
@@ -326,8 +325,8 @@ export type Query = {
   __typename?: 'Query';
   /**  Queries for type 'comment'  */
   comment?: Maybe<Comment>;
-  commentList?: Maybe<Array<Maybe<Comment>>>;
   commentPaginatedList?: Maybe<Array<Maybe<Comment>>>;
+  commentsByPostId?: Maybe<Array<Maybe<Comment>>>;
   getPost?: Maybe<Post>;
   /**  Queries for type 'subreddit'  */
   getSubreddit?: Maybe<Subreddit>;
@@ -366,8 +365,9 @@ export type QueryCommentArgs = {
  * If an operation is a `query`, the result of the operation is the result of
  * executing the query’s top level selection set with the `Query` root object type.
  */
-export type QueryCommentListArgs = {
-  post_id: Scalars['String'];
+export type QueryCommentPaginatedListArgs = {
+  after?: InputMaybe<Scalars['Int']>;
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -379,9 +379,8 @@ export type QueryCommentListArgs = {
  * If an operation is a `query`, the result of the operation is the result of
  * executing the query’s top level selection set with the `Query` root object type.
  */
-export type QueryCommentPaginatedListArgs = {
-  after?: InputMaybe<Scalars['Int']>;
-  first?: InputMaybe<Scalars['Int']>;
+export type QueryCommentsByPostIdArgs = {
+  post_id: Scalars['ID'];
 };
 
 
@@ -531,6 +530,13 @@ export type AddCommentMutationVariables = Exact<{
 
 export type AddCommentMutation = { __typename?: 'Mutation', addComment?: { __typename?: 'Comment', id?: number | null, text: string, post_id?: number | null, created_at?: any | null, username: string } | null };
 
+export type GetCommentsByPostIdQueryVariables = Exact<{
+  post_id: Scalars['ID'];
+}>;
+
+
+export type GetCommentsByPostIdQuery = { __typename?: 'Query', commentsByPostId?: Array<{ __typename?: 'Comment', id?: number | null, text: string, post_id?: number | null, created_at?: any | null, username: string } | null> | null };
+
 export type AddPostMutationVariables = Exact<{
   title: Scalars['String'];
   body: Scalars['String'];
@@ -541,16 +547,16 @@ export type AddPostMutationVariables = Exact<{
 }>;
 
 
-export type AddPostMutation = { __typename?: 'Mutation', insertPost?: { __typename?: 'Post', id: number, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: number, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', upvote?: boolean | null, username?: string | null } | null> | null, comments?: Array<{ __typename?: 'Comment', id?: number | null, text: string, username: string, created_at?: any | null } | null> | null } | null };
+export type AddPostMutation = { __typename?: 'Mutation', insertPost?: { __typename?: 'Post', id: number, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: number, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', upvote?: boolean | null, username?: string | null } | null> | null } | null };
 
-export type PostAttributesFragment = { __typename?: 'Post', id: number, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: number, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', upvote?: boolean | null, username?: string | null } | null> | null, comments?: Array<{ __typename?: 'Comment', id?: number | null, text: string, username: string, created_at?: any | null } | null> | null };
+export type PostAttributesFragment = { __typename?: 'Post', id: number, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: number, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', upvote?: boolean | null, username?: string | null } | null> | null };
 
 export type GetPostQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type GetPostQuery = { __typename?: 'Query', getPost?: { __typename?: 'Post', id: number, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: number, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', upvote?: boolean | null, username?: string | null } | null> | null, comments?: Array<{ __typename?: 'Comment', id?: number | null, text: string, username: string, created_at?: any | null } | null> | null } | null };
+export type GetPostQuery = { __typename?: 'Query', getPost?: { __typename?: 'Post', id: number, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: number, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', upvote?: boolean | null, username?: string | null } | null> | null } | null };
 
 export type GetPostsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']>;
@@ -558,7 +564,7 @@ export type GetPostsQueryVariables = Exact<{
 }>;
 
 
-export type GetPostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', edges: Array<{ __typename?: 'PostEdge', cursor?: string | null, node?: { __typename?: 'Post', id: number, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: number, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', upvote?: boolean | null, username?: string | null } | null> | null, comments?: Array<{ __typename?: 'Comment', id?: number | null, text: string, username: string, created_at?: any | null } | null> | null } | null }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor: string } } | null };
+export type GetPostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostConnection', edges: Array<{ __typename?: 'PostEdge', cursor?: string | null, node?: { __typename?: 'Post', id: number, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: number, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', upvote?: boolean | null, username?: string | null } | null> | null } | null }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor: string } } | null };
 
 export type GetPostsByTopicQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']>;
@@ -567,7 +573,7 @@ export type GetPostsByTopicQueryVariables = Exact<{
 }>;
 
 
-export type GetPostsByTopicQuery = { __typename?: 'Query', postsByTopic?: { __typename?: 'PostConnection', edges: Array<{ __typename?: 'PostEdge', cursor?: string | null, node?: { __typename?: 'Post', id: number, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: number, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', upvote?: boolean | null, username?: string | null } | null> | null, comments?: Array<{ __typename?: 'Comment', id?: number | null, text: string, username: string, created_at?: any | null } | null> | null } | null }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor: string } } | null };
+export type GetPostsByTopicQuery = { __typename?: 'Query', postsByTopic?: { __typename?: 'PostConnection', edges: Array<{ __typename?: 'PostEdge', cursor?: string | null, node?: { __typename?: 'Post', id: number, title: string, body?: string | null, image?: string | null, username: string, subreddit_id: number, subreddit_topic: string, created_at?: any | null, votes?: Array<{ __typename?: 'Vote', upvote?: boolean | null, username?: string | null } | null> | null } | null }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor: string } } | null };
 
 export type AddSubredditMutationVariables = Exact<{
   topic: Scalars['String'];
@@ -628,12 +634,6 @@ export const PostAttributesFragmentDoc = gql`
     upvote
     username
   }
-  comments {
-    id
-    text
-    username
-    created_at
-  }
   subreddit_id
   subreddit_topic
   created_at
@@ -685,6 +685,45 @@ export function useAddCommentMutation(baseOptions?: Apollo.MutationHookOptions<A
 export type AddCommentMutationHookResult = ReturnType<typeof useAddCommentMutation>;
 export type AddCommentMutationResult = Apollo.MutationResult<AddCommentMutation>;
 export type AddCommentMutationOptions = Apollo.BaseMutationOptions<AddCommentMutation, AddCommentMutationVariables>;
+export const GetCommentsByPostIdDocument = gql`
+    query GetCommentsByPostId($post_id: ID!) {
+  commentsByPostId(post_id: $post_id) {
+    id
+    text
+    post_id
+    created_at
+    username
+  }
+}
+    `;
+
+/**
+ * __useGetCommentsByPostIdQuery__
+ *
+ * To run a query within a React component, call `useGetCommentsByPostIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCommentsByPostIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCommentsByPostIdQuery({
+ *   variables: {
+ *      post_id: // value for 'post_id'
+ *   },
+ * });
+ */
+export function useGetCommentsByPostIdQuery(baseOptions: Apollo.QueryHookOptions<GetCommentsByPostIdQuery, GetCommentsByPostIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCommentsByPostIdQuery, GetCommentsByPostIdQueryVariables>(GetCommentsByPostIdDocument, options);
+      }
+export function useGetCommentsByPostIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCommentsByPostIdQuery, GetCommentsByPostIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCommentsByPostIdQuery, GetCommentsByPostIdQueryVariables>(GetCommentsByPostIdDocument, options);
+        }
+export type GetCommentsByPostIdQueryHookResult = ReturnType<typeof useGetCommentsByPostIdQuery>;
+export type GetCommentsByPostIdLazyQueryHookResult = ReturnType<typeof useGetCommentsByPostIdLazyQuery>;
+export type GetCommentsByPostIdQueryResult = Apollo.QueryResult<GetCommentsByPostIdQuery, GetCommentsByPostIdQueryVariables>;
 export const AddPostDocument = gql`
     mutation AddPost($title: String!, $body: String!, $image: String!, $username: String!, $subreddit_id: ID!, $subreddit_topic: String!) {
   insertPost(

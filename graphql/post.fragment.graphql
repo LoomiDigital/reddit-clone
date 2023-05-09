@@ -8,12 +8,6 @@ fragment postAttributes on Post {
     upvote
     username
   }
-  comments {
-    id
-    text
-    username
-    created_at
-  }
   subreddit_id
   subreddit_topic
   created_at

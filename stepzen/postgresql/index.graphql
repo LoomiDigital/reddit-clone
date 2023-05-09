@@ -29,11 +29,6 @@ type Post {
       query: "getVotesByPostId"
       arguments: [{ name: "post_id", field: "id" }]
     )
-  comments: [Comment]
-    @materializer(
-      query: "commentList"
-      arguments: [{ name: "post_id", field: "id" }]
-    )
   subreddit_topic: String!
   subreddit_id: ID!
   image: String
@@ -64,7 +59,7 @@ type Query {
       table: "comment"
       configuration: "postgresql_config"
     )
-  commentList(post_id: String!): [Comment]
+  commentsByPostId(post_id: ID!): [Comment]
     @dbquery(
       type: "postgresql"
       schema: "public"

@@ -6,8 +6,8 @@ import { addApolloState, initializeApollo } from "@d20/client";
 import {
   GetPostDocument,
   PostAttributesFragment,
-  PostAttributesFragmentDoc,
   useAddCommentMutation,
+  useGetCommentsByPostIdQuery,
 } from "@d20/generated/graphql";
 import Timeago from "react-timeago";
 import { toast } from "react-hot-toast";
@@ -29,8 +29,12 @@ type FormData = {
 
 function PostPage({ post }: Props) {
   const { data: session } = useSession();
+  const { data: commentsData } = useGetCommentsByPostIdQuery({
+    variables: {
+      post_id: post.id,
+    },
+  });
   const [hasMounted, setHasMounted] = useState<boolean>(false);
-  const [comments, setComments] = useState(post.comments);
   const [addComment] = useAddCommentMutation();
   const {
     register,
@@ -42,6 +46,8 @@ function PostPage({ post }: Props) {
   useEffect(() => {
     setHasMounted(true);
   }, []);
+
+  const comments = commentsData?.commentsByPostId;
 
   const submitComment = handleSubmit(async (formData) => {
     const notification = toast.loading("Adding comment...");
@@ -69,27 +75,15 @@ function PostPage({ post }: Props) {
 
         cache.modify({
           fields: {
-            getPost() {
-              const newCommentRef = cache.writeFragment({
-                data: {
-                  ...post,
-                  comments: [...post?.comments!, comment!],
-                },
-                fragment: PostAttributesFragmentDoc,
-                fragmentName: "postAttributes",
-              });
-
-              return newCommentRef;
+            commentsByPostId() {
+              return [...comments!, comment!];
             },
           },
         });
 
-        setComments([...comments!, comment!]);
         setValue("comment", "");
-
         toast.success("Comment added!", { id: notification });
       },
-      onCompleted: async (data) => {},
     });
   });
 
