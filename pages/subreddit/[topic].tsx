@@ -3,9 +3,9 @@ import { useRouter } from "next/router";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 import { PostEdge, useGetPostsByTopicQuery } from "@d20/generated/graphql";
 
-import Avatar from "@d20/Components/Avatar";
-import Postbox from "@d20/Components/Postbox";
-import Feed from "@d20/Components/Feed";
+import Avatar from "@d20/components/Avatar";
+import Postbox from "@d20/components/Postbox";
+import Feed from "@d20/components/Feed";
 
 type Props = {
   topic: string;

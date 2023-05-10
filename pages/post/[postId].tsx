@@ -1,5 +1,5 @@
 import { GetServerSideProps } from "next";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { addApolloState, initializeApollo } from "@d20/client";
@@ -12,9 +12,9 @@ import {
 import Timeago from "react-timeago";
 import { toast } from "react-hot-toast";
 
-import { CommentLoader } from "@d20/Components/Loaders";
-import PostCard from "@d20/Components/PostCard";
-import Avatar from "@d20/Components/Avatar";
+import { CommentLoader } from "@d20/components/Loaders";
+import PostCard from "@d20/components/PostCard";
+import Avatar from "@d20/components/Avatar";
 
 type Params = {
   postId: string;
