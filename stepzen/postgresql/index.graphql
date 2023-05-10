@@ -157,7 +157,7 @@ type Query {
     @dbquery(
       type: "postgresql"
       query: """
-      SELECT "upvote", "username" FROM "vote" WHERE "post_id" = $1
+      SELECT "upvote", "username", "post_id" FROM "vote" WHERE "post_id" = $1
       order by "created_at" desc
       """
       schema: "public"
