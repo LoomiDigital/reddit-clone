@@ -13,11 +13,11 @@ type Subreddit {
 }
 
 type Vote {
-  username: String
-  upvote: Boolean
-  post_id: ID
-  id: ID
-  created_at: DateTime
+  username: String!
+  upvote: Boolean!
+  post_id: ID!
+  id: ID!
+  created_at: DateTime!
 }
 
 type Post {

@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useState, useEffect } from "react";
+import React, { SyntheticEvent, useState, useEffect, use } from "react";
 import Router from "next/router";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -6,6 +6,7 @@ import TimeAgo from "react-timeago";
 import {
   GetPostDocument,
   PostAttributesFragment,
+  UpdateVoteDocument,
   useGetCommentsByPostIdQuery,
   useUpdateVoteMutation,
 } from "@d20/generated/graphql";
@@ -35,6 +36,7 @@ function PostCard({ post }: Props) {
   const [hasMounted, setHasMounted] = useState<boolean>(false);
   const [vote, setVote] = useState<boolean | null>();
   const [votes, setVotes] = useState(post.votes);
+  const [displayVotes, setDisplayVotes] = useState<number>(0);
   const [updateVote] = useUpdateVoteMutation();
 
   useEffect(() => {
@@ -46,17 +48,17 @@ function PostCard({ post }: Props) {
   }, [votes, session]);
 
   useEffect(() => {
-    setHasMounted(true);
-  }, []);
-
-  const displayVotes = () => {
     const totalVotes = votes?.reduce(
       (total, vote) => (vote?.upvote ? ++total : --total),
       0
     );
 
-    return totalVotes;
-  };
+    setDisplayVotes(totalVotes!);
+  }, [votes]);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   const upVote = async (e: SyntheticEvent, isUpvote: boolean) => {
     e.preventDefault();
@@ -82,6 +84,40 @@ function PostCard({ post }: Props) {
         upvote: isUpvote,
         username: session?.user.name,
       },
+      optimisticResponse(vars) {
+        return {
+          updateVote: {
+            __typename: "Vote",
+            id: -1,
+            post_id: vars.post_id,
+            upvote: vars.upvote,
+            username: vars.username,
+          },
+        };
+      },
+      update(cache, { data }) {
+        const isUpvote = data?.updateVote?.upvote;
+        const updatedUpvotes = isUpvote ? displayVotes + 2 : displayVotes - 2;
+
+        cache.writeQuery({
+          query: UpdateVoteDocument,
+          variables: {
+            post_id: post.id,
+          },
+          data: {
+            updateVote: {
+              __typename: "Vote",
+              id: data?.updateVote?.id,
+              post_id: post.id,
+              upvote: isUpvote,
+              username: session?.user.name,
+            },
+          },
+        });
+
+        setDisplayVotes(updatedUpvotes);
+        setVote(isUpvote);
+      },
       refetchQueries: [
         {
           query: GetPostDocument,
@@ -90,10 +126,6 @@ function PostCard({ post }: Props) {
           },
         },
       ],
-      onQueryUpdated: async (data) => {
-        const result = await data.result();
-        setVotes(result.data.getPost.votes);
-      },
     });
   };
 
@@ -115,7 +147,7 @@ function PostCard({ post }: Props) {
               vote && "text-red-400"
             }`}
           />
-          <p className="text-xs font-bold text-black">{displayVotes()}</p>
+          <p className="text-xs font-bold text-black">{displayVotes}</p>
           <ArrowDownIcon
             onClick={(e) => upVote(e, false)}
             className={`voteButtons cursor-pointer hover:text-blue-400 ${

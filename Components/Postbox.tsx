@@ -111,7 +111,7 @@ function Postbox({ subreddit }: Props) {
                     votes: [
                       {
                         __typename: "Vote",
-                        id: 666,
+                        id: -1,
                         username: session?.user.name!,
                         upvote: true,
                       },
