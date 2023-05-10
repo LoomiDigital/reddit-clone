@@ -112,6 +112,7 @@ function Postbox({ subreddit }: Props) {
                       {
                         __typename: "Vote",
                         id: -1,
+                        post_id: addPostData?.insertPost?.id!,
                         username: session?.user.name!,
                         upvote: true,
                       },
