@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useState, useEffect, use } from "react";
+import React, { SyntheticEvent, useEffect, useState } from "react";
 import Router from "next/router";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -141,19 +141,25 @@ function PostCard({ post }: Props) {
     <Link passHref href={`/post/${post.id}`}>
       <div className="flex cursor-pointer rounded-md border border-gray-300 bg-white shadow-sm hover:border hover:border-gray-600">
         <div className="flex flex-col items-center justify-start space-y-1 rounded-l-md bg-gray-50 p-4 text-gray-400">
-          <ArrowUpIcon
-            onClick={(e) => upVote(e, true)}
-            className={`voteButtons cursor-pointer hover:text-red-400 ${
-              vote && "text-red-400"
-            }`}
-          />
-          <p className="text-xs font-bold text-black">{displayVotes}</p>
-          <ArrowDownIcon
-            onClick={(e) => upVote(e, false)}
-            className={`voteButtons cursor-pointer hover:text-blue-400 ${
-              !vote && "text-blue-400"
-            }`}
-          />
+          <span data-testid="upvote">
+            <ArrowUpIcon
+              onClick={(e) => upVote(e, true)}
+              className={`voteButtons cursor-pointer hover:text-red-400 ${
+                vote && "text-red-400"
+              }`}
+            />
+          </span>
+          <p data-testid="votes" className="votes text-xs font-bold text-black">
+            {displayVotes}
+          </p>
+          <span data-testid="downvote">
+            <ArrowDownIcon
+              onClick={(e) => upVote(e, false)}
+              className={`voteButtons cursor-pointer hover:text-blue-400 ${
+                !vote && "text-blue-400"
+              }`}
+            />
+          </span>
         </div>
         <div className="p-3 pb-1">
           <div className="flex items-center space-x-2">
@@ -186,7 +192,9 @@ function PostCard({ post }: Props) {
           <div className="flex space-x-4 text-gray-400 ">
             <div className="postButtons">
               <ChatBubbleOvalLeftEllipsisIcon className="h-6 w-6" />
-              <p>{loading ? 0 : comments?.length} Comments</p>
+              <p data-testid="comments">
+                {loading ? 0 : comments?.length} Comments
+              </p>
             </div>
             <div className="postButtons">
               <GiftIcon className="h-6 w-6" />

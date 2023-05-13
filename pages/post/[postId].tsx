@@ -51,7 +51,7 @@ function PostPage({ post }: Props) {
       reset();
       setIsSubmitSuccessful(false);
     }
-  }, [isSubmitSuccessful]);
+  }, [isSubmitSuccessful, reset]);
 
   useEffect(() => {
     setHasMounted(true);
