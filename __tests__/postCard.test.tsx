@@ -1,11 +1,10 @@
-import "@testing-library/jest-dom/extend-expect";
 import { SessionProvider } from "next-auth/react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MockedProvider } from "@apollo/client/testing";
 import {
   mockPost,
   mockPostResponse,
-  mockPostUpvoteTrue,
+  mockPostUpvoted,
 } from "@d20/mocks/getPost";
 import { mockCommentsResponse } from "@d20/mocks/getComments";
 import { mockDownvote, mockUpvote } from "@d20/mocks/updateVotes";
@@ -40,7 +39,7 @@ describe("PostCard component", () => {
     expect(getByText("Test Post")).toBeInTheDocument();
   });
 
-  it("handles an upvote", async () => {
+  it("casts an upvote", async () => {
     const { getByTestId } = render(
       <MockedProvider
         mocks={[mockCommentsResponse, mockPostResponse, mockUpvote]}
@@ -70,7 +69,7 @@ describe("PostCard component", () => {
     expect(upvoteButton).toHaveClass("text-red-400");
   });
 
-  it("triggers downvote", async () => {
+  it("casts a downvote", async () => {
     const { getByTestId } = render(
       <MockedProvider
         mocks={[mockCommentsResponse, mockPostResponse, mockDownvote]}
@@ -87,7 +86,7 @@ describe("PostCard component", () => {
             },
           }}
         >
-          <PostCard post={mockPostUpvoteTrue} />
+          <PostCard post={mockPostUpvoted} />
         </SessionProvider>
       </MockedProvider>
     );
@@ -100,12 +99,8 @@ describe("PostCard component", () => {
     expect(downButton).toHaveClass("text-blue-400");
   });
 
-  it("handles a new comment", async () => {
-    expect(true).toBe(true);
-  });
-
   it("displays the correct number of comments", async () => {
-    const { getByText, getByTestId } = render(
+    render(
       <MockedProvider mocks={[mockCommentsResponse]}>
         <SessionProvider
           session={{

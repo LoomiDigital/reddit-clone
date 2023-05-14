@@ -1,6 +1,7 @@
+import { MockedResponse } from "@apollo/client/testing";
 import { UpdateVoteDocument } from "@d20/generated/graphql";
 
-export const mockUpvote = {
+export const mockUpvote: MockedResponse = {
   request: {
     query: UpdateVoteDocument,
     variables: {
@@ -21,7 +22,7 @@ export const mockUpvote = {
   },
 };
 
-export const mockDownvote = {
+export const mockDownvote: MockedResponse = {
   request: {
     query: UpdateVoteDocument,
     variables: {

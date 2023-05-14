@@ -56,7 +56,7 @@ export const mockPost: PostAttributesFragment = {
   created_at: "2021-08-15T20:00:00.000Z",
 };
 
-export const mockPostUpvoteTrue: PostAttributesFragment = {
+export const mockPostUpvoted: PostAttributesFragment = {
   __typename: "Post",
   id: 1,
   title: "Test Post",

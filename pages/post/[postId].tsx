@@ -9,12 +9,13 @@ import {
   useAddCommentMutation,
   useGetCommentsByPostIdQuery,
 } from "@d20/generated/graphql";
-import Timeago from "react-timeago";
+
 import { toast } from "react-hot-toast";
 
 import { CommentLoader } from "@d20/components/Loaders";
 import PostCard from "@d20/components/PostCard";
-import Avatar from "@d20/components/Avatar";
+
+import CommentCard from "@d20/components/CommentCard";
 
 type Params = {
   postId: string;
@@ -35,9 +36,7 @@ function PostPage({ post }: Props) {
       post_id: post.id,
     },
   });
-  const [hasMounted, setHasMounted] = useState<boolean>(false);
   const [isSubmitSuccessful, setIsSubmitSuccessful] = useState<boolean>(false);
-
   const [addComment] = useAddCommentMutation();
   const {
     register,
@@ -52,10 +51,6 @@ function PostPage({ post }: Props) {
       setIsSubmitSuccessful(false);
     }
   }, [isSubmitSuccessful, reset]);
-
-  useEffect(() => {
-    setHasMounted(true);
-  }, []);
 
   const comments = commentsData?.commentsByPostId;
 
@@ -118,6 +113,7 @@ function PostPage({ post }: Props) {
           <button
             disabled={!isValid || !session}
             type="submit"
+            name="comment"
             className="rounded-full bg-red-500 p-3 font-semibold text-white disabled:cursor-default disabled:bg-gray-500 disabled:text-gray-300"
           >
             Comment
@@ -130,24 +126,7 @@ function PostPage({ post }: Props) {
           <CommentLoader length={10} />
         ) : (
           comments?.map((comment) => (
-            <div
-              key={comment?.id}
-              className="relative flex items-center space-x-2 space-y-10"
-            >
-              <hr className="absolute left-7 top-16 z-0 h-16 border" />
-              <div className="z-50">
-                <Avatar seed={comment?.username} />
-              </div>
-              <div className="flex flex-col">
-                <p className="py-2 text-xs text-gray-400">
-                  <span className="font-semibold text-gray-600">
-                    {comment?.username}
-                  </span>{" "}
-                  • {hasMounted && <Timeago date={comment?.created_at} />}
-                </p>
-                <p className="text-sm">{comment?.text}</p>
-              </div>
-            </div>
+            <CommentCard key={comment?.id} comment={comment!} />
           ))
         )}
       </div>

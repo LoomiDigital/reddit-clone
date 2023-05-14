@@ -1,5 +1,3 @@
-import "@testing-library/jest-dom/extend-expect";
-
 import { SessionProvider } from "next-auth/react";
 import { render } from "@testing-library/react";
 import { MockedProvider } from "@apollo/client/testing";
