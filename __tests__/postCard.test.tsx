@@ -16,7 +16,7 @@ describe("PostCard component", () => {
     jest.clearAllMocks();
   });
 
-  it("renders the correct number of posts", async () => {
+  it("renders a post correctly", async () => {
     const { getByText } = render(
       <MockedProvider mocks={[mockPostResponse, mockCommentsResponse]}>
         <SessionProvider
