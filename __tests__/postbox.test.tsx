@@ -43,13 +43,20 @@ describe("Postbox Component", () => {
     const postTitleInput = screen.getByPlaceholderText(
       "Create a post by entering a title!"
     );
+    const imageOpenIcon = screen.getByTitle("Add an image");
+
+    await act(() => {
+      fireEvent.click(imageOpenIcon);
+    });
 
     await userEvent.type(postTitleInput, "This is a new post");
 
     const postSubredditInput = screen.getByPlaceholderText("i.e. r/nextjs");
     const postBodyInput = screen.getByPlaceholderText("Text (optional)");
+    const imageInput = screen.getByPlaceholderText("Image URL");
 
     await userEvent.type(postSubredditInput, "testsubreddit");
+    await userEvent.type(imageInput, "https://via.placeholder.com/150");
     await userEvent.type(postBodyInput, "A brand new post!");
 
     const postButton = await screen.getByRole("button", {

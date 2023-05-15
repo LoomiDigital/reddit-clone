@@ -7,7 +7,7 @@ export const mockAddPost: MockedResponse = {
     variables: {
       title: "This is a new post",
       body: "A brand new post!",
-      image: "",
+      image: "https://via.placeholder.com/150",
       username: "Buck",
       subreddit_id: 1,
       subreddit_topic: "testsubreddit",
@@ -20,7 +20,7 @@ export const mockAddPost: MockedResponse = {
         id: 1,
         title: "This is a new post",
         body: "A brand new post!",
-        image: "",
+        image: "https://via.placeholder.com/150",
         username: "Buck",
         subreddit_id: 1,
         subreddit_topic: "testsubreddit",

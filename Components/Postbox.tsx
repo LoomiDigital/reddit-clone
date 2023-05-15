@@ -190,6 +190,7 @@ function Postbox({ subreddit }: Props) {
           className={`h-6 cursor-pointer text-gray-300 ${
             imageBoxOpen && "text-blue-500"
           }`}
+          title="Add an image"
         />
         <LinkIcon className="h-6 text-gray-300" />
       </div>
@@ -225,7 +226,7 @@ function Postbox({ subreddit }: Props) {
                   className="m-2 flex-1 bg-blue-50 p-2 outline-none"
                   {...register("postImage")}
                   type="text"
-                  placeholder="Optional..."
+                  placeholder="Image URL"
                 />
               </div>
             </div>
