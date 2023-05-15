@@ -137,10 +137,10 @@ function Postbox({ subreddit }: Props) {
             },
           });
         },
-        onCompleted: (data) => {
+        onCompleted: async (data) => {
           addVote({
             variables: {
-              post_id: data.insertPost?.id!,
+              post_id: data?.insertPost?.id!,
               username: session?.user.name!,
               upvote: true,
             },
