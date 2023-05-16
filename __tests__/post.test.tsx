@@ -62,9 +62,7 @@ describe("Post component", () => {
       </MockedProvider>
     );
 
-    await waitFor(async () => {
-      expect(await screen.getAllByText("aUser")).toHaveLength(2);
-    });
+    expect(await screen.findAllByText("aUser")).toHaveLength(2);
   });
 
   it("renders a new comment", async () => {
@@ -95,10 +93,10 @@ describe("Post component", () => {
 
     const commentButton = screen.getByRole("button", { name: "Comment" });
 
-    await act(() => {
-      fireEvent.click(commentButton);
-    });
+    fireEvent.click(commentButton);
 
-    expect(await screen.getByText("This is a new comment")).toBeInTheDocument();
+    expect(
+      await screen.findByText("This is a new comment")
+    ).toBeInTheDocument();
   });
 });
