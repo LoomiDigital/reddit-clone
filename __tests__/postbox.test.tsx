@@ -53,9 +53,7 @@ describe("Postbox Component", () => {
     );
     const imageOpenIcon = screen.getByTitle("Add an image");
 
-    await act(() => {
-      fireEvent.click(imageOpenIcon);
-    });
+    fireEvent.click(imageOpenIcon);
 
     await userEvent.type(postTitleInput, "This is a new post");
 
@@ -71,9 +69,7 @@ describe("Postbox Component", () => {
       name: "Create Post",
     });
 
-    await act(() => {
-      fireEvent.click(postButton);
-    });
+    fireEvent.click(postButton);
 
     await waitFor(() => {
       expect(toastSuccess).toHaveBeenCalledWith("Post created!", {
@@ -187,18 +183,60 @@ describe("Postbox Component", () => {
     await userEvent.type(imageInput, "https://via.placeholder.com/150");
     await userEvent.type(postBodyInput, "A brand new post!");
 
-    const postButton = await screen.getByRole("button", {
+    const postButton = screen.getByRole("button", {
       name: "Create Post",
     });
 
-    await act(() => {
-      fireEvent.click(postButton);
-    });
+    fireEvent.click(postButton);
 
     await waitFor(() => {
       expect(toastSuccess).toHaveBeenCalledWith("Post created!", {
         id: "3",
       });
+    });
+  });
+
+  it("should display form validation errors", async () => {
+    render(
+      <MockedProvider
+        mocks={[
+          mockGetSubredditResponse,
+          mockAddSubreddit,
+          mockAddPost,
+          mockAddVote,
+        ]}
+      >
+        <SessionProvider
+          session={{
+            expires: "2021-10-10",
+            user: {
+              name: "Buck",
+              expires: "2021-10-10",
+              email: "user@test.com",
+              address: "123 Fake St",
+              image: "https://via.pla ceholder.com/150",
+            },
+          }}
+        >
+          <Postbox />
+        </SessionProvider>
+      </MockedProvider>
+    );
+
+    const postTitleInput = screen.getByPlaceholderText(
+      "Create a post by entering a title!"
+    );
+
+    await userEvent.type(postTitleInput, "This is a new post");
+
+    const postButton = screen.getByRole("button", {
+      name: "Create Post",
+    });
+
+    fireEvent.click(postButton);
+
+    await waitFor(() => {
+      expect(screen.getByText("- A subreddit is required")).toBeInTheDocument();
     });
   });
 });
