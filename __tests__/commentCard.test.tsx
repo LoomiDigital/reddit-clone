@@ -1,6 +1,6 @@
-import { SessionProvider } from "next-auth/react";
-import { fireEvent, render, screen } from "@testing-library/react";
 import { MockedProvider } from "@apollo/client/testing";
+import { SessionProvider } from "next-auth/react";
+import { render, screen } from "@testing-library/react";
 import { mockPostResponse } from "@d20/mocks/getPost";
 import { mockComment, mockCommentsResponse } from "@d20/mocks/getComments";
 
@@ -8,7 +8,7 @@ import CommentCard from "@d20/components/CommentCard";
 
 describe("CommentCard component", () => {
   it("renders the comment correctly", async () => {
-    const { getByText } = render(
+    render(
       <MockedProvider mocks={[mockPostResponse, mockCommentsResponse]}>
         <SessionProvider
           session={{
@@ -27,7 +27,7 @@ describe("CommentCard component", () => {
       </MockedProvider>
     );
 
-    expect(getByText("An amazing comment")).toBeInTheDocument();
-    expect(getByText("aUser")).toBeInTheDocument();
+    expect(await screen.findByText("An amazing comment")).toBeInTheDocument();
+    expect(await screen.findByText("aUser")).toBeInTheDocument();
   });
 });

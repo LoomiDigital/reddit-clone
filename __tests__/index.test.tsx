@@ -1,5 +1,3 @@
-import "@testing-library/jest-dom/extend-expect";
-
 import { renderHook, waitFor } from "@testing-library/react";
 import { MockedProvider } from "@apollo/client/testing";
 import { useGetPostsQuery } from "../generated/graphql";

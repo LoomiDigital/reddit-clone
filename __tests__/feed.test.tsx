@@ -1,6 +1,6 @@
-import { SessionProvider } from "next-auth/react";
 import { render } from "@testing-library/react";
 import { MockedProvider } from "@apollo/client/testing";
+import { SessionProvider } from "next-auth/react";
 import { mockPostConnection, mockPostsResponse } from "@d20/mocks/getPosts";
 
 import Feed from "@d20/components/Feed";

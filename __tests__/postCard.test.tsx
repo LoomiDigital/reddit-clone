@@ -1,5 +1,5 @@
-import { SessionProvider } from "next-auth/react";
 import { fireEvent, render, screen } from "@testing-library/react";
+import { SessionProvider } from "next-auth/react";
 import { MockedProvider } from "@apollo/client/testing";
 import {
   mockPost,
@@ -40,7 +40,7 @@ describe("PostCard component", () => {
   });
 
   it("casts an upvote", async () => {
-    const { getByTestId } = render(
+    render(
       <MockedProvider
         mocks={[mockCommentsResponse, mockPostResponse, mockUpvote]}
       >
@@ -61,16 +61,16 @@ describe("PostCard component", () => {
       </MockedProvider>
     );
 
-    const upvoteButton = getByTestId("upvote").firstChild as HTMLElement;
+    const upvoteButton = await screen.findByTitle("upvote");
 
     fireEvent.click(upvoteButton);
 
-    expect(await screen.findByText("1")).toBeInTheDocument();
-    expect(upvoteButton).toHaveClass("text-red-400");
+    expect((await screen.findByTitle("votes")).innerHTML).toBe("1");
+    expect(upvoteButton.parentElement).toHaveClass("text-red-400");
   });
 
   it("casts a downvote", async () => {
-    const { getByTestId } = render(
+    render(
       <MockedProvider
         mocks={[mockCommentsResponse, mockPostResponse, mockDownvote]}
       >
@@ -91,12 +91,12 @@ describe("PostCard component", () => {
       </MockedProvider>
     );
 
-    const downButton = getByTestId("downvote").firstChild as HTMLElement;
+    const downButton = screen.getByTitle("downvote");
 
     fireEvent.click(downButton);
 
-    expect(await screen.findByText("-1")).toBeInTheDocument();
-    expect(downButton).toHaveClass("text-blue-400");
+    expect((await screen.findByTitle("votes")).innerHTML).toBe("-1");
+    expect(downButton.parentElement).toHaveClass("text-blue-400");
   });
 
   it("displays the correct number of comments", async () => {

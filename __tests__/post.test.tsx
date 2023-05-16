@@ -1,21 +1,14 @@
-import { SessionProvider } from "next-auth/react";
-import {
-  fireEvent,
-  render,
-  renderHook,
-  screen,
-  waitFor,
-} from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act } from "react-dom/test-utils";
 import userEvent from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing";
-import { useGetCommentsByPostIdQuery } from "@d20/generated/graphql";
+import { SessionProvider } from "next-auth/react";
 import { mockPost, mockPostResponse } from "@d20/mocks/getPost";
-
-import PostPage, { getServerSideProps } from "@d20/pages/post/[postId]";
-import { CommentLoader } from "@d20/components/Loaders";
 import { mockCommentsResponse } from "@d20/mocks/getComments";
 import { mockAddComment } from "@d20/mocks/addComment";
-import { act } from "react-dom/test-utils";
+
+import PostPage from "@d20/pages/post/[postId]";
+import { CommentLoader } from "@d20/components/Loaders";
 
 jest.mock("../components/Loaders", () => ({
   CommentLoader: jest.fn(),

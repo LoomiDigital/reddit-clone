@@ -1,5 +1,9 @@
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act } from "react-dom/test-utils";
+import userEvent from "@testing-library/user-event/";
 import { MockedProvider } from "@apollo/client/testing";
-import Postbox from "@d20/components/Postbox";
+import { SessionProvider } from "next-auth/react";
+import { toast } from "react-hot-toast";
 import { mockAddPost } from "@d20/mocks/addPost";
 import { mockAddSubreddit } from "@d20/mocks/addSubreddit";
 import { mockAddVote } from "@d20/mocks/addVote";
@@ -8,11 +12,8 @@ import {
   mockNoSubredditResponse,
   mockSubreddit,
 } from "@d20/mocks/getSubreddit";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event/";
-import { SessionProvider } from "next-auth/react";
-import { act } from "react-dom/test-utils";
-import { toast } from "react-hot-toast";
+
+import Postbox from "@d20/components/Postbox";
 
 describe("Postbox Component", () => {
   const toastSuccess = jest.spyOn(toast, "success");
@@ -235,8 +236,8 @@ describe("Postbox Component", () => {
 
     fireEvent.click(postButton);
 
-    await waitFor(() => {
-      expect(screen.getByText("- A subreddit is required")).toBeInTheDocument();
-    });
+    expect(
+      await screen.findByText("- A subreddit is required")
+    ).toBeInTheDocument();
   });
 });
