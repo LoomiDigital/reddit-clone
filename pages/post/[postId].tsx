@@ -2,7 +2,7 @@ import { GetServerSideProps } from "next";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
-import { addApolloState, initializeApollo } from "@d20/client";
+import { addApolloState, initializeApollo } from "@d20/graphql/client";
 import {
   GetPostDocument,
   PostAttributesFragment,
@@ -137,7 +137,7 @@ function PostPage({ post }: Props) {
 export const getServerSideProps: GetServerSideProps<Props, Params> = async ({
   params,
 }) => {
-  const client = initializeApollo({} as unknown as null);
+  const client = initializeApollo({});
   const {
     data: { getPost },
   } = await client.query({
