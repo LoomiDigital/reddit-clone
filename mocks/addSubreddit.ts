@@ -20,3 +20,23 @@ export const mockAddSubreddit: MockedResponse = {
     },
   },
 };
+
+export const mockAddNewSubreddit: MockedResponse = {
+  request: {
+    query: AddSubredditDocument,
+    variables: {
+      topic: "anewsubreddit",
+    },
+  },
+  result: {
+    data: {
+      insertSubreddit: {
+        __typename: "Subreddit",
+        id: 1,
+        post_id: 1,
+        topic: "anewsudreddit",
+        created_at: "2021-08-15T20:00:00.000Z",
+      },
+    },
+  },
+};

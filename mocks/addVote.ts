@@ -13,6 +13,7 @@ export const mockAddVote: MockedResponse = {
   result: {
     data: {
       addVote: {
+        __typename: "Vote",
         post_id: 1,
         upvote: true,
         username: "Buck",

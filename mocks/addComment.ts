@@ -13,6 +13,7 @@ export const mockAddComment: MockedResponse = {
   result: {
     data: {
       addComment: {
+        __typename: "Comment",
         id: 3,
         text: "This is a new comment",
         post_id: 1,

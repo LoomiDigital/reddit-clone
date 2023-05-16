@@ -13,9 +13,26 @@ export const mockGetSubredditResponse: MockedResponse = {
   },
   result: {
     data: {
-      id: 1,
+      getSubredditByTopic: {
+        __typename: "Subreddit",
+        id: 1,
+        topic: "testsubreddit",
+        created_at: "2021-08-15T20:00:00.000Z",
+      },
+    },
+  },
+};
+
+export const mockNoSubredditResponse: MockedResponse = {
+  request: {
+    query: GetSubredditByTopicDocument,
+    variables: {
       topic: "testsubreddit",
-      created_at: "2021-08-15T20:00:00.000Z",
+    },
+  },
+  result: {
+    data: {
+      getSubredditByTopic: null,
     },
   },
 };

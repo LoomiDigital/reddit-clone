@@ -23,6 +23,7 @@ export const mockPostResponse: MockedResponse = {
           username: "Buck",
           votes: [
             {
+              __typename: "Vote",
               upvote: true,
               username: "Buck",
               post_id: 1,
@@ -46,6 +47,7 @@ export const mockPost: PostAttributesFragment = {
   username: "Buck",
   votes: [
     {
+      __typename: "Vote",
       upvote: false,
       username: "Buck",
       post_id: 1,
@@ -65,6 +67,7 @@ export const mockPostUpvoted: PostAttributesFragment = {
   username: "Buck",
   votes: [
     {
+      __typename: "Vote",
       upvote: true,
       username: "Buck",
       post_id: 1,

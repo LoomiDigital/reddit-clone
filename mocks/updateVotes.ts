@@ -34,6 +34,7 @@ export const mockDownvote: MockedResponse = {
   result: {
     data: {
       updateVote: {
+        __typename: "Vote",
         post_id: 1,
         id: 1,
         username: "Buck",

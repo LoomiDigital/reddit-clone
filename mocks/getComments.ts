@@ -12,6 +12,7 @@ export const mockCommentsResponse: MockedResponse = {
     data: {
       commentsByPostId: [
         {
+          __typename: "Comment",
           id: 1,
           text: "a comment",
           post_id: 1,
@@ -19,6 +20,7 @@ export const mockCommentsResponse: MockedResponse = {
           username: "aUser",
         },
         {
+          __typename: "Comment",
           id: 2,
           text: "another comment",
           post_id: 1,

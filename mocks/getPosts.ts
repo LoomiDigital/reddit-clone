@@ -29,6 +29,7 @@ export const mockPostsResponse: MockedResponse = {
               username: "Buck",
               votes: [
                 {
+                  __typename: "Vote",
                   upvote: true,
                   username: "Buck",
                   post_id: 1,
@@ -51,6 +52,7 @@ export const mockPostsResponse: MockedResponse = {
               image: "http://placehold.it/300x300",
               votes: [
                 {
+                  __typename: "Vote",
                   upvote: true,
                   username: "Buck",
                   post_id: 2,
@@ -88,6 +90,7 @@ export const mockPosts: GetPostsQuery = {
           username: "Buck",
           votes: [
             {
+              __typename: "Vote",
               upvote: true,
               username: "Buck",
               post_id: 1,
@@ -110,6 +113,7 @@ export const mockPosts: GetPostsQuery = {
           image: "http://placehold.it/300x300",
           votes: [
             {
+              __typename: "Vote",
               upvote: true,
               username: "Buck",
               post_id: 2,
@@ -144,6 +148,7 @@ export const mockPostConnection: PostConnection = {
         username: "Buck",
         votes: [
           {
+            __typename: "Vote",
             upvote: true,
             username: "Buck",
             post_id: 1,
@@ -166,6 +171,7 @@ export const mockPostConnection: PostConnection = {
         image: "http://placehold.it/300x300",
         votes: [
           {
+            __typename: "Vote",
             upvote: true,
             username: "Buck",
             post_id: 2,
