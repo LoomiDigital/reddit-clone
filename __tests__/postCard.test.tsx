@@ -16,7 +16,7 @@ describe("PostCard component", () => {
     jest.clearAllMocks();
   });
 
-  it("renders a post correctly", async () => {
+  it("should render a post correctly", async () => {
     const { getByText } = render(
       <MockedProvider mocks={[mockPostResponse, mockCommentsResponse]}>
         <SessionProvider
@@ -39,7 +39,7 @@ describe("PostCard component", () => {
     expect(getByText("Test Post")).toBeInTheDocument();
   });
 
-  it("casts an upvote", async () => {
+  it("should cast an upvote", async () => {
     render(
       <MockedProvider
         mocks={[mockCommentsResponse, mockPostResponse, mockUpvote]}
@@ -69,7 +69,7 @@ describe("PostCard component", () => {
     expect(upvoteButton.parentElement).toHaveClass("text-red-400");
   });
 
-  it("casts a downvote", async () => {
+  it("should cast a downvote", async () => {
     render(
       <MockedProvider
         mocks={[mockCommentsResponse, mockPostResponse, mockDownvote]}
@@ -99,7 +99,7 @@ describe("PostCard component", () => {
     expect(downButton.parentElement).toHaveClass("text-blue-400");
   });
 
-  it("displays the correct number of comments", async () => {
+  it("should display the correct number of comments", async () => {
     render(
       <MockedProvider mocks={[mockCommentsResponse]}>
         <SessionProvider

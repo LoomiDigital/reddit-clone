@@ -4,7 +4,7 @@ import {
   addApolloState,
   useApollo,
   createApolloClient,
-} from "../graphql/client"; // Replace "your-file" with the actual file name
+} from "../graphql/client";
 import {
   ApolloClient,
   InMemoryCache,

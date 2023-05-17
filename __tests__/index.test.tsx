@@ -4,7 +4,7 @@ import { useGetPostsQuery } from "../generated/graphql";
 import { mockPosts, mockPostsResponse } from "../mocks/getPosts";
 
 describe("Home component", () => {
-  it("returns the correct data", async () => {
+  it("should return the correct data", async () => {
     const { result } = renderHook(
       () =>
         useGetPostsQuery({

@@ -17,7 +17,7 @@ describe("Feed component", () => {
     jest.clearAllMocks();
   });
 
-  it("handles the loading state", async () => {
+  it("should handle the loading state", async () => {
     render(
       <MockedProvider>
         <SessionProvider
@@ -44,7 +44,7 @@ describe("Feed component", () => {
     expect(PostLoader).toHaveBeenCalled();
   });
 
-  it("renders the correct number of posts", async () => {
+  it("should render the correct number of posts", async () => {
     render(
       <MockedProvider mocks={[mockPostsResponse]}>
         <SessionProvider

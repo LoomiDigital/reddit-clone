@@ -19,7 +19,7 @@ describe("Post component", () => {
     jest.clearAllMocks();
   });
 
-  it("displays the loader during the loading state", async () => {
+  it("should display the loader during the loading state", async () => {
     render(
       <MockedProvider mocks={[mockPostResponse, mockCommentsResponse]}>
         <SessionProvider
@@ -42,7 +42,7 @@ describe("Post component", () => {
     expect(CommentLoader).toHaveBeenCalled();
   });
 
-  it("renders the correct number of comments", async () => {
+  it("should render the correct number of comments", async () => {
     render(
       <MockedProvider mocks={[mockPostResponse, mockCommentsResponse]}>
         <SessionProvider
@@ -65,7 +65,7 @@ describe("Post component", () => {
     expect(await screen.findAllByText("aUser")).toHaveLength(2);
   });
 
-  it("renders a new comment", async () => {
+  it("should render a new comment", async () => {
     render(
       <MockedProvider
         mocks={[mockPostResponse, mockCommentsResponse, mockAddComment]}

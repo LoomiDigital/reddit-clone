@@ -7,7 +7,7 @@ import { mockComment, mockCommentsResponse } from "@d20/mocks/getComments";
 import CommentCard from "@d20/components/CommentCard";
 
 describe("CommentCard component", () => {
-  it("renders the comment correctly", async () => {
+  it("should render a comment correctly", async () => {
     render(
       <MockedProvider mocks={[mockPostResponse, mockCommentsResponse]}>
         <SessionProvider
