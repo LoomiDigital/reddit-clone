@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import fetch from "isomorphic-unfetch";
 import {
   ApolloClient,
   ApolloClientOptions,
@@ -20,13 +21,14 @@ const createIsomorphLink = () => {
   const { HttpLink } = require("@apollo/client/link/http");
   return new HttpLink({
     uri: process.env.NEXT_PUBLIC_STEPZEN_API_URL,
+    fetch,
     headers: {
       Authorization: `apikey ${process.env.NEXT_PUBLIC_STEPZEN_API_KEY}`,
     },
   });
 };
 
-const createApolloClient = () => {
+export const createApolloClient = () => {
   let defaultOptions: ApolloClientOptions<NormalizedCacheObject>["defaultOptions"];
 
   if (typeof window === "undefined") {
@@ -107,5 +109,6 @@ export const addApolloState = (
 export function useApollo(pageProps: AppProps["pageProps"]) {
   const state = pageProps[APOLLO_STATE_PROP_NAME];
   const store = useMemo(() => initializeApollo(state), [state]);
+
   return store;
 }
