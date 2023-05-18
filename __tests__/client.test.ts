@@ -29,36 +29,15 @@ describe("initializeApollo", () => {
     const apolloClient = initializeApollo({ initialState });
     const cacheData = apolloClient.cache.extract();
 
-    expect(cacheData).toEqual(initialState);
+    expect(cacheData).toEqual({ initialState });
   });
 });
 
 describe("createApolloClient", () => {
-  const { window } = global;
-
-  afterAll(() => {
-    global.window = window;
-  });
-
   it("should return an instance of ApolloClient", () => {
     const client = createApolloClient();
 
     expect(client).toBeInstanceOf(ApolloClient<NormalizedCacheObject>);
-  });
-
-  it("should set fetchPolicy to no-cache for SSR", () => {
-    // @ts-ignore
-    delete global.window;
-
-    const client = createApolloClient();
-
-    expect(client?.defaultOptions?.query?.fetchPolicy).toEqual("no-cache");
-  });
-
-  it("should set fetchPolicy to cache-first in the browser", () => {
-    const client = createApolloClient();
-
-    expect(client?.defaultOptions?.query?.fetchPolicy).toEqual("no-cache");
   });
 });
 

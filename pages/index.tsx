@@ -1,7 +1,9 @@
-import type { NextPage } from "next";
+import { useCallback } from "react";
+import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import useInfiniteScroll from "react-infinite-scroll-hook";
-import { useGetPostsQuery } from "@d20/generated/graphql";
+import { addApolloState, initializeApollo } from "@d20/graphql/client";
+import { GetPostsDocument, useGetPostsQuery } from "@d20/generated/graphql";
 import { newPostIncoming } from "@d20/reactivities/posts";
 
 import PostBox from "@d20/components/Postbox";
@@ -13,14 +15,14 @@ const Home: NextPage = () => {
     variables: {
       first: 10,
     },
-    fetchPolicy: "cache-and-network",
   });
 
   const posts = data?.posts?.edges;
   const hasNextPage: boolean = data?.posts?.pageInfo?.hasNextPage!;
 
-  const handleLoadMore = () => {
-    hasNextPage &&
+  const handleLoadMore = useCallback(
+    () =>
+      hasNextPage &&
       fetchMore({
         variables: {
           first: 10,
@@ -50,8 +52,9 @@ const Home: NextPage = () => {
               }
             : prevResult;
         },
-      });
-  };
+      }),
+    [fetchMore, data?.posts?.pageInfo.endCursor, hasNextPage]
+  );
 
   const [sentryRef] = useInfiniteScroll({
     hasNextPage,
@@ -76,6 +79,21 @@ const Home: NextPage = () => {
       />
     </div>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({}) => {
+  const client = initializeApollo({});
+
+  await client.query({
+    query: GetPostsDocument,
+    variables: {
+      first: 10,
+    },
+  });
+
+  return addApolloState(client, {
+    props: {},
+  });
 };
 
 export default Home;

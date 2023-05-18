@@ -29,21 +29,6 @@ const createIsomorphLink = () => {
 };
 
 export const createApolloClient = () => {
-  let defaultOptions: ApolloClientOptions<NormalizedCacheObject>["defaultOptions"];
-
-  if (typeof window === "undefined") {
-    defaultOptions = {
-      query: {
-        fetchPolicy: "no-cache",
-      },
-    };
-  } else {
-    defaultOptions = {
-      query: {
-        fetchPolicy: "cache-first",
-      },
-    };
-  }
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
     link: createIsomorphLink(),
@@ -56,19 +41,18 @@ export const createApolloClient = () => {
         },
       },
     }),
-    defaultOptions,
   });
 };
 
-type InitialState = NormalizedCacheObject | undefined;
+type InitialState = NormalizedCacheObject | null | undefined;
 
 interface IInitializeApollo {
   initialState?: InitialState;
 }
 
 export const initializeApollo = (
-  { initialState }: IInitializeApollo = {
-    initialState: undefined,
+  initialState: IInitializeApollo = {
+    initialState: null,
   }
 ) => {
   const _apolloClient = apolloClient ?? createApolloClient();

@@ -22,7 +22,7 @@ function Feed({ loading, loadingRef, posts }: Props) {
       })}
       {loading && (
         <div ref={loadingRef} className="flex flex-col">
-          <PostLoader length={10} />
+          <PostLoader length={1} />
         </div>
       )}
     </div>
