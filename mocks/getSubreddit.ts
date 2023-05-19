@@ -42,3 +42,10 @@ export const mockSubreddit: SubredditAttributesFragment = {
   topic: "testsubreddit",
   created_at: "2021-08-15T20:00:00.000Z",
 };
+
+export const mockSubredditResponse = {
+  getSubredditByTopic: {
+    __typename: "Subreddit",
+    ...mockSubreddit,
+  },
+};

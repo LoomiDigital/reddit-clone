@@ -81,7 +81,7 @@ const Home: NextPage = () => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({}) => {
+export const getServerSideProps: GetServerSideProps = async () => {
   const client = initializeApollo({});
 
   await client.query({
