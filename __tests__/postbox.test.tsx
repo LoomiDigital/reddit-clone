@@ -13,7 +13,7 @@ import {
   mockSubreddit,
 } from "@d20/mocks/getSubreddit";
 
-import Postbox from "@d20/components/Postbox";
+import Postbox from "@d20/Components/Postbox";
 
 describe("Postbox Component", () => {
   const toastSuccess = jest.spyOn(toast, "success");

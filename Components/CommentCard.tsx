@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Avatar from "@d20/components/Avatar";
+import Avatar from "@d20/Components/Avatar";
 import Timeago from "react-timeago";
 import { Comment } from "@d20/generated/graphql";
 

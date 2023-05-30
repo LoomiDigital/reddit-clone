@@ -12,10 +12,10 @@ import {
 
 import { toast } from "react-hot-toast";
 
-import { CommentLoader } from "@d20/components/Loaders";
-import PostCard from "@d20/components/PostCard";
+import { CommentLoader } from "@d20/Components/Loaders";
+import PostCard from "@d20/Components/PostCard";
 
-import CommentCard from "@d20/components/CommentCard";
+import CommentCard from "@d20/Components/CommentCard";
 
 type Params = {
   postId: string;

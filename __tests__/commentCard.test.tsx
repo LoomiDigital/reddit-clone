@@ -4,7 +4,7 @@ import { render, screen } from "@testing-library/react";
 import { mockPostResponse } from "@d20/mocks/getPost";
 import { mockComment, mockCommentsResponse } from "@d20/mocks/getComments";
 
-import CommentCard from "@d20/components/CommentCard";
+import CommentCard from "@d20/Components/CommentCard";
 
 describe("CommentCard component", () => {
   it("should render a comment correctly", async () => {

@@ -10,9 +10,9 @@ import {
 } from "@d20/generated/graphql";
 import { newPostIncoming } from "@d20/reactivities/posts";
 
-import PostBox from "@d20/components/Postbox";
-import Feed from "@d20/components/Feed";
-import { PostLoader } from "@d20/components/Loaders";
+import PostBox from "@d20/Components/Postbox";
+import Feed from "@d20/Components/Feed";
+import { PostLoader } from "@d20/Components/Loaders";
 
 const Home: NextPage = () => {
   const { data, fetchMore, loading } = useGetPostsQuery({

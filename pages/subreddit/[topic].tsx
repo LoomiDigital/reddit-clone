@@ -8,9 +8,9 @@ import {
   useGetPostsByTopicQuery,
 } from "@d20/generated/graphql";
 
-import Avatar from "@d20/components/Avatar";
-import Postbox from "@d20/components/Postbox";
-import Feed from "@d20/components/Feed";
+import Avatar from "@d20/Components/Avatar";
+import Postbox from "@d20/Components/Postbox";
+import Feed from "@d20/Components/Feed";
 import { useCallback } from "react";
 
 type Props = {

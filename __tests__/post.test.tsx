@@ -7,7 +7,7 @@ import { mockCommentsResponse } from "@d20/mocks/getComments";
 import { mockAddComment } from "@d20/mocks/addComment";
 
 import PostPage from "@d20/pages/post/[postId]";
-import { CommentLoader } from "@d20/components/Loaders";
+import { CommentLoader } from "@d20/Components/Loaders";
 
 jest.mock("../components/Loaders", () => ({
   CommentLoader: jest.fn(),

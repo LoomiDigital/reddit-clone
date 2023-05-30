@@ -9,7 +9,7 @@ import {
 import { mockCommentsResponse } from "@d20/mocks/getComments";
 import { mockDownvote, mockUpvote } from "@d20/mocks/updateVotes";
 
-import PostCard from "@d20/components/PostCard";
+import PostCard from "@d20/Components/PostCard";
 
 describe("PostCard component", () => {
   beforeEach(() => {
