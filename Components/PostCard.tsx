@@ -35,9 +35,9 @@ function PostCard({ post }: Props) {
   });
   const [hasMounted, setHasMounted] = useState<boolean>(false);
   const [vote, setVote] = useState<boolean | null>();
-  const [votes, setVotes] = useState(post.votes);
   const [displayVotes, setDisplayVotes] = useState<number>(0);
   const [updateVote] = useUpdateVoteMutation();
+  const votes = post?.votes;
 
   useEffect(() => {
     const userVote = votes?.find(
