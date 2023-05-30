@@ -3,7 +3,11 @@ import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 import { addApolloState, initializeApollo } from "@d20/graphql/client";
-import { GetPostsDocument, useGetPostsQuery } from "@d20/generated/graphql";
+import {
+  GetPostsDocument,
+  GetPostsQuery,
+  useGetPostsQuery,
+} from "@d20/generated/graphql";
 import { newPostIncoming } from "@d20/reactivities/posts";
 
 import PostBox from "@d20/components/Postbox";
@@ -28,13 +32,10 @@ const Home: NextPage = () => {
           first: 10,
           after: data?.posts?.pageInfo.endCursor,
         },
-        updateQuery(
-          prevResult,
-          { fetchMoreResult }
-        ): ReturnType<typeof Object> {
-          const newEdges = fetchMoreResult?.posts?.edges;
-          const oldEdges = prevResult?.posts?.edges;
-          const pageInfo = fetchMoreResult?.posts?.pageInfo;
+        updateQuery(prevResult, { fetchMoreResult }): GetPostsQuery {
+          const newEdges = fetchMoreResult?.posts?.edges!;
+          const oldEdges = prevResult?.posts?.edges!;
+          const pageInfo = fetchMoreResult?.posts?.pageInfo!;
 
           const oldIds = new Set(oldEdges?.map((edge) => edge?.node?.id));
           const filteredEdges = newEdges?.filter(

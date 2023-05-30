@@ -3,6 +3,7 @@ import useInfiniteScroll from "react-infinite-scroll-hook";
 import { addApolloState, initializeApollo } from "@d20/graphql/client";
 import {
   GetPostsByTopicDocument,
+  GetPostsByTopicQuery,
   PostEdge,
   useGetPostsByTopicQuery,
 } from "@d20/generated/graphql";
@@ -35,13 +36,10 @@ const Subreddit: NextPage<Props> = ({ topic }) => {
         variables: {
           after: data?.postsByTopic?.pageInfo.endCursor,
         },
-        updateQuery(
-          prevResult,
-          { fetchMoreResult }
-        ): ReturnType<typeof Object> {
-          const newEdges = fetchMoreResult?.postsByTopic?.edges;
-          const oldEdges = prevResult?.postsByTopic?.edges;
-          const pageInfo = fetchMoreResult?.postsByTopic?.pageInfo;
+        updateQuery(prevResult, { fetchMoreResult }): GetPostsByTopicQuery {
+          const newEdges = fetchMoreResult?.postsByTopic?.edges!;
+          const oldEdges = prevResult?.postsByTopic?.edges!;
+          const pageInfo = fetchMoreResult?.postsByTopic?.pageInfo!;
 
           const oldIds = new Set(oldEdges?.map((edge) => edge?.node?.id));
           const filteredEdges = newEdges?.filter(
