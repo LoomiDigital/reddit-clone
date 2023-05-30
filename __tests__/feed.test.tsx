@@ -3,12 +3,12 @@ import { MockedProvider } from "@apollo/client/testing";
 import { SessionProvider } from "next-auth/react";
 import { mockPostConnection, mockPostsResponse } from "@d20/mocks/getPosts";
 
-import Feed from "@d20/components/Feed";
-import PostCard from "@d20/components/PostCard";
-import { PostLoader } from "@d20/components/Loaders";
+import Feed from "@d20/Components/Feed";
+import PostCard from "@d20/Components/PostCard";
+import { PostLoader } from "@d20/Components/Loaders";
 
-jest.mock("@d20/components/PostCard");
-jest.mock("@d20/components/Loaders", () => ({
+jest.mock("@d20/Components/PostCard");
+jest.mock("@d20/Components/Loaders", () => ({
   PostLoader: jest.fn(),
 }));
 
