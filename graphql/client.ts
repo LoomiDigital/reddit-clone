@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import fetch from "isomorphic-unfetch";
 import {
   ApolloClient,
-  ApolloClientOptions,
   InMemoryCache,
   NormalizedCacheObject,
 } from "@apollo/client";

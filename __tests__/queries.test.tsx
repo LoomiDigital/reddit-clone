@@ -7,16 +7,11 @@ import {
 } from "../generated/graphql";
 import { mockPosts, mockPostsResponse } from "../mocks/getPosts";
 import {
-  mockSubreddit,
   mockGetSubredditResponse,
   mockSubredditResponse,
 } from "../mocks/getSubreddit";
 import { act } from "react-dom/test-utils";
-import {
-  mockComment,
-  mockComments,
-  mockCommentsResponse,
-} from "@d20/mocks/getComments";
+import { mockComments, mockCommentsResponse } from "@d20/mocks/getComments";
 
 describe("GetPosts Query", () => {
   it("should return the correct post data", async () => {
