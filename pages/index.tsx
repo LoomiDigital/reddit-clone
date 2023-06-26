@@ -17,7 +17,7 @@ import { PostLoader } from "@d20/Components/Loaders";
 const Home: NextPage = () => {
   const { data, fetchMore, loading } = useGetPostsQuery({
     variables: {
-      first: 10,
+      first: 5,
     },
   });
 
@@ -29,7 +29,7 @@ const Home: NextPage = () => {
       hasNextPage &&
       fetchMore({
         variables: {
-          first: 10,
+          first: 5,
           after: data?.posts?.pageInfo.endCursor,
         },
         updateQuery(prevResult, { fetchMoreResult }): GetPostsQuery {
@@ -88,7 +88,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
   await client.query({
     query: GetPostsDocument,
     variables: {
-      first: 10,
+      first: 5,
     },
   });
 
