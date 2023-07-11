@@ -21,7 +21,7 @@ type Props = {
 const Subreddit: NextPage<Props> = ({ topic }) => {
   const { data, fetchMore, loading } = useGetPostsByTopicQuery({
     variables: {
-      first: 10,
+      first: 4,
       topic,
     },
   });
@@ -102,7 +102,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   await client.query({
     query: GetPostsByTopicDocument,
     variables: {
-      first: 10,
+      first: 4,
       topic: params?.topic,
     },
   });
