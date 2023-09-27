@@ -105,7 +105,7 @@ function PostPage({ post }: Props) {
           <textarea
             disabled={!session}
             {...register("comment", { required: true })}
-            className="boder h-24 rounded-sm border border-gray-200 p-2 pl-4 outline-none focus-within:border-gray-900 disabled:bg-gray-50"
+            className="h-24 rounded-sm border border-gray-200 p-2 pl-4 outline-none focus-within:border-gray-900 disabled:bg-gray-50"
             placeholder={
               session ? "What are your thoughts?" : "Please log in to comment"
             }
