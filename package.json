@@ -16,7 +16,6 @@
   "dependencies": {
     "@apollo/client": "^3.7.11",
     "@heroicons/react": "^2.0.17",
-    "@testing-library/react": "^14.0.0",
     "@types/jest": "^29.5.1",
     "@types/node": "18.15.11",
     "@types/react": "18.0.33",
@@ -44,6 +43,7 @@
     "@graphql-codegen/typescript-graphql-request": "^4.5.9",
     "@graphql-codegen/typescript-operations": "^3.0.4",
     "@graphql-codegen/typescript-react-apollo": "^3.3.7",
+    "@testing-library/react": "^14.0.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/user-event": "^14.4.3",
     "@types/lodash": "^4.14.194",

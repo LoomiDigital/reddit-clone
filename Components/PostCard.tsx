@@ -3,6 +3,7 @@ import Router from "next/router";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import TimeAgo from "react-timeago";
+
 import {
   GetPostDocument,
   PostAttributesFragment,
@@ -10,6 +11,8 @@ import {
   useGetCommentsByPostIdQuery,
   useUpdateVoteMutation,
 } from "@d20/generated/graphql";
+
+import { toast } from "react-hot-toast";
 
 import {
   ArrowDownIcon,
@@ -64,17 +67,17 @@ function PostCard({ post }: Props) {
     e.preventDefault();
 
     if (!session) {
-      console.log("Log in to upvote");
+      toast.error("Log in to upvote");
       return;
     }
 
     if (isUpvote && vote) {
-      console.log("You may only upvote once");
+      toast.error("You may only upvote once");
       return;
     }
 
     if (!isUpvote && vote === false) {
-      console.log("You may only downvote once");
+      toast.error("You may only downvote once");
       return;
     }
 
