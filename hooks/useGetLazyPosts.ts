@@ -1,5 +1,6 @@
-import { GetPostsQuery, useGetPostsQuery } from "@d20/generated/graphql";
 import { useCallback } from "react";
+
+import { GetPostsQuery, useGetPostsQuery } from "@d20/generated/graphql";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
 export const useGetLazyPosts = () => {
