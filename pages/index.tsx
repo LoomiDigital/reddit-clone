@@ -1,7 +1,8 @@
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 
-import { useLazyLoadPosts } from "@d20/hooks/useLazyLoadPosts";
+import { useGetLazyPosts } from "@d20/hooks/useGetLazyPosts";
+
 import { addApolloState, initializeApollo } from "@d20/graphql/client";
 import { GetPostsDocument } from "@d20/generated/graphql";
 import { newPostIncoming } from "@d20/reactivities/posts";
@@ -11,7 +12,7 @@ import Feed from "@d20/Components/Feed";
 import { PostLoader } from "@d20/Components/Loaders";
 
 const Home: NextPage = () => {
-  const { posts, loading, hasNextPage, sentryRef } = useLazyLoadPosts();
+  const { posts, loading, hasNextPage, sentryRef } = useGetLazyPosts();
 
   return (
     <div className="mx-auto my-7 max-w-5xl">

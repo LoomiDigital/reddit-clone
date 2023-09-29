@@ -2,7 +2,7 @@ import { GetPostsQuery, useGetPostsQuery } from "@d20/generated/graphql";
 import { useCallback } from "react";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
-export const useLazyLoadPosts = () => {
+export const useGetLazyPosts = () => {
   const NUMBER_OF_POSTS = 4;
 
   const { data, fetchMore, loading } = useGetPostsQuery({
