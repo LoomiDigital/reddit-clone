@@ -23,7 +23,7 @@ interface Props {
   post: PostAttributesFragment;
 }
 
-function PostCard({ post }: Props) {
+const PostCard = ({ post }: Props) => {
   const loadSubredditPage = (e: SyntheticEvent) => {
     e.preventDefault();
     const href = `/subreddit/${post.subreddit_topic}`;
@@ -114,6 +114,6 @@ function PostCard({ post }: Props) {
       </div>
     </Link>
   );
-}
+};
 
 export default PostCard;

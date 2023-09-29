@@ -20,7 +20,7 @@ import {
   MagnifyingGlassIcon,
 } from "@heroicons/react/24/solid";
 
-function Header() {
+const Header = () => {
   const { data: session } = useSession();
 
   return (
@@ -98,6 +98,6 @@ function Header() {
       )}
     </div>
   );
-}
+};
 
 export default Header;
