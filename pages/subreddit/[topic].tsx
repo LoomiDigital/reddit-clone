@@ -1,73 +1,20 @@
 import { GetServerSideProps, NextPage } from "next";
-import useInfiniteScroll from "react-infinite-scroll-hook";
+
+import { useGetLazyPostsByTopic } from "@d20/hooks/useGetLazyPostsByTopic";
 import { addApolloState, initializeApollo } from "@d20/graphql/client";
-import {
-  GetPostsByTopicDocument,
-  GetPostsByTopicQuery,
-  PostEdge,
-  useGetPostsByTopicQuery,
-} from "@d20/generated/graphql";
+import { GetPostsByTopicDocument, PostEdge } from "@d20/generated/graphql";
 
 import Avatar from "@d20/Components/Avatar";
 import Postbox from "@d20/Components/Postbox";
 import Feed from "@d20/Components/Feed";
-import { useCallback } from "react";
 
 type Props = {
   topic: string;
-  posts: PostEdge[];
 };
 
 const Subreddit: NextPage<Props> = ({ topic }) => {
-  const { data, fetchMore, loading } = useGetPostsByTopicQuery({
-    variables: {
-      first: 4,
-      topic,
-    },
-  });
-
-  const posts = data?.postsByTopic?.edges;
-  const hasNextPage: boolean = data?.postsByTopic?.pageInfo?.hasNextPage!;
-
-  const handleLoadMore = useCallback(
-    () =>
-      hasNextPage &&
-      fetchMore({
-        variables: {
-          after: data?.postsByTopic?.pageInfo.endCursor,
-        },
-        updateQuery(prevResult, { fetchMoreResult }): GetPostsByTopicQuery {
-          const newEdges = fetchMoreResult?.postsByTopic?.edges!;
-          const oldEdges = prevResult?.postsByTopic?.edges!;
-          const pageInfo = fetchMoreResult?.postsByTopic?.pageInfo!;
-
-          const oldIds = new Set(oldEdges?.map((edge) => edge?.node?.id));
-          const filteredEdges = newEdges?.filter(
-            (edge) => !oldIds.has(edge?.node?.id)
-          );
-
-          return newEdges?.length
-            ? {
-                postsByTopic: {
-                  __typename: prevResult?.postsByTopic?.__typename,
-                  edges: [
-                    ...prevResult?.postsByTopic?.edges!,
-                    ...filteredEdges!,
-                  ],
-                  pageInfo,
-                },
-              }
-            : prevResult;
-        },
-      }),
-    [fetchMore, data?.postsByTopic?.pageInfo.endCursor, hasNextPage]
-  );
-
-  const [sentryRef] = useInfiniteScroll({
-    hasNextPage,
-    loading,
-    onLoadMore: handleLoadMore,
-  });
+  const { posts, loading, hasNextPage, sentryRef } =
+    useGetLazyPostsByTopic(topic);
 
   return (
     <div className="h-24 bg-red-400 p-8">
