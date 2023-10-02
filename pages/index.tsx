@@ -24,11 +24,13 @@ const Home: NextPage = () => {
       </Head>
       <PostBox />
       {newPostIncoming() && <PostLoader length={1} />}
-      <Feed
-        posts={posts}
-        loading={loading || hasNextPage}
-        loadingRef={sentryRef}
-      />
+      {posts?.length && (
+        <Feed
+          posts={posts}
+          loading={loading || hasNextPage}
+          loadingRef={sentryRef}
+        />
+      )}
     </div>
   );
 };
