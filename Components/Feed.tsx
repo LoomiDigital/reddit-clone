@@ -10,7 +10,7 @@ type Props = {
   posts: PostEdge[] | undefined;
 };
 
-function Feed({ loading, loadingRef, posts }: Props) {
+const Feed = ({ loading, loadingRef, posts }: Props) => {
   return (
     <div className="mt-5 space-y-4">
       {posts?.map(({ node }) => {
@@ -27,6 +27,6 @@ function Feed({ loading, loadingRef, posts }: Props) {
       )}
     </div>
   );
-}
+};
 
 export default Feed;

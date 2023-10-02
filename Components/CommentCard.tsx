@@ -7,7 +7,7 @@ type Props = {
   comment: Comment;
 };
 
-function CommentCard({ comment }: Props) {
+const CommentCard = ({ comment }: Props) => {
   const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
@@ -31,6 +31,6 @@ function CommentCard({ comment }: Props) {
       </div>
     </div>
   );
-}
+};
 
 export default CommentCard;

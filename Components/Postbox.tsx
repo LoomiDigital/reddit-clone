@@ -8,7 +8,7 @@ type Props = {
   subreddit?: string;
 };
 
-function Postbox({ subreddit }: Props) {
+const Postbox = ({ subreddit }: Props) => {
   const [imageBoxOpen, setImageBoxOpen] = useState<boolean>(false);
   const { register, submitPost, errors, watch, session } =
     useAddPost(subreddit);
@@ -104,6 +104,6 @@ function Postbox({ subreddit }: Props) {
       )}
     </form>
   );
-}
+};
 
 export default Postbox;

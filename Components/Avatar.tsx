@@ -7,7 +7,7 @@ type Props = {
   large?: boolean;
 };
 
-function Avatar({ seed, large }: Props) {
+const Avatar = ({ seed, large }: Props) => {
   const { data: session } = useSession();
 
   return (
@@ -25,6 +25,6 @@ function Avatar({ seed, large }: Props) {
       />
     </div>
   );
-}
+};
 
 export default Avatar;
