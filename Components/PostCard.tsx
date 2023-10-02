@@ -1,12 +1,12 @@
 import React, { SyntheticEvent, useEffect, useState } from "react";
-import Router from "next/router";
+import Link from "next/link";
 
 import { useAddVote } from "@d20/hooks/useAddVote";
-
-import Link from "next/link";
-import TimeAgo from "react-timeago";
-
 import { PostAttributesFragment } from "@d20/generated/graphql";
+
+import { loadPage } from "@d20/utils/loadPage";
+
+import TimeAgo from "react-timeago";
 
 import {
   ArrowDownIcon,
@@ -25,9 +25,7 @@ interface Props {
 
 const PostCard = ({ post }: Props) => {
   const loadSubredditPage = (e: SyntheticEvent) => {
-    e.preventDefault();
-    const href = `/subreddit/${post.subreddit_topic}`;
-    Router.push(href);
+    loadPage(e, `/subreddit/${post.subreddit_topic}`);
   };
 
   const { upVote, comments, vote, displayVotes, loading } = useAddVote(post);
