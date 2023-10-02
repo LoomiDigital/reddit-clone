@@ -3,6 +3,7 @@ import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 
 import {
+  GetCommentsByPostIdDocument,
   PostAttributesFragment,
   useAddCommentMutation,
   useGetCommentsByPostIdQuery,
@@ -64,13 +65,17 @@ export const useAddComment = (post: PostAttributesFragment) => {
       update: async (cache, { data }) => {
         const comment = await data?.addComment;
 
-        cache.modify({
-          fields: {
-            commentsByPostId() {
-              return [comment!, ...comments!];
+        cache.updateQuery(
+          {
+            query: GetCommentsByPostIdDocument,
+            variables: {
+              post_id: comment?.post_id,
             },
           },
-        });
+          () => ({
+            commentsByPostId: [comment!, ...comments!],
+          })
+        );
 
         setIsSubmitSuccessful(true);
 
