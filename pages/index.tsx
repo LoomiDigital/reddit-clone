@@ -11,8 +11,11 @@ import PostBox from "@d20/Components/Postbox";
 import Feed from "@d20/Components/Feed";
 import { PostLoader } from "@d20/Components/Loaders";
 
+const NUMBER_OF_POSTS = 4;
+
 const Home: NextPage = () => {
-  const { posts, loading, hasNextPage, sentryRef } = useGetLazyPosts();
+  const { posts, loading, hasNextPage, sentryRef } =
+    useGetLazyPosts(NUMBER_OF_POSTS);
 
   return (
     <div className="mx-auto my-7 max-w-5xl">
@@ -41,7 +44,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
   await client.query({
     query: GetPostsDocument,
     variables: {
-      first: 4,
+      first: NUMBER_OF_POSTS,
     },
   });
 
