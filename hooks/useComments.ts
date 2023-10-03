@@ -11,7 +11,7 @@ import {
 
 import { toast } from "react-hot-toast";
 
-export const useAddComment = (post: PostAttributesFragment) => {
+export const useComments = (post: PostAttributesFragment) => {
   const { data: session } = useSession();
   const { data: commentsData, loading } = useGetCommentsByPostIdQuery({
     variables: {

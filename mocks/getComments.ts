@@ -65,3 +65,21 @@ export const mockComments: GetCommentsByPostIdQuery = {
     },
   ],
 };
+
+export const mockUseCommentsReturn = {
+  comments: mockComments.commentsByPostId,
+  isValid: true,
+  loading: false,
+  register: jest.fn(),
+  session: {
+    user: {
+      name: "Buck",
+      expires: "2021-10-10",
+      email: "user@test.com",
+      address: "123 Fake St",
+      image: "https://via.placeholder.com/150",
+    },
+    expires: "2021-10-10",
+  },
+  submitComment: jest.fn(),
+};
