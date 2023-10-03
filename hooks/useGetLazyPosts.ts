@@ -3,14 +3,14 @@ import { useCallback } from "react";
 import { GetPostsQuery, useGetPostsQuery } from "@d20/generated/graphql";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
-export const useGetLazyPosts = () => {
-  const NUMBER_OF_POSTS = 4;
-
+export const useGetLazyPosts = (numberOfPosts: number) => {
   const { data, fetchMore, loading } = useGetPostsQuery({
     variables: {
-      first: NUMBER_OF_POSTS,
+      first: numberOfPosts,
     },
   });
+
+  console.log("data", data);
 
   const posts = data?.posts?.edges;
   const hasNextPage: boolean = data?.posts?.pageInfo?.hasNextPage!;
@@ -20,7 +20,7 @@ export const useGetLazyPosts = () => {
       hasNextPage &&
       fetchMore({
         variables: {
-          first: NUMBER_OF_POSTS,
+          first: numberOfPosts,
           after: data?.posts?.pageInfo.endCursor,
         },
         updateQuery(prevResult, { fetchMoreResult }): GetPostsQuery {
@@ -45,7 +45,7 @@ export const useGetLazyPosts = () => {
             : prevResult;
         },
       }),
-    [fetchMore, data?.posts?.pageInfo.endCursor, hasNextPage]
+    [fetchMore, data?.posts?.pageInfo.endCursor, hasNextPage, numberOfPosts]
   );
 
   const [sentryRef] = useInfiniteScroll({
