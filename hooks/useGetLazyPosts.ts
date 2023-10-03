@@ -10,8 +10,6 @@ export const useGetLazyPosts = (numberOfPosts: number) => {
     },
   });
 
-  console.log("data", data);
-
   const posts = data?.posts?.edges;
   const hasNextPage: boolean = data?.posts?.pageInfo?.hasNextPage!;
 
