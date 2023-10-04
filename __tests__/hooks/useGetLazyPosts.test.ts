@@ -2,8 +2,8 @@ import { renderHook } from "@testing-library/react";
 import { useGetLazyPosts } from "@d20/hooks/useGetLazyPosts";
 import { mockPosts } from "@d20/mocks/getPosts";
 
-jest.mock("../generated/graphql", () => ({
-  ...jest.requireActual("../generated/graphql"),
+jest.mock("@d20/generated/graphql", () => ({
+  ...jest.requireActual("@d20/generated/graphql"),
   useGetPostsQuery: () => ({ data: mockPosts, loading: false }),
 }));
 
