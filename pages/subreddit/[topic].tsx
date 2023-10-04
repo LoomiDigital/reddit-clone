@@ -12,9 +12,13 @@ type Props = {
   topic: string;
 };
 
+const NUMBER_OF_POSTS = 4;
+
 const Subreddit: NextPage<Props> = ({ topic }) => {
-  const { posts, loading, hasNextPage, sentryRef } =
-    useGetLazyPostsByTopic(topic);
+  const { posts, loading, hasNextPage, sentryRef } = useGetLazyPostsByTopic(
+    topic,
+    NUMBER_OF_POSTS
+  );
 
   return (
     <div className="h-24 bg-red-400 p-8">
@@ -33,11 +37,13 @@ const Subreddit: NextPage<Props> = ({ topic }) => {
       </div>
       <div className="mx-auto mt-5 max-w-5xl pb-10">
         <PostBox subreddit={topic} />
-        <Feed
-          posts={posts}
-          loading={loading || hasNextPage}
-          loadingRef={sentryRef}
-        />
+        {posts?.length && (
+          <Feed
+            posts={posts}
+            loading={loading || hasNextPage}
+            loadingRef={sentryRef}
+          />
+        )}
       </div>
     </div>
   );
@@ -49,7 +55,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   await client.query({
     query: GetPostsByTopicDocument,
     variables: {
-      first: 4,
+      first: NUMBER_OF_POSTS,
       topic: params?.topic,
     },
   });
