@@ -15,8 +15,8 @@ import { CommentLoader } from "@d20/Components/Loaders";
 jest.mock("../hooks/useComments");
 jest.mock("../Components/CommentCard");
 
-jest.mock("../Components/Loaders", () => ({
-  ...jest.requireActual("../Components/Loaders"),
+jest.mock("@d20/Components/Loaders", () => ({
+  ...jest.requireActual("@d20/Components/Loaders"),
   CommentLoader: jest.fn(),
 }));
 

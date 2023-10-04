@@ -12,6 +12,8 @@ const config = {
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
   moduleNameMapper: {
     "^@d20/Components/(.*)$": "<rootDir>/Components/$1",
+    "^@d20/hooks/(.*)$": "<rootDir>/hooks/$1",
+    "^@d20/generated/(.*)$": "<rootDir>/generated/$1",
   },
   testEnvironment: "jest-environment-jsdom",
   coveragePathIgnorePatterns: [

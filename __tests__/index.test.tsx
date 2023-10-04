@@ -6,13 +6,13 @@ import { useGetLazyPosts } from "@d20/hooks/useGetLazyPosts";
 import {
   mockPostsResponse,
   mockUseGetLazyPostsReturn,
-} from "../mocks/getPosts";
+} from "@d20/mocks/getPosts";
 
 import Feed from "@d20/Components/Feed";
 import Home from "@d20/pages";
 
-jest.mock("../hooks/useGetLazyPosts");
-jest.mock("../Components/Feed");
+jest.mock("@d20/hooks/useGetLazyPosts");
+jest.mock("@d20/Components/Feed");
 
 const mockUseGetLazyPosts = useGetLazyPosts as jest.MockedFunction<
   typeof useGetLazyPosts
