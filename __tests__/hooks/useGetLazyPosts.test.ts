@@ -8,7 +8,7 @@ jest.mock("@d20/generated/graphql", () => ({
 }));
 
 describe("UseGetLazyPosts custom hook", () => {
-  it("should return the correct values", async () => {
+  it("should return the expected values", async () => {
     const {
       result: { current },
     } = renderHook(({ numberOfPosts }) => useGetLazyPosts(numberOfPosts), {
