@@ -5,7 +5,7 @@ import { addApolloState, initializeApollo } from "@d20/graphql/client";
 import { GetPostsByTopicDocument, PostEdge } from "@d20/generated/graphql";
 
 import Avatar from "@d20/Components/Avatar";
-import Postbox from "@d20/Components/Postbox";
+import PostBox from "@d20/Components/Postbox";
 import Feed from "@d20/Components/Feed";
 
 type Props = {
@@ -32,7 +32,7 @@ const Subreddit: NextPage<Props> = ({ topic }) => {
         </div>
       </div>
       <div className="mx-auto mt-5 max-w-5xl pb-10">
-        <Postbox subreddit={topic} />
+        <PostBox subreddit={topic} />
         <Feed
           posts={posts}
           loading={loading || hasNextPage}
