@@ -1,10 +1,12 @@
 import { SessionProvider } from "next-auth/react";
-
 import { render } from "@testing-library/react";
 import { MockedProvider } from "@apollo/client/testing";
 
-import { mockPosts, mockPostsResponse } from "../mocks/getPosts";
 import { useGetLazyPosts } from "@d20/hooks/useGetLazyPosts";
+import {
+  mockPostsResponse,
+  mockUseGetLazyPostsReturn,
+} from "../mocks/getPosts";
 
 import Feed from "@d20/Components/Feed";
 import Home from "@d20/pages";
@@ -18,12 +20,7 @@ const mockUseGetLazyPosts = useGetLazyPosts as jest.MockedFunction<
 
 describe("Home component", () => {
   it("should render the Feed component when posts are fetched", async () => {
-    mockUseGetLazyPosts.mockReturnValue({
-      posts: mockPosts.posts?.edges,
-      loading: false,
-      hasNextPage: true,
-      sentryRef: jest.fn(),
-    });
+    mockUseGetLazyPosts.mockReturnValue(mockUseGetLazyPostsReturn);
 
     render(
       <MockedProvider mocks={[mockPostsResponse]}>

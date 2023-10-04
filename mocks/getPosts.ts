@@ -191,3 +191,10 @@ export const mockPostConnection: PostConnection = {
     endCursor: "YXJyYXljb25uZWN0aW9uOjA=",
   },
 };
+
+export const mockUseGetLazyPostsReturn = {
+  posts: mockPosts.posts?.edges,
+  loading: false,
+  hasNextPage: true,
+  sentryRef: jest.fn(),
+};
