@@ -1,18 +1,18 @@
 import { useCallback } from "react";
+import useInfiniteScroll from "react-infinite-scroll-hook";
 
 import {
   GetPostsByTopicQuery,
   useGetPostsByTopicQuery,
 } from "@d20/generated/graphql";
 
-import useInfiniteScroll from "react-infinite-scroll-hook";
-
-export const useGetLazyPostsByTopic = (topic: string) => {
-  const NUMBER_OF_POSTS = 4;
-
+export const useGetLazyPostsByTopic = (
+  topic: string,
+  numberOfPosts: number
+) => {
   const { data, fetchMore, loading } = useGetPostsByTopicQuery({
     variables: {
-      first: NUMBER_OF_POSTS,
+      first: numberOfPosts,
       topic,
     },
   });
