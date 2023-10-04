@@ -122,7 +122,7 @@ describe("Postbox Component", () => {
     const postBodyInput = screen.getByPlaceholderText("Text (optional)");
     const imageInput = screen.getByPlaceholderText("Image URL");
 
-    await userEvent.type(postSubredditInput, "r/existingSubReddit");
+    await userEvent.type(postSubredditInput, "testsubreddit");
     await userEvent.type(imageInput, "https://via.placeholder.com/150");
     await userEvent.type(postBodyInput, "A brand new post!");
 
