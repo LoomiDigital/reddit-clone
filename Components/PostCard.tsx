@@ -1,10 +1,10 @@
 import React, { SyntheticEvent, useEffect, useState } from "react";
 import Link from "next/link";
 
-import { useAddVote } from "@d20/hooks/useAddVote";
-import { PostAttributesFragment } from "@d20/generated/graphql";
-
 import { loadPage } from "@d20/utils/loadPage";
+import { useAddVote } from "@d20/hooks/useAddVote";
+import { useComments } from "@d20/hooks/useComments";
+import { PostAttributesFragment } from "@d20/generated/graphql";
 
 import TimeAgo from "react-timeago";
 
@@ -28,8 +28,9 @@ const PostCard = ({ post }: Props) => {
     loadPage(e, `/subreddit/${post.subreddit_topic}`);
   };
 
-  const { upVote, comments, vote, displayVotes, loading } = useAddVote(post);
   const [hasMounted, setHasMounted] = useState<boolean>(false);
+  const { upVote, vote, displayVotes } = useAddVote(post);
+  const { comments, loading } = useComments(post);
 
   useEffect(() => {
     setHasMounted(true);
