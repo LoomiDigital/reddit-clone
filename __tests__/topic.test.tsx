@@ -2,28 +2,29 @@ import { SessionProvider } from "next-auth/react";
 import { render } from "@testing-library/react";
 import { MockedProvider } from "@apollo/client/testing";
 
-import { useGetLazyPosts } from "@d20/hooks/useGetLazyPosts";
+import { useGetLazyPostsByTopic } from "@d20/hooks/useGetLazyPostsByTopic";
 import {
-  mockPostsResponse,
-  mockUseGetLazyPostsReturn,
-} from "@d20/mocks/getPosts";
+  mockPostsByTopicResponse,
+  mockUseGetLazyPostsByTopicReturn,
+} from "@d20/mocks/getPostsByTopic";
 
 import Feed from "@d20/Components/Feed";
-import Home from "@d20/pages";
+import Subreddit from "@d20/pages/subreddit/[topic]";
 
-jest.mock("@d20/hooks/useGetLazyPosts");
+jest.mock("@d20/hooks/useGetLazyPostsByTopic");
 jest.mock("@d20/Components/Feed");
 
-const mockUseGetLazyPosts = useGetLazyPosts as jest.MockedFunction<
-  typeof useGetLazyPosts
->;
+const mockUseGetLazyPostsByTopic =
+  useGetLazyPostsByTopic as jest.MockedFunction<typeof useGetLazyPostsByTopic>;
 
 describe("Home component", () => {
   it("should render the Feed component when posts are fetched", async () => {
-    mockUseGetLazyPosts.mockReturnValue(mockUseGetLazyPostsReturn);
+    mockUseGetLazyPostsByTopic.mockReturnValue(
+      mockUseGetLazyPostsByTopicReturn
+    );
 
     render(
-      <MockedProvider mocks={[mockPostsResponse]}>
+      <MockedProvider mocks={[mockPostsByTopicResponse]}>
         <SessionProvider
           session={{
             expires: "2021-10-10",
@@ -36,7 +37,7 @@ describe("Home component", () => {
             },
           }}
         >
-          <Home />
+          <Subreddit topic="testSubReddit" />
         </SessionProvider>
       </MockedProvider>
     );

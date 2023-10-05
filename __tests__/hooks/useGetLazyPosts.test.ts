@@ -2,13 +2,13 @@ import { renderHook } from "@testing-library/react";
 import { useGetLazyPosts } from "@d20/hooks/useGetLazyPosts";
 import { mockPosts } from "@d20/mocks/getPosts";
 
-jest.mock("../generated/graphql", () => ({
-  ...jest.requireActual("../generated/graphql"),
+jest.mock("@d20/generated/graphql", () => ({
+  ...jest.requireActual("@d20/generated/graphql"),
   useGetPostsQuery: () => ({ data: mockPosts, loading: false }),
 }));
 
 describe("UseGetLazyPosts custom hook", () => {
-  it("should return the correct values", async () => {
+  it("should return the expected values", async () => {
     const {
       result: { current },
     } = renderHook(({ numberOfPosts }) => useGetLazyPosts(numberOfPosts), {
