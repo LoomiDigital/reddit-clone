@@ -151,6 +151,7 @@ export const useAddPost = (subreddit?: string) => {
       toast.error("Error creating post!", { id: notification });
     }
   });
+
   return {
     register,
     submitPost,
