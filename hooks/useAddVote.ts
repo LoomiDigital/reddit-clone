@@ -24,6 +24,7 @@ export const useAddVote = (post: PostAttributesFragment) => {
     },
   });
 
+  const comments = commentsData?.commentsByPostId;
   const votes = post?.votes;
 
   useEffect(() => {
@@ -111,8 +112,6 @@ export const useAddVote = (post: PostAttributesFragment) => {
       ],
     });
   };
-
-  const comments = commentsData?.commentsByPostId;
 
   return {
     upVote,
