@@ -27,12 +27,10 @@ describe("useAddVote custom hook", () => {
       },
     });
 
-    const { upVote, comments, displayVotes, loading, vote } = current;
+    const { upVote, displayVotes, vote } = current;
 
     expect(isFunction(upVote)).toBe(true);
     expect(isNumber(displayVotes)).toBe(true);
-    expect(isBoolean(loading)).toBe(true);
     expect(isBoolean(vote)).toBe(true);
-    expect(comments).toMatchObject(mockComments.commentsByPostId!);
   });
 });

@@ -5,7 +5,6 @@ import {
   GetPostDocument,
   PostAttributesFragment,
   UpdateVoteDocument,
-  useGetCommentsByPostIdQuery,
   useUpdateVoteMutation,
 } from "@d20/generated/graphql";
 
@@ -18,13 +17,6 @@ export const useAddVote = (post: PostAttributesFragment) => {
 
   const { data: session } = useSession();
 
-  const { data: commentsData, loading } = useGetCommentsByPostIdQuery({
-    variables: {
-      post_id: post.id,
-    },
-  });
-
-  const comments = commentsData?.commentsByPostId;
   const votes = post?.votes;
 
   useEffect(() => {
@@ -115,9 +107,7 @@ export const useAddVote = (post: PostAttributesFragment) => {
 
   return {
     upVote,
-    comments,
     vote,
-    loading,
     displayVotes,
   };
 };
