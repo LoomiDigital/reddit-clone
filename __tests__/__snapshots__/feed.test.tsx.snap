@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Feed component should render correctly 1`] = `
+<div
+  className="mt-5 space-y-4"
+>
+  <div />
+  <div />
+  <div
+    className="flex flex-col"
+  />
+</div>
+`;

@@ -1,4 +1,5 @@
 import { render } from "@testing-library/react";
+import renderer from "react-test-renderer";
 import { MockedProvider } from "@apollo/client/testing";
 import { SessionProvider } from "next-auth/react";
 import { mockPostConnection, mockPostsResponse } from "@d20/mocks/getPosts";
@@ -15,6 +16,35 @@ jest.mock("@d20/Components/Loaders", () => ({
 describe("Feed component", () => {
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  it("should render correctly", async () => {
+    const tree = renderer
+      .create(
+        <MockedProvider>
+          <SessionProvider
+            session={{
+              expires: "2021-10-10",
+              user: {
+                name: "Buck",
+                expires: "2021-10-10",
+                email: "user@test.com",
+                address: "123 Fake St",
+                image: "https://via.placeholder.com/150",
+              },
+            }}
+          >
+            <Feed
+              loading={true}
+              loadingRef={() => {}}
+              posts={mockPostConnection.edges}
+            />
+          </SessionProvider>
+        </MockedProvider>
+      )
+      .toJSON();
+
+    expect(tree).toMatchSnapshot();
   });
 
   it("should handle the loading state", async () => {

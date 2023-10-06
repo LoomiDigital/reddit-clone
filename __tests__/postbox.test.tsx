@@ -1,8 +1,9 @@
 import { SessionProvider } from "next-auth/react";
-import { MockedProvider } from "@apollo/client/testing";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event/";
+import renderer from "react-test-renderer";
 import { act } from "react-dom/test-utils";
+import userEvent from "@testing-library/user-event/";
+import { MockedProvider } from "@apollo/client/testing";
 
 import { mockAddPost } from "@d20/mocks/addPost";
 import { mockAddSubreddit } from "@d20/mocks/addSubreddit";
@@ -16,11 +17,43 @@ import {
 import { toast } from "react-hot-toast";
 import Postbox from "@d20/Components/Postbox";
 
-describe("Postbox Component", () => {
-  const toastSuccess = jest.spyOn(toast, "success");
+const toastSuccess = jest.spyOn(toast, "success");
 
+describe("Postbox Component", () => {
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  it("should render correctly", async () => {
+    const tree = renderer
+      .create(
+        <MockedProvider
+          mocks={[
+            mockGetSubredditResponse,
+            mockAddSubreddit,
+            mockAddPost,
+            mockAddVote,
+          ]}
+        >
+          <SessionProvider
+            session={{
+              expires: "2021-10-10",
+              user: {
+                name: "Buck",
+                expires: "2021-10-10",
+                email: "user@test.com",
+                address: "123 Fake St",
+                image: "https://via.placeholder.com/150",
+              },
+            }}
+          >
+            <Postbox subreddit={mockSubreddit.topic} />
+          </SessionProvider>
+        </MockedProvider>
+      )
+      .toJSON();
+
+    expect(tree).toMatchSnapshot();
   });
 
   it("should create a new post with existing subreddit passed in as prop", async () => {
