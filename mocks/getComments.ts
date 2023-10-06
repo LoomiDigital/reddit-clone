@@ -68,7 +68,19 @@ export const mockComments: GetCommentsByPostIdQuery = {
 
 export const mockUseCommentsReturn = {
   comments: mockComments.commentsByPostId,
-  isValid: true,
+  formState: {
+    isDirty: false,
+    isLoading: false,
+    isSubmitted: false,
+    isSubmitSuccessful: false,
+    isSubmitting: false,
+    isValidating: false,
+    isValid: false,
+    submitCount: 0,
+    dirtyFields: {},
+    touchedFields: {},
+    errors: {},
+  },
   loading: false,
   register: jest.fn(),
   session: {
