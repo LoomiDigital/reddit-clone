@@ -2,7 +2,6 @@ import { renderHook } from "@testing-library/react";
 import { isBoolean, isFunction, isNumber } from "lodash";
 
 import { useAddVote } from "@d20/hooks/useAddVote";
-import { mockComments } from "@d20/mocks/getComments";
 import { mockPost } from "@d20/mocks/getPost";
 import { mockSessionResponse } from "@d20/mocks/session";
 
