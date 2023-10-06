@@ -14,7 +14,6 @@ jest.mock("next-auth/react", () => ({
 jest.mock("@d20/generated/graphql", () => ({
   ...jest.requireActual("@d20/generated/graphql"),
   useUpdateVoteMutation: () => [jest.fn()],
-  useGetCommentsByPostIdQuery: () => ({ data: mockComments, loading: false }),
 }));
 
 describe("useAddVote custom hook", () => {
