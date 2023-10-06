@@ -17,7 +17,7 @@ describe("PostCard component", () => {
   });
 
   it("should render a post correctly", async () => {
-    const { getByText } = render(
+    render(
       <MockedProvider mocks={[mockPostResponse, mockCommentsResponse]}>
         <SessionProvider
           session={{
@@ -36,7 +36,7 @@ describe("PostCard component", () => {
       </MockedProvider>
     );
 
-    expect(getByText("Test Post")).toBeInTheDocument();
+    expect(await screen.findByText("Test Post")).toBeInTheDocument();
   });
 
   it("should cast an upvote", async () => {
