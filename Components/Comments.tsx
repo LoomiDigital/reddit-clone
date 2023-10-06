@@ -10,8 +10,14 @@ interface Props {
 }
 
 const Comments = ({ post }: Props) => {
-  const { submitComment, loading, comments, session, isValid, register } =
-    useComments(post);
+  const {
+    submitComment,
+    loading,
+    comments,
+    session,
+    formState: { isValid },
+    register,
+  } = useComments(post);
 
   return (
     <>

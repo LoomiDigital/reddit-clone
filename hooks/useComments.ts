@@ -21,12 +21,7 @@ export const useComments = (post: PostAttributesFragment) => {
   const [isSubmitSuccessful, setIsSubmitSuccessful] = useState<boolean>(false);
   const [addComment] = useAddCommentMutation();
 
-  const {
-    handleSubmit,
-    reset,
-    register,
-    formState: { isValid },
-  } = useForm<FormData>();
+  const { handleSubmit, reset, register, formState } = useForm<FormData>();
 
   useEffect(() => {
     if (isSubmitSuccessful) {
@@ -90,6 +85,6 @@ export const useComments = (post: PostAttributesFragment) => {
     comments,
     session,
     loading,
-    isValid,
+    formState,
   };
 };
