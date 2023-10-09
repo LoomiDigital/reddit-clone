@@ -1,0 +1,62 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CommentCard component should render correctly 1`] = `
+<div
+  className="relative flex items-center space-x-2 space-y-10"
+>
+  <hr
+    className="absolute left-7 top-16 z-0 h-16 border"
+  />
+  <div
+    className="z-50"
+  >
+    <div
+      className="relative h-10 w-10 overflow-hidden rounded-full border-gray-300 bg-white undefined"
+    >
+      <img
+        alt="Buck"
+        data-nimg="fill"
+        decoding="async"
+        loading="lazy"
+        onError={[Function]}
+        onLoad={[Function]}
+        src="https://avatars.dicebear.com/api/open-peeps/aUser.svg"
+        style={
+          {
+            "bottom": 0,
+            "color": "transparent",
+            "height": "100%",
+            "left": 0,
+            "objectFit": undefined,
+            "objectPosition": undefined,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+            "width": "100%",
+          }
+        }
+      />
+    </div>
+  </div>
+  <div
+    className="flex flex-col"
+  >
+    <p
+      className="py-2 text-xs text-gray-400"
+    >
+      <span
+        className="font-semibold text-gray-600"
+      >
+        aUser
+      </span>
+       
+      • 
+    </p>
+    <p
+      className="text-sm"
+    >
+      An amazing comment
+    </p>
+  </div>
+</div>
+`;

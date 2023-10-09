@@ -1,6 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react";
+import renderer from "react-test-renderer";
 import { SessionProvider } from "next-auth/react";
 import { MockedProvider } from "@apollo/client/testing";
+
 import {
   mockPost,
   mockPostResponse,
@@ -14,6 +16,31 @@ import PostCard from "@d20/Components/PostCard";
 describe("PostCard component", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  it("should render correctly", async () => {
+    const tree = renderer
+      .create(
+        <MockedProvider mocks={[mockPostResponse, mockCommentsResponse]}>
+          <SessionProvider
+            session={{
+              expires: "2021-10-10",
+              user: {
+                name: "Buck",
+                expires: "2021-10-10",
+                email: "user@test.com",
+                address: "123 Fake St",
+                image: "https://via.placeholder.com/150",
+              },
+            }}
+          >
+            <PostCard post={mockPost} />
+          </SessionProvider>
+        </MockedProvider>
+      )
+      .toJSON();
+
+    expect(tree).toMatchSnapshot();
   });
 
   it("should render a post correctly", async () => {
