@@ -29,5 +29,6 @@ You can find a demo of this project [here](https://reddit-clone-apollo.vercel.ap
 ## Approach
 
 - `getServerSideProps` was leveraged to populate the Apollo cache on the client with the initial data from the server, however, no data was returned from the server.
+- Custom hooks were implemented to abstract complexity away from the components. Additionally, hooks also make the code easier to test.
 - Lazy loading was implemented for the posts and comments to improve performance.
 - NextAuth.js was used to implement authentication with Reddit.
